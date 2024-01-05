@@ -8,6 +8,7 @@ import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,8 @@ public class CommentController {
     public ResponseEntity<?> createComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "boardId") Long boardId,
-        @RequestBody CommentRequestDto requestDto) {
+        @RequestBody CommentRequestDto requestDto
+    ) {
 
         CommentResponseDto responseDto =
             commentService.createComment(userDetails.getUser(), boardId, requestDto);
@@ -38,11 +40,12 @@ public class CommentController {
             .build());
     }
 
-    @PatchMapping("{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "commentId") Long commentId,
-        @RequestBody CommentRequestDto requestDto) {
+        @RequestBody CommentRequestDto requestDto
+    ) {
 
         CommentResponseDto responseDto =
             commentService.updateComment(userDetails.getUser(), commentId, requestDto);
@@ -51,7 +54,23 @@ public class CommentController {
                 .code("200")
                 .message(commentId + "번 댓글이 수정되었습니다.")
                 .data(responseDto)
-            .build());
+            .build()
+        );
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "commentId") Long commentId
+    ){
+
+        commentService.deleteComment(userDetails.getUser(), commentId);
+
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message(commentId + "번 댓글이 삭제되었습니다.")
+            .build()
+        );
     }
 
 }
