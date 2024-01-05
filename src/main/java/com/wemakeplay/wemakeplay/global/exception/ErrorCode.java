@@ -19,10 +19,11 @@ public enum ErrorCode {
     NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "1008", "인증되지 않은 사용자입니다."),
     // board (2000)
     NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "보드가 존재하지 않습니다."),
-    NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다.");
+    NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다."),
     // team (3000)
 
     // comment (4000)
+    NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요.");
 
     // follow (5000)
 

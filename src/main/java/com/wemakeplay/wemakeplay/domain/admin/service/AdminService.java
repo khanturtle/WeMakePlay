@@ -23,4 +23,11 @@ public class AdminService {
             .user(user)
             .build();
     }
+
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ServiceException(NOT_EXIST_USER));
+
+        userRepository.delete(user);
+    }
 }
