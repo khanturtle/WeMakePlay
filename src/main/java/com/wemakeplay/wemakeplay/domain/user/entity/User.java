@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.entity;
+package com.wemakeplay.wemakeplay.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -56,8 +56,8 @@ public class User {
     private UserRoleEnum role;
 
     @Builder
-    public User(final String username, final String password, final String nickname, final String email,
-                final String area, final String age, final String imageName, final String imagePath, final String intro, final UserRoleEnum role) {
+    public User(String username, String password, String nickname, String email,
+        String area,  String age, String imageName, String imagePath, String intro, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;

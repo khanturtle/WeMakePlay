@@ -1,7 +1,7 @@
-package com.wemakeplay.wemakeplay.user.dto.response;
+package com.wemakeplay.wemakeplay.domain.user.dto.response;
 
-import com.wemakeplay.wemakeplay.user.entity.User;
-import com.wemakeplay.wemakeplay.user.entity.UserRoleEnum;
+import com.wemakeplay.wemakeplay.domain.user.entity.User;
+import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.wemakeplay.wemakeplay.global.security;
 
-import com.wemakeplay.wemakeplay.user.repository.UserRepository;
+import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import com.wemakeplay.wemakeplay.user.entity.User;
+import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

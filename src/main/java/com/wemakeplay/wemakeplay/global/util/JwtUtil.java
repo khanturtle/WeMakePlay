@@ -1,6 +1,6 @@
 package com.wemakeplay.wemakeplay.global.util;
 
-import com.wemakeplay.wemakeplay.user.entity.UserRoleEnum;
+import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

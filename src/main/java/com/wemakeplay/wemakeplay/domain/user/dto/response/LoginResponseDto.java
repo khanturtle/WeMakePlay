@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.dto.response;
+package com.wemakeplay.wemakeplay.domain.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
