@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.dto.request;
+package com.wemakeplay.wemakeplay.domain.user.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

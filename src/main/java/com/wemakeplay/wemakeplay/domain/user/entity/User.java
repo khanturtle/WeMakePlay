@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.entity;
+package com.wemakeplay.wemakeplay.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

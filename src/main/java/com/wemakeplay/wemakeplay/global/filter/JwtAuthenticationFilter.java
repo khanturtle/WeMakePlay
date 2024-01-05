@@ -3,9 +3,9 @@ package com.wemakeplay.wemakeplay.global.filter;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.LOGIN_FAILED;
 
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
-import com.wemakeplay.wemakeplay.user.dto.request.LoginRequestDto;
-import com.wemakeplay.wemakeplay.user.dto.response.LoginResponseDto;
-import com.wemakeplay.wemakeplay.user.entity.UserRoleEnum;
+import com.wemakeplay.wemakeplay.domain.user.dto.request.LoginRequestDto;
+import com.wemakeplay.wemakeplay.domain.user.dto.response.LoginResponseDto;
+import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import com.wemakeplay.wemakeplay.global.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;

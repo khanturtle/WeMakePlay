@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.repository;
+package com.wemakeplay.wemakeplay.domain.user.repository;
 
 import java.util.Optional;
 import org.apache.catalina.User;
