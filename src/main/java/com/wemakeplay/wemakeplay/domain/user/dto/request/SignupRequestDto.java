@@ -1,4 +1,4 @@
-package com.wemakeplay.wemakeplay.user.dto.request;
+package com.wemakeplay.wemakeplay.domain.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
