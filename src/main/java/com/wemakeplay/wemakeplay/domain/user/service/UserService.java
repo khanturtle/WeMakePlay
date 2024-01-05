@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.user.service;
 
+import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.SignupResponseDto;
@@ -73,7 +74,7 @@ public class UserService {
             .build();
     }
 
-    public ProfileResponseDto getProfile(User user) {
+    public ProfileResponseDto getMYProfile(User user) {
         User profileUser = findUser(user.getId());
 
         return ProfileResponseDto.builder()
@@ -86,5 +87,4 @@ public class UserService {
             () -> new ServiceException(ErrorCode.NOT_EXIST_USER)
         );
     }
-
 }
