@@ -57,4 +57,16 @@ public class CommentService {
 
         return new CommentResponseDto(comment);
     }
+
+    public void deleteComment(User user, Long commentId) {
+
+        Comment comment = commentRepository.findById(commentId)
+            .orElseThrow(() -> new ServiceException(NOT_EXIST_COMMENT));
+
+        if (!user.getId().equals(comment.getUser().getId())) {
+            throw new ServiceException(NOT_COMMENT_OWNER);
+        }
+
+        commentRepository.delete(comment);
+    }
 }
