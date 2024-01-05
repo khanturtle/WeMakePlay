@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.attend;
+import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.wait;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -20,8 +23,11 @@ public class AttendBoard {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    public AttendBoard(Board board, User user) {
+    private Participation participation;
+
+    public AttendBoard(Board board, User user, Participation participation) {
         this.user = user;
         this.board = board;
+        this.participation = participation;
     }
 }

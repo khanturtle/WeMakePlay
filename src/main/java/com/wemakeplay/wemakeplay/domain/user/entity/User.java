@@ -1,17 +1,16 @@
 package com.wemakeplay.wemakeplay.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
+import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
+import com.wemakeplay.wemakeplay.domain.board.entity.Board;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -55,6 +54,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<AttendBoard> attendBoards = new ArrayList<>();
     @Builder
     public User(String username, String password, String nickname, String email,
         String area,  String age, String imageName, String imagePath, String intro, UserRoleEnum role) {
@@ -68,5 +69,10 @@ public class User {
         this.imagePath = imagePath;
         this.intro = intro;
         this.role = role;
+    }
+
+    public void attendBoard(Board board) {
+        AttendBoard attendBoard = new AttendBoard(board,this, Participation.wait);
+        this.attendBoards.add(attendBoard);
     }
 }

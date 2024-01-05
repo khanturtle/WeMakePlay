@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.board.controller;
 
+import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
@@ -76,4 +77,12 @@ public class BoardController {
                 .message("보드 가입 신청 성공")
                 .build());
     }
+    @PatchMapping("/attend/{boardId}")
+    public List<AttendBoard> allowBoard(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        return boardService.allowBoard(boardId,userDetails);
+    }
+
 }
