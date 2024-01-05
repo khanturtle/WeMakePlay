@@ -16,10 +16,10 @@ public enum ErrorCode {
     NOT_EXIST_USER(HttpStatus.BAD_REQUEST, "1005", "유저가 존재하지 않습니다."),
     MODIFY_PROFILE_FAILED(HttpStatus.BAD_REQUEST, "1006", "유저 정보 수정에 실패했습니다."),
     NOT_ADMIN(HttpStatus.BAD_REQUEST, "1007", "관리자가 아닙니다."),
-    NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "1008", "인증되지 않은 사용자입니다.");
-
+    NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "1008", "인증되지 않은 사용자입니다."),
     // board (2000)
-
+    NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "보드가 존재하지 않습니다."),
+    NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다.");
     // team (3000)
 
     // comment (4000)
