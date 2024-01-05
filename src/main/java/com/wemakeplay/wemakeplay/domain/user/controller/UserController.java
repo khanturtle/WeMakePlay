@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.user.controller;
 
+import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.SignupResponseDto;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +52,7 @@ public class UserController {
     }
 
         @GetMapping("/profile")
-        public ResponseEntity<?> getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
             ProfileResponseDto responseDto = userService.getProfile(userDetails.getUser());
 
             return ResponseEntity.ok(RootResponseDto.builder()
@@ -60,5 +62,4 @@ public class UserController {
                 .build()
             );
     }
-
 }
