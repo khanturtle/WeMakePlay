@@ -40,7 +40,7 @@ public class CommentController {
             .build());
     }
 
-    @PatchMapping("{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable(name = "commentId") Long commentId,
