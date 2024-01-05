@@ -53,7 +53,7 @@ public class UserController {
 
         @GetMapping("/profile")
         public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-            ProfileResponseDto responseDto = userService.getProfile(userDetails.getUser());
+            ProfileResponseDto responseDto = userService.getMyProfile(userDetails.getUser());
 
             return ResponseEntity.ok(RootResponseDto.builder()
                 .code("200")
