@@ -5,6 +5,7 @@ import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-public class AdminController {
+public class 현 {
 
     private final AdminService adminService;
 
@@ -27,6 +28,18 @@ public class AdminController {
             .code("200")
             .message(userId + "번 유저 조회 성공")
             .data(responseDto)
+            .build());
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(
+        @PathVariable(name = "userId") Long userId) {
+
+        adminService.deleteUser(userId);
+
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message(userId + "번 유저를 탈퇴시켰습니다.")
             .build());
     }
 
