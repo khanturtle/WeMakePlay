@@ -1,6 +1,7 @@
 package com.wemakeplay.wemakeplay.domain.comment.entity;
 
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
+import com.wemakeplay.wemakeplay.domain.comment.dto.request.CommentRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -48,4 +49,7 @@ public class Comment extends BaseEntity {
         this.board = board;
     }
 
+    public void update(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
+    }
 }

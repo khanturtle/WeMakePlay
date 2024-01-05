@@ -23,7 +23,9 @@ public enum ErrorCode {
     // team (3000)
 
     // comment (4000)
-    NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요.");
+    NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
+    NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글을 찾을 수 없습니다."),
+    NOT_COMMENT_OWNER(HttpStatus.BAD_REQUEST, "4003", "댓글 생성자가 아닙니다.");
 
     // follow (5000)
 
