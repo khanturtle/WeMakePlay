@@ -10,7 +10,7 @@ public enum ErrorCode {
     // user (1000)
     SIGNUP_FAIL(HttpStatus.BAD_REQUEST, "1000", "회원가입에 실패했습니다."),
     DUPLICATE_NICKNAME(HttpStatus.BAD_REQUEST, "1001", "이미 사용중인 닉네임입니다."),
-    WRONG_ADMIN_CODE(HttpStatus.BAD_REQUEST, "1002", "관리자 암호가 틀려 등록이 불가능합니다."),
+    WRONG_ADMIN_CODE(HttpStatus.BAD_REQUEST, "가1002", "관리자 암호가 틀려 등록이 불가능합니다."),
     LOGIN_FAILED(HttpStatus.BAD_REQUEST, "1003", "로그인에 실패했습니다."),
     TOKEN_ERROR(HttpStatus.BAD_REQUEST, "1004", "토큰이 틀립니다."),
     NOT_EXIST_USER(HttpStatus.BAD_REQUEST, "1005", "유저가 존재하지 않습니다."),
@@ -21,7 +21,9 @@ public enum ErrorCode {
     NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "보드가 존재하지 않습니다."),
     NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다."),
     // team (3000)
-
+    NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
+    NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
+    ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글을 찾을 수 없습니다."),
