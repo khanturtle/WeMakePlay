@@ -2,6 +2,7 @@ package com.wemakeplay.wemakeplay.domain.board.entity;
 
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
+import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import jakarta.persistence.*;
@@ -33,6 +34,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendBoard> attendBoards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     //보드 생성
     public Board(BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
