@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.user.repository;
 
+import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import java.util.Optional;
 
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
