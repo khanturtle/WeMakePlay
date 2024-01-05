@@ -1,7 +1,7 @@
 package com.wemakeplay.wemakeplay.global.security;
 
-import com.wemakeplay.wemakeplay.user.entity.User;
-import com.wemakeplay.wemakeplay.user.entity.UserRoleEnum;
+import com.wemakeplay.wemakeplay.domain.user.entity.User;
+import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
