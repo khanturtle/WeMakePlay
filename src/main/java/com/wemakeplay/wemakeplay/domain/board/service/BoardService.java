@@ -7,6 +7,7 @@ import com.wemakeplay.wemakeplay.domain.board.repository.BoardRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
+    @Transactional
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
         Board board = new Board(boardRequestDto, userDetails);
         boardRepository.save(board);
@@ -40,6 +42,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    @Transactional
     public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
@@ -52,6 +55,7 @@ public class BoardService {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
+    @Transactional
     public void deleteBoard(Long boardId, UserDetailsImpl userDetails) {
         Board board = boardRepository.findById(boardId).orElseThrow(
                 ()-> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
@@ -65,5 +69,6 @@ public class BoardService {
     }
 
     public void attendBoard(Long boardId, UserDetailsImpl userDetails) {
+
     }
 }
