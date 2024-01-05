@@ -51,6 +51,26 @@ public class UserController {
         );
     }
 
+    @PatchMapping("/profile")
+    public ResponseEntity<?> modifyProfile(@Valid @RequestBody ModifyProfileRequestDto requestDto,
+        BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+
+        if (!fieldErrors.isEmpty()) {
+            throw new ServiceException(ErrorCode.MODIFY_PROFILE_FAILED);
+        }
+
+        ProfileResponseDto responseDto = userService.modifyProfile(userDetails.getUser(), requestDto);
+
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message("유저 프로필 변경 성공")
+            .data(responseDto)
+            .build()
+        );
+    }
+
         @GetMapping("/profile")
         public ResponseEntity<?> getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
             ProfileResponseDto responseDto = userService.getMyProfile(userDetails.getUser());
@@ -62,4 +82,6 @@ public class UserController {
                 .build()
             );
     }
+
+
 }

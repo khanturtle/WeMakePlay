@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
+import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,12 +43,6 @@ public class User {
     private String age;
 
     @Column
-    private String imageName;
-
-    @Column
-    private String imagePath;
-
-    @Column
     private String intro;
 
     @Column(nullable = false)
@@ -56,17 +51,16 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendBoard> attendBoards = new ArrayList<>();
+
     @Builder
     public User(String username, String password, String nickname, String email,
-        String area,  String age, String imageName, String imagePath, String intro, UserRoleEnum role) {
+        String area,  String age, String intro, UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.email = email;
         this.area = area;
         this.age = age;
-        this.imageName = imageName;
-        this.imagePath = imagePath;
         this.intro = intro;
         this.role = role;
     }
@@ -74,5 +68,12 @@ public class User {
     public void attendBoard(Board board) {
         AttendBoard attendBoard = new AttendBoard(board,this, Participation.wait);
         this.attendBoards.add(attendBoard);
+    }
+
+    public void update(ModifyProfileRequestDto requestDto) {
+
+        if (requestDto.getIntro() != null) {
+            this.intro = requestDto.getIntro();
+        }
     }
 }

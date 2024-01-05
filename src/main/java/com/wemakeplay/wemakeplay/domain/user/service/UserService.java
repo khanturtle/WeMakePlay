@@ -81,6 +81,17 @@ public class UserService {
             .user(profileUser)
             .build();
     }
+
+    public ProfileResponseDto modifyProfile(User user, ModifyProfileRequestDto requestDto) {
+        User profileUser = findUser(user.getId());
+
+        profileUser.update(requestDto);
+
+        return ProfileResponseDto.builder()
+            .user(profileUser)
+            .build();
+    }
+
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(
             () -> new ServiceException(ErrorCode.NOT_EXIST_USER)

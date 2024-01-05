@@ -11,13 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ModifyProfileRequestDto {
 
-    String username;
     String nickname;
     String email;
     String intro;
     String area;
     String age;
-    String imageName;
-    String imagePath;
 
 }

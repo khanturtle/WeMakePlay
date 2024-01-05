@@ -15,8 +15,6 @@ public class ProfileResponseDto {
     String nickname;
     String area;
     String intro;
-    String imageName;
-    String imagePath;
     UserRoleEnum role;
 
     @Builder
@@ -24,8 +22,6 @@ public class ProfileResponseDto {
         this.nickname = user.getNickname();
         this.area = user.getArea();
         this.intro = user.getIntro();
-        this.imageName = user.getImageName();
-        this.imagePath = user.getImagePath();
         this.role = user.getRole();
     }
 }
