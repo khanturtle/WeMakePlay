@@ -8,6 +8,7 @@ import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,22 @@ public class CommentController {
                 .message(boardId + "번 게시글에 댓글이 생성되었습니다.")
                 .data(responseDto)
             .build());
+    }
 
+    @PatchMapping("{commentId}")
+    public ResponseEntity<?> updateComment(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable(name = "commentId") Long commentId,
+        @RequestBody CommentRequestDto requestDto) {
+
+        CommentResponseDto responseDto =
+            commentService.updateComment(userDetails.getUser(), commentId, requestDto);
+
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message(commentId + "번 댓글이 수정되었습니다.")
+                .data(responseDto)
+            .build());
     }
 
 }
