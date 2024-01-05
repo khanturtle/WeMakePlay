@@ -39,4 +39,31 @@ public class BoardService {
         );
         return new BoardResponseDto(board);
     }
+
+    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
+        );
+        //수정하려는 사람이 보드 생성자인지 확인
+        if(userDetails.getUser().getNickname().equals(board.getBoardOwner().getNickname())){
+            board.updateBoard(boardRequestDto);
+            return new BoardResponseDto(board);
+        }else{
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
+        }
+    }
+    public void deleteBoard(Long boardId, UserDetailsImpl userDetails) {
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                ()-> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
+        );
+        //수정하려는 사람이 보드 생성자인지 확인
+        if(userDetails.getUser().getNickname().equals(board.getBoardOwner().getNickname())){
+            boardRepository.delete(board);
+        }else{
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
+        }
+    }
+
+    public void attendBoard(Long boardId, UserDetailsImpl userDetails) {
+    }
 }

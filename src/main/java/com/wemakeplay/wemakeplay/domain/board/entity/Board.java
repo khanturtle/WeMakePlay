@@ -47,7 +47,12 @@ public class Board {
 
     //보드 수정
     public void updateBoard(BoardRequestDto boardRequestDto) {
-
+        this.boardTitle = boardRequestDto.getBoardTitle();
+        this.boardContent = boardRequestDto.getBoardContent();
+        this.boardSport = boardRequestDto.getBoardSport();
+        this.boardArea = boardRequestDto.getBoardArea();
+        this.boardStadium = boardRequestDto.getBoardStadium();
+        this.boardPersonnel = boardRequestDto.getBoardPersonnel();
     }
 
     public void inviteUser(User user) {
