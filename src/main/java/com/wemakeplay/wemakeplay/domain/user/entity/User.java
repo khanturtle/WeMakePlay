@@ -54,7 +54,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendBoard> attendBoards = new ArrayList<>();
     @Builder
     public User(String username, String password, String nickname, String email,
