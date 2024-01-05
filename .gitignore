@@ -27,7 +27,6 @@ out/
 !**/src/test/**/out/
 application.yml
 application.properties
-settings.gradle
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
