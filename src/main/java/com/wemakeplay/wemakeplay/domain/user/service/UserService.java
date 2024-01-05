@@ -74,14 +74,13 @@ public class UserService {
             .build();
     }
 
-    public ProfileResponseDto getMYProfile(User user) {
+    public ProfileResponseDto getMyProfile(User user) {
         User profileUser = findUser(user.getId());
 
         return ProfileResponseDto.builder()
             .user(profileUser)
             .build();
     }
-
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(
             () -> new ServiceException(ErrorCode.NOT_EXIST_USER)
