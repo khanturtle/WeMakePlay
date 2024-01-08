@@ -15,6 +15,4 @@ public class ModifyProfileRequestDto {
     String email;
     String intro;
     String area;
-    String age;
-
 }

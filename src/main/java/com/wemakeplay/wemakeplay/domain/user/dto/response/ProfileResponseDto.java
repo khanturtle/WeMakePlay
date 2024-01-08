@@ -15,6 +15,7 @@ public class ProfileResponseDto {
     String nickname;
     String area;
     String intro;
+    String age;
     UserRoleEnum role;
 
     @Builder
@@ -22,6 +23,7 @@ public class ProfileResponseDto {
         this.nickname = user.getNickname();
         this.area = user.getArea();
         this.intro = user.getIntro();
+        this.age = user.getAge();
         this.role = user.getRole();
     }
 }

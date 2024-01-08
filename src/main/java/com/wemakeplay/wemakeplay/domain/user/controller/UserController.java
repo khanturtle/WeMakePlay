@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,16 +31,8 @@ public class UserController {
 
     private final UserService userService;
 
-    // @Valid : SignupRequestDto 에 대한 유효성 검사
-    // BindingResult : 유효성 검사 결과를 저장
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@Valid @RequestBody SignupRequestDto requestDto, BindingResult bindingResult) {
-
-        // 유효성 검사 결과 fieldErrors 가 비어있지 않으면 SIGNUP_FAIL 던짐
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (!fieldErrors.isEmpty()) {
-            throw new ServiceException(ErrorCode.SIGNUP_FAIL);
-        }
+    public ResponseEntity<?> signUp(@RequestBody SignupRequestDto requestDto) {
 
         SignupResponseDto responseDto = userService.signUp(requestDto);
 
@@ -83,5 +76,14 @@ public class UserController {
             );
     }
 
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<?> withdrawUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.withdrawUser(userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message("회원 탈퇴 성공")
+            .build()
+        );
+    }
 
 }

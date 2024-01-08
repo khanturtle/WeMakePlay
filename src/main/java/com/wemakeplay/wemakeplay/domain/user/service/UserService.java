@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,7 @@ public class UserService {
             .area(area)
             .age(age)
             .intro(intro)
+            .role(role)
             .build();
 
         User saveUser = userRepository.save(user);
@@ -82,6 +84,7 @@ public class UserService {
             .build();
     }
 
+    @Transactional
     public ProfileResponseDto modifyProfile(User user, ModifyProfileRequestDto requestDto) {
         User profileUser = findUser(user.getId());
 
@@ -96,5 +99,11 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow(
             () -> new ServiceException(ErrorCode.NOT_EXIST_USER)
         );
+    }
+
+    @Transactional
+    public void withdrawUser(User user) {
+        // 사용자 삭제
+        userRepository.delete(user);
     }
 }
