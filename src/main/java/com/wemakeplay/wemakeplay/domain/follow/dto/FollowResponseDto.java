@@ -13,7 +13,7 @@ public class FollowResponseDto {
     private String nickname;
 
     public FollowResponseDto(Follow follow) {
-        this.userId = follow.getId();
+        this.userId = follow.getFollowingUser().getId();
         this.username = follow.getFollowingUser().getUsername();
         this.nickname = follow.getFollowingUser().getNickname();
     }
