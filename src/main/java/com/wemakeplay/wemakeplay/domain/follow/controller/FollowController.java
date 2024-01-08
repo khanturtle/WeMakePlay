@@ -2,7 +2,6 @@ package com.wemakeplay.wemakeplay.domain.follow.controller;
 
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.service.FollowService;
-import com.wemakeplay.wemakeplay.domain.like.dto.LikeResponseDto;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,7 @@ public class FollowController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<?> unPressLike(
+    public ResponseEntity<?> unFollowUser(
         @PathVariable(name = "userId") Long userId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
