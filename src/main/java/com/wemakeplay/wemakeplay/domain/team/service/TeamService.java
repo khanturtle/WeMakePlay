@@ -7,6 +7,7 @@ import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
+import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
@@ -25,8 +26,8 @@ public class TeamService {
 
     //팀 생성
     @Transactional
-    public TeamResponseDto creatTeam(TeamRequestDto teamRequestDto, UserDetailsImpl userDetails){
-        Team team = new Team(teamRequestDto, userDetails);
+    public TeamResponseDto creatTeam(TeamRequestDto teamRequestDto, User user){
+        Team team = new Team(teamRequestDto, user);
         teamRepository.save(team);
         return new TeamResponseDto(team);
     }
@@ -48,9 +49,9 @@ public class TeamService {
 
 //수정
     @Transactional
-    public TeamResponseDto updateTeam(Long teamId, TeamRequestDto teamRequestDto, UserDetailsImpl userDetails){
+    public TeamResponseDto updateTeam(Long teamId, TeamRequestDto teamRequestDto, User user){
         Team team = findTeam(teamId);
-        if(userDetails.getUser().equals(team.getTeamOwner())){
+        if(user.equals(team.getTeamOwner())){
             team.updateTeam(teamRequestDto);
             return new TeamResponseDto(team);
         }else{
@@ -59,9 +60,9 @@ public class TeamService {
     }
 // 삭제
     @Transactional
-    public void deletTeam(Long teamId, UserDetailsImpl userDetails){
+    public void deletTeam(Long teamId, User user){
         Team team = findTeam(teamId);
-        if(userDetails.getUser().equals(team.getTeamOwner())){
+        if(user.equals(team.getTeamOwner())){
             teamRepository.delete(team);
         }else{
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
@@ -77,14 +78,14 @@ public class TeamService {
 
 // 팀 가입 요청 처리, 대기
     @Transactional
-    public List<AttendTeam> allowTeam(Long teamId, UserDetailsImpl userDetails) {
+    public List<AttendTeam> allowTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
 
         if (team == null){
             throw new ServiceException(ErrorCode.NOT_EXIST_TEAM);
         }
 
-        if(userDetails.getUser().getId().equals(team.getTeamOwner().getId())){
+        if(user.getId().equals(team.getTeamOwner().getId())){
             List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
             List<AttendTeam> attendBoardWaitingList = new ArrayList<>();
             for(AttendTeam attendTeam:attendTeamList){
