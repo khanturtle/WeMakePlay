@@ -29,7 +29,7 @@ public class TeamController {
     public ResponseEntity<?> createTeam(
         @RequestBody TeamRequestDto teamRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        TeamResponseDto teamResponseDto = teamService.creatTeam(teamRequestDto, userDetails);
+        TeamResponseDto teamResponseDto = teamService.creatTeam(teamRequestDto, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("201")
             .message("팀 생성 성공")
@@ -63,7 +63,7 @@ public class TeamController {
         @RequestBody TeamRequestDto teamRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        TeamResponseDto teamResponseDto = teamService.updateTeam(teamId, teamRequestDto, userDetails);
+        TeamResponseDto teamResponseDto = teamService.updateTeam(teamId, teamRequestDto, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 수정이 완료되었습니다.")
@@ -76,7 +76,7 @@ public class TeamController {
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        teamService.deletTeam(teamId, userDetails);
+        teamService.deletTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 삭제가 완료되었습니다.")
@@ -88,7 +88,7 @@ public class TeamController {
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        teamService.allowTeam(teamId, userDetails);
+        teamService.allowTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 가입 신청을 왼료했습니다.")
@@ -100,7 +100,7 @@ public class TeamController {
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        List<AttendTeam> allowedTeams = teamService.allowTeam(teamId, userDetails);
+        List<AttendTeam> allowedTeams = teamService.allowTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 가입 요청을 수락(거절) 하였습니다.")

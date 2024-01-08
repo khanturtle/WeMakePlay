@@ -3,7 +3,6 @@ package com.wemakeplay.wemakeplay.domain.team.entity;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
-import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,10 +33,10 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendTeam> attendTeams = new ArrayList<>();
 
-    public Team(TeamRequestDto teamRequestDto, UserDetailsImpl userDetails){
+    public Team(TeamRequestDto teamRequestDto, User user){
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
-        this.teamOwner = userDetails.getUser();
+        this.teamOwner = user;
     }
 
     public void updateTeam(TeamRequestDto teamRequestDto){
