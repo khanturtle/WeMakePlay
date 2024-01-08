@@ -45,10 +45,12 @@ public class LikeService {
 
         likeRepository.save(like);
 
-        return new LikeResponseDto(like);
+        Long likeCount = calculateLikeCount(checkUser.getId());
+
+        return new LikeResponseDto(like, likeCount);
     }
 
-    public void unPressLike(Long userId, User user) {
+    public LikeResponseDto unPressLike(Long userId, User user) {
 
         User checkUser = userRepository.findById(userId)
             .orElseThrow(() -> new ServiceException(NOT_EXIST_USER));
@@ -67,5 +69,14 @@ public class LikeService {
         Like like = findLikeUser.get();
 
         likeRepository.delete(like);
+
+        Long likeCount = calculateLikeCount(checkUser.getId());
+
+        return new LikeResponseDto(like, likeCount);
+    }
+
+    private Long calculateLikeCount(Long userId) {
+
+        return likeRepository.countByLikeUserId(userId);
     }
 }
