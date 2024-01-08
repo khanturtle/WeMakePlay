@@ -10,10 +10,11 @@ import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import java.util.Optional;
+
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class UserService {
     private final String ADMIN_TOKEN = "KSD8hdTyIl4wWA71SsAop0";
 
     // 회원가입
+    @Transactional
     public SignupResponseDto signUp(SignupRequestDto requestDto) {
         // requestDto 에서 필요한 정보 추출
         String username = requestDto.getUsername();

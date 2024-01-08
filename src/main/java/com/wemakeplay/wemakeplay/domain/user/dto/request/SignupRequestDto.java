@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.user.dto.request;
 
+import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,8 @@ public class SignupRequestDto {
     private String age;
 
     private String intro;
+
+
 
     @Builder.Default
     private String adminToken = "";

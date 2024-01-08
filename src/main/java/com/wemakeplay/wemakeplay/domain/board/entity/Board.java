@@ -39,14 +39,14 @@ public class Board {
     private List<Comment> comments = new ArrayList<>();
 
     //보드 생성
-    public Board(BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
+    public Board(BoardRequestDto boardRequestDto, User user) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardContent = boardRequestDto.getBoardContent();
         this.boardSport = boardRequestDto.getBoardSport();
         this.boardArea = boardRequestDto.getBoardArea();
         this.boardStadium = boardRequestDto.getBoardStadium();
         this.boardPersonnel = boardRequestDto.getBoardPersonnel();
-        this.boardOwner = userDetails.getUser();
+        this.boardOwner = user;
     }
 
     //보드 수정

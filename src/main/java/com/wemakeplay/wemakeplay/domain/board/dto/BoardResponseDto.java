@@ -1,8 +1,9 @@
 package com.wemakeplay.wemakeplay.domain.board.dto;
 
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
-import com.wemakeplay.wemakeplay.domain.user.entity.User;
+import lombok.Getter;
 
+@Getter
 public class BoardResponseDto {
     private String boardTitle;
     private String boardContent;
