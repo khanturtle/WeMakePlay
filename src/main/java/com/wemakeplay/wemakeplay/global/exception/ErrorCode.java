@@ -21,7 +21,9 @@ public enum ErrorCode {
     NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "보드가 존재하지 않습니다."),
     NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다."),
     // team (3000)
-
+    NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
+    NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
+    ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글이 존재하지 않습니다."),
