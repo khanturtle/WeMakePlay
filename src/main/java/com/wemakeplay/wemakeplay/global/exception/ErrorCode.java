@@ -33,7 +33,9 @@ public enum ErrorCode {
 
     // like (6000)
     NOT_LIKE_YOURSELF(HttpStatus.BAD_REQUEST, "6001", "자신에게 좋아요를 누를 수 없습니다."),
-    ALREADY_PRESS_LIKE(HttpStatus.BAD_REQUEST, "6002", "이미 좋아요를 눌렀습니다.");
+    ALREADY_PRESS_LIKE(HttpStatus.BAD_REQUEST, "6002", "이미 좋아요를 눌렀습니다."),
+    NOT_UNLIKE_YOURSELF(HttpStatus.BAD_REQUEST, "6003", "자신에게 좋아요 취소를 누를 수 없습니다."),
+    NOT_PRESS_LIKE(HttpStatus.BAD_REQUEST, "6004", "좋아요를 누르지 않았습니다.");
 
     // bestPlayer(7000)
 
