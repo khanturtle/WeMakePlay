@@ -7,7 +7,7 @@ import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +34,18 @@ public class LikeController {
                 .data(responseDto)
             .build()
         );
+    }
 
+    @DeleteMapping("{userId}")
+    public ResponseEntity<?> unPressLike(
+        @PathVariable(name = "userId") Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        likeService.unPressLike(userId, userDetails.getUser());
+
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message(userId + "번 유저 좋아요 취소")
+            .build());
     }
 }
