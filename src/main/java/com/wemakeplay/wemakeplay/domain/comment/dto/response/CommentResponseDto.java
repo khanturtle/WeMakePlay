@@ -1,8 +1,9 @@
 package com.wemakeplay.wemakeplay.domain.comment.dto.response;
 
 import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
-import java.time.LocalDateTime;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class CommentResponseDto {

@@ -87,7 +87,7 @@ public class WebSecurityConfig {
     private static AuthenticationEntryPoint getAuthenticationEntryPoint() {
         return (request, response, authException) -> {
             ObjectMapper ob = new ObjectMapper();
-            RootResponseDto<?> responseDto = RootResponseDto.builder()
+            RootResponseDto responseDto = RootResponseDto.builder()
                 .code(NOT_AUTHORIZATION.getCode())
                 .message(NOT_AUTHORIZATION.getMessage())
                 .build();
