@@ -37,7 +37,7 @@ public class FollowController {
         );
     }
 
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> unPressLike(
         @PathVariable(name = "userId") Long userId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
