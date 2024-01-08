@@ -46,6 +46,7 @@ public class LikeController {
         return ResponseEntity.ok(RootResponseDto.builder()
                 .code("200")
                 .message(userId + "번 유저 좋아요 취소")
-            .build());
+            .build()
+        );
     }
 }
