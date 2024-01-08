@@ -27,11 +27,13 @@ public enum ErrorCode {
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글이 존재하지 않습니다."),
-    NOT_COMMENT_OWNER(HttpStatus.BAD_REQUEST, "4003", "댓글 생성자가 아닙니다.");
+    NOT_COMMENT_OWNER(HttpStatus.BAD_REQUEST, "4003", "댓글 생성자가 아닙니다."),
 
     // follow (5000)
 
     // like (6000)
+    NOT_LIKE_YOURSELF(HttpStatus.BAD_REQUEST, "6001", "자신에게 좋아요를 누를 수 없습니다."),
+    ALREADY_PRESS_LIKE(HttpStatus.BAD_REQUEST, "6002", "이미 좋아요를 눌렀습니다.");
 
     // bestPlayer(7000)
 
