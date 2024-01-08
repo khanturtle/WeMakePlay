@@ -24,8 +24,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final AttendBoardRepository attendBoardRepository;
     @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
-        Board board = new Board(boardRequestDto, userDetails);
+    public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
+        Board board = new Board(boardRequestDto, user);
         boardRepository.save(board);
         return new BoardResponseDto(board);
     }
@@ -45,10 +45,10 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, UserDetailsImpl userDetails) {
+    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto, User user) {
         Board board = findBoard(boardId);
         //수정하려는 사람이 보드 생성자인지 확인
-        if(userDetails.getUser().getNickname().equals(board.getBoardOwner().getNickname())){
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             board.updateBoard(boardRequestDto);
             return new BoardResponseDto(board);
         }else{
@@ -56,10 +56,10 @@ public class BoardService {
         }
     }
     @Transactional
-    public void deleteBoard(Long boardId, UserDetailsImpl userDetails) {
+    public void deleteBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
         //삭제하려는 사람이 보드 생성자인지 확인
-        if(userDetails.getUser().getNickname().equals(board.getBoardOwner().getNickname())){
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             boardRepository.delete(board);
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
@@ -68,16 +68,14 @@ public class BoardService {
     //현재 사용자가 보드에 신청
     //보드 작성자가 요청할 경우 예외처리
     @Transactional
-    public void attendBoard(Long boardId, UserDetailsImpl userDetails) {
+    public void attendBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
-        User user = userDetails.getUser();
         user.attendBoard(board);
     }
     @Transactional
-    public List<AttendBoard> allowBoard(Long boardId, UserDetailsImpl userDetails) {
+    public List<AttendBoard> allowBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
-
-        if(userDetails.getUser().getNickname().equals(board.getBoardOwner().getNickname())){
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
             List<AttendBoard> attendBoardWaitingList = new ArrayList<>();
             for(AttendBoard attendBoard:attendBoardList){
@@ -90,6 +88,24 @@ public class BoardService {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
+    //각 유저 수락/거절
+    @Transactional
+    public List<AttendBoard> allowBoardCheck(Long boardId, User user ) {
+        Board board = findBoard(boardId);
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
+            List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
+            List<AttendBoard> attendBoardWaitingList = new ArrayList<>();
+            for(AttendBoard attendBoard:attendBoardList){
+                if(attendBoard.getParticipation().equals(Participation.wait)){
+                    attendBoardWaitingList.add(attendBoard);
+                }
+            }
+            return attendBoardWaitingList;
+        }else{
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
+        }
+    }
+
     public Board findBoard(Long boardId){
         return boardRepository.findById(boardId).orElseThrow(
                 ()-> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
