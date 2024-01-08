@@ -64,6 +64,7 @@ public class UserService {
             .area(area)
             .age(age)
             .intro(intro)
+            .role(role)
             .build();
 
         User saveUser = userRepository.save(user);
@@ -83,6 +84,7 @@ public class UserService {
             .build();
     }
 
+    @Transactional
     public ProfileResponseDto modifyProfile(User user, ModifyProfileRequestDto requestDto) {
         User profileUser = findUser(user.getId());
 

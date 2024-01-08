@@ -74,6 +74,9 @@ public class User {
 
         if (requestDto.getIntro() != null) {
             this.intro = requestDto.getIntro();
+            this.email = requestDto.getEmail();
+            this.area = requestDto.getArea();
+            this.nickname = requestDto.getNickname();
         }
     }
 }
