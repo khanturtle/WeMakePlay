@@ -41,11 +41,12 @@ public class LikeController {
         @PathVariable(name = "userId") Long userId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        likeService.unPressLike(userId, userDetails.getUser());
+        LikeResponseDto responseDto = likeService.unPressLike(userId, userDetails.getUser());
 
         return ResponseEntity.ok(RootResponseDto.builder()
                 .code("200")
                 .message(userId + "번 유저 좋아요 취소")
+                .data(responseDto)
             .build()
         );
     }
