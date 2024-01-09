@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class FollowResponseDto {
+public class FollowingResponseDto {
 
     private Long userId;
     private String username;
     private String nickname;
 
-    public FollowResponseDto(Follow follow) {
-        this.userId = follow.getFollowingUser().getId();
-        this.username = follow.getFollowingUser().getUsername();
-        this.nickname = follow.getFollowingUser().getNickname();
+    public FollowingResponseDto(Follow follow) {
+        this.userId = follow.getFollower().getId();
+        this.username = follow.getFollower().getUsername();
+        this.nickname = follow.getFollower().getNickname();
     }
 }
