@@ -66,10 +66,15 @@ public class BoardService {
     }
     //현재 사용자가 보드에 신청
     //보드 작성자가 요청할 경우 예외처리
+    @Transactional
     public void attendBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
-        //board.inviteUser(user);
-        user.attendBoard(board);
+        AttendBoard attendBoard = AttendBoard.builder()
+                .user(user)
+                .board(board)
+                .participation(Participation.wait)
+                .build();
+        attendBoardRepository.save(attendBoard);
     }
 
     //보드 신청자 목록 확인
