@@ -14,7 +14,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -69,6 +72,9 @@ public class BoardService {
     @Transactional
     public void attendBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
+        if(board.getBoardAttendPersonnel()>=board.getBoardPersonnel()){
+            throw new ServiceException(ErrorCode.BOARD_FULL_PERSONNEL);
+        }
         //게시글 주인 예외 처리
         if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             throw new ServiceException(ErrorCode.BOARD_OWNER);
@@ -112,12 +118,16 @@ public class BoardService {
     public void allowBoardAttend(Long boardId, Long userId, User user) {
         Board board = findBoard(boardId);
         if(user.getNickname().equals(board.getBoardOwner().getNickname())){
+            if(board.getBoardAttendPersonnel()>=board.getBoardPersonnel()){
+                throw new ServiceException(ErrorCode.BOARD_FULL_PERSONNEL);
+            }
             List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
             for(AttendBoard attendBoard:attendBoardList){
                 if(attendBoard.getUser().getId()==userId){
                     attendBoard.allowAttend();
                 }
             }
+            board.attendUser();
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
@@ -136,6 +146,12 @@ public class BoardService {
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
+    }
+    @Transactional
+    public void deleteExpiredBoards() {
+        Date currentDate = Date.from(Instant.now());
+        List<Board> boardsToDelete = boardRepository.findByPlayDateBefore(currentDate);
+        boardRepository.deleteAll(boardsToDelete);
     }
 
     public Board findBoard(Long boardId){

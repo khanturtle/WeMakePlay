@@ -6,32 +6,38 @@ import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
 public class BoardResponseDto {
     private String boardTitle;
     private String boardContent;
+    private String boardOwner;
     private String boardSport;
     private String boardArea;
+    private Date playDate;
     private String boardStadium;
     private int boardPersonnel;
-    private String boardOwner;
+    private int boardAttendPersonnel;
     private List<CommentResponseDto> commentList;
+
     public BoardResponseDto(Board board) {
-        this.boardTitle=board.getBoardTitle();
-        this.boardContent=board.getBoardContent();
-        this.boardSport=board.getBoardSport();
-        this.boardArea=board.getBoardArea();
-        this.boardStadium=board.getBoardStadium();
-        this.boardPersonnel=board.getBoardPersonnel();
-        this.boardOwner=board.getBoardOwner().getNickname();
+        this.boardTitle = board.getBoardTitle();
+        this.boardContent = board.getBoardContent();
+        this.boardSport = board.getBoardSport();
+        this.boardArea = board.getBoardArea();
+        this.playDate = board.getPlayDate();
+        this.boardStadium = board.getBoardStadium();
+        this.boardPersonnel = board.getBoardPersonnel();
+        this.boardAttendPersonnel = board.getBoardAttendPersonnel();
+        this.boardOwner = board.getBoardOwner().getNickname();
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-        for(Comment comment :board.getComments()){
+        for (Comment comment : board.getComments()) {
             commentResponseDtoList.add(new CommentResponseDto(comment));
         }
-        this.commentList=commentResponseDtoList;
+        this.commentList = commentResponseDtoList;
     }
 
 }

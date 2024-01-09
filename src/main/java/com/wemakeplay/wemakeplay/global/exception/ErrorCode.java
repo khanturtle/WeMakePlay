@@ -23,6 +23,7 @@ public enum ErrorCode {
     BOARD_OWNER(HttpStatus.BAD_REQUEST, "2003", "게시글 생성자는 이미 가입 되어 있습니다."),
     ALREADY_ATTENDED_BOARD(HttpStatus.BAD_REQUEST,"2004","가입 신청 대기중 입니다."),
     ALREADY_APPLIED_BOARD(HttpStatus.BAD_REQUEST,"2005","이미 가입된 게시글 입니다."),
+    BOARD_FULL_PERSONNEL(HttpStatus.BAD_REQUEST,"2006","정원이 다 찼습니다."),
     // team (3000)
     NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
     NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
