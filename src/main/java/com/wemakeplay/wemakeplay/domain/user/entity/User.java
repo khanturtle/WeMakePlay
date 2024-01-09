@@ -2,18 +2,17 @@ package com.wemakeplay.wemakeplay.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
-import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoardRepository;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
+import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
+import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -53,6 +52,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<AttendBoard> attendBoards = new ArrayList<>();
+    //팀에 새로운 참여 객체 생성
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    private List<AttendTeam> attendTeams = new ArrayList<>();
 
     @Builder
     public User(String username, String password, String nickname, String email,
@@ -70,6 +72,11 @@ public class User {
     public void attendBoard(Board board) {
         AttendBoard attendBoard = new  AttendBoard(board,this, Participation.wait);
         this.attendBoards.add(attendBoard);
+    }
+
+    public void attendTeam(Team team){
+        AttendTeam attendTeam = new AttendTeam(team, this, Participation.wait);
+        this.attendTeams.add(attendTeam);
     }
 
     public void update(ModifyProfileRequestDto requestDto) {
