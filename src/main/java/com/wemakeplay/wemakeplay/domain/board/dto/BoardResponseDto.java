@@ -16,22 +16,25 @@ public class BoardResponseDto {
     private String boardArea;
     private String boardStadium;
     private int boardPersonnel;
+    private int boardAttendPersonnel;
     private String boardOwner;
     private List<CommentResponseDto> commentList;
+
     public BoardResponseDto(Board board) {
-        this.boardTitle=board.getBoardTitle();
-        this.boardContent=board.getBoardContent();
-        this.boardSport=board.getBoardSport();
-        this.boardArea=board.getBoardArea();
-        this.boardStadium=board.getBoardStadium();
-        this.boardPersonnel=board.getBoardPersonnel();
-        this.boardOwner=board.getBoardOwner().getNickname();
+        this.boardTitle = board.getBoardTitle();
+        this.boardContent = board.getBoardContent();
+        this.boardSport = board.getBoardSport();
+        this.boardArea = board.getBoardArea();
+        this.boardStadium = board.getBoardStadium();
+        this.boardPersonnel = board.getBoardPersonnel();
+        this.boardAttendPersonnel = board.getBoardAttendPersonnel();
+        this.boardOwner = board.getBoardOwner().getNickname();
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
-        for(Comment comment :board.getComments()){
+        for (Comment comment : board.getComments()) {
             commentResponseDtoList.add(new CommentResponseDto(comment));
         }
-        this.commentList=commentResponseDtoList;
+        this.commentList = commentResponseDtoList;
     }
 
 }

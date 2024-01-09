@@ -7,6 +7,7 @@ import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,6 +29,7 @@ public class Board {
     private String boardArea;
     private String boardStadium;
     private int boardPersonnel;
+    private int boardAttendPersonnel = 1;
 
     //만든 사람 정보
     @ManyToOne
@@ -62,4 +64,7 @@ public class Board {
         this.boardPersonnel = boardRequestDto.getBoardPersonnel();
     }
 
+    public void attendUser() {
+        this.boardAttendPersonnel++;
+    }
 }
