@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.attendteam;
 
+import static com.wemakeplay.wemakeplay.domain.attendteam.Participation.*;
 import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -19,11 +20,20 @@ public class AttendTeam {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+    @Enumerated
     private Participation participation;
 
     public AttendTeam(Team team, User user, Participation participation){
         this.user = user;
         this.team = team;
         this.participation = participation;
+    }
+
+    public void allowAttend(){
+        this.participation = attend;
+    }
+
+    public void rejectAttend(){
+        this.participation = reject;
     }
 }
