@@ -13,6 +13,7 @@ import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,7 @@ public class CommentService {
         return new  CommentResponseDto(comment);
     }
 
+    @Transactional
     public CommentResponseDto updateComment(
         User user, Long commentId, CommentRequestDto commentRequestDto) {
 
