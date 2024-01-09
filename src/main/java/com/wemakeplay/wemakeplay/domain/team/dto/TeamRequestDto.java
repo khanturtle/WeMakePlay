@@ -6,4 +6,5 @@ import lombok.Getter;
 public class TeamRequestDto {
     private String teamName;
     private String teamIntro;
+    private int teamPersonnel;
 }

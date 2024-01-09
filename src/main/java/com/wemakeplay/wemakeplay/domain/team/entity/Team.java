@@ -1,6 +1,7 @@
 package com.wemakeplay.wemakeplay.domain.team.entity;
 
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
+import com.wemakeplay.wemakeplay.domain.attendteam.Participation;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.Entity;
@@ -25,8 +26,10 @@ public class Team {
     private String teamName;
     @Column(nullable = false, unique = true)
     private String teamIntro;
+    @Column
+    private int teamPersonnel;
 
-    // 생성지
+    // 생성자
     @ManyToOne
     private User teamOwner;
 
@@ -36,11 +39,17 @@ public class Team {
     public Team(TeamRequestDto teamRequestDto, User user){
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
+        this.teamPersonnel = teamRequestDto.getTeamPersonnel();
         this.teamOwner = user;
     }
 
     public void updateTeam(TeamRequestDto teamRequestDto){
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
+        this.teamPersonnel = teamRequestDto.getTeamPersonnel();
+    }
+    public void inviteUser(User user){
+        AttendTeam attendTeam = new AttendTeam(this, user, Participation.wait);
+        this.attendTeams.add(attendTeam);
     }
 }

@@ -10,10 +10,8 @@ import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
-import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,22 +67,19 @@ public class TeamService {
         }
     }
 // 모든 팀 조회
-    public List<TeamResponseDto> getAllTeams() {
+    public List<TeamResponseDto> getTeams() {
         List<Team> teamList = teamRepository.findAll();
-        return teamList.stream()
-            .map(TeamResponseDto::new)
-            .collect(Collectors.toList());
+        List<TeamResponseDto> teamResponseDtoList = new ArrayList<>();
+        for (Team team : teamList){
+            teamResponseDtoList.add(new TeamResponseDto(team));
+        }
+        return teamResponseDtoList;
     }
 
-// 팀 가입 요청 처리, 대기
+// 팀 가입 요청 목록
     @Transactional
-    public List<AttendTeam> allowTeam(Long teamId, User user) {
+    public List<AttendTeam> checkTeamAttender(Long teamId, User user) {
         Team team = findTeam(teamId);
-
-        if (team == null){
-            throw new ServiceException(ErrorCode.NOT_EXIST_TEAM);
-        }
-
         if(user.getId().equals(team.getTeamOwner().getId())){
             List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
             List<AttendTeam> attendBoardWaitingList = new ArrayList<>();
@@ -111,6 +106,45 @@ public class TeamService {
             .orElseThrow(() -> new ServiceException(ErrorCode.NOT_EXIST_TEAM));
 
         return new TeamResponseDto(team);
+    }
+
+    //사용자가 팀에 신청
+    //자성자일 경우 예외처리
+    public void attendTeam(Long teamId, User user){
+        Team team = findTeam(teamId);
+        user.attendTeam(team);
+    }
+
+    // 요청 수락
+    @Transactional
+    public void allowTeamAttend(Long teamId, Long userId, User user) {
+        Team team = findTeam(teamId);
+        if (user.equals(team.getTeamOwner())){
+            List<AttendTeam>attendTeamList = attendTeamRepository.findByTeamId(teamId);
+            for (AttendTeam attendTeam:attendTeamList){
+                if (attendTeam.getUser().getId()==userId){
+                    attendTeam.allowAttend();
+                }
+            }
+        }else {
+            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+        }
+    }
+
+    // 요청 거절
+    @Transactional
+    public void rejectTeamAttend(Long teamId, Long userId, User user){
+        Team team = findTeam(teamId);
+        if (user.equals(team.getTeamOwner())){
+            List<AttendTeam>attendTeamList = attendTeamRepository.findByTeamId(teamId);
+            for (AttendTeam attendTeam:attendTeamList){
+                if (attendTeam.getUser().getId()==userId){
+                    attendTeam.rejectAttend();
+                }
+            }
+        }else {
+            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+        }
     }
 }
 

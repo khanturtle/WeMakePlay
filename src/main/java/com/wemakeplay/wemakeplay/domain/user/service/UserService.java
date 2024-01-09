@@ -125,8 +125,8 @@ public class UserService {
 
     private UserProfileResponseDto findUserProfileResponseDto(User user) {
 
-        Long followers = followRepository.countByFollowingId(user.getId());
-        Long followings = followRepository.countByFollowerId(user.getId());
+        Long followers = followRepository.countByFollowerId(user.getId());
+        Long followings = followRepository.countByFollowingId(user.getId());
         Long likes = likeRepository.countByLikeUserId(user.getId());
 
         List<FollowingResponseDto> followingList

@@ -38,8 +38,8 @@ public class TeamController {
     }
 //팀 조회
     @GetMapping("")
-    public ResponseEntity<?> getAllTeams(){
-        List<TeamResponseDto> teams = teamService.getAllTeams();
+    public ResponseEntity<?> getTeams(){
+        List<TeamResponseDto> teams = teamService.getTeams();
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 조회 성공")
@@ -83,28 +83,51 @@ public class TeamController {
             .build());
     }
 
-    @PostMapping("/{teamId}")
+    @PostMapping("/attend/{teamId}")
     public ResponseEntity<?> attendTeam(
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        teamService.allowTeam(teamId, userDetails.getUser());
+        teamService.attendTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 가입 신청을 왼료했습니다.")
             .build());
     }
 
-    @PatchMapping("/attend/{teamId}")
-    public ResponseEntity<?> allowTeam(
+    //팀에 참가한 멤버들의 목록 조회
+    @GetMapping("/attend/{teamId}")
+    public List<AttendTeam> checkTeamAttender(
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return teamService.checkTeamAttender(teamId, userDetails.getUser());
+    }
+
+
+    @PatchMapping("/allowAttend/{teamId}/{userId}")
+    public ResponseEntity<?> allowTeamAttend(
+        @PathVariable Long teamId,
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        List<AttendTeam> allowedTeams = teamService.allowTeam(teamId, userDetails.getUser());
+        teamService.allowTeamAttend(teamId, userId,userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
-            .message("팀 가입 요청을 수락(거절) 하였습니다.")
-            .data(allowedTeams)
+            .message("팀 가입 신청을 수락하였습니다.")
+            .build());
+    }
+
+    @PatchMapping("/rejectAttend/{teamId}/{userId}")
+    public ResponseEntity<?> rejectTeamAttend(
+        @PathVariable Long teamId,
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        teamService.rejectTeamAttend(teamId, userId, userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message("팀 가입 신청을 거절하였습니다.")
             .build());
     }
 
