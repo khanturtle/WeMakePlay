@@ -16,4 +16,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     List<Follow> findByFollowerId(Long id);
 
+    Long countByFollowingId(Long userId);
+
+    Long countByFollowerId(Long userId);
+
 }
