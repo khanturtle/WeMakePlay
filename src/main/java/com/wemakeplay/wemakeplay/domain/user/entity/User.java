@@ -2,10 +2,12 @@ package com.wemakeplay.wemakeplay.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
+import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoardRepository;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,7 +51,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<AttendBoard> attendBoards = new ArrayList<>();
 
     @Builder
@@ -66,7 +68,7 @@ public class User {
     }
 
     public void attendBoard(Board board) {
-        AttendBoard attendBoard = new AttendBoard(board,this, Participation.wait);
+        AttendBoard attendBoard = new  AttendBoard(board,this, Participation.wait);
         this.attendBoards.add(attendBoard);
     }
 

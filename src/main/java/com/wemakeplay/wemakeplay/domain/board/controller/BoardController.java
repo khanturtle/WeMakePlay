@@ -53,7 +53,7 @@ public class BoardController {
     ) {
         BoardResponseDto boardResponseDto = boardService.updateBoard(boardId, boardRequestDto, userDetails.getUser());
 
-                return ResponseEntity.ok(RootResponseDto.builder()
+        return ResponseEntity.ok(RootResponseDto.builder()
                 .code("201")
                 .message("보드 수정 성공")
                 .data(boardResponseDto)
@@ -85,12 +85,38 @@ public class BoardController {
                 .build());
     }
 
-    @PatchMapping("/attend/{boardId}")
-    public List<AttendBoard> allowBoard(
+    @GetMapping("/attend/{boardId}")
+    public List<AttendBoard> checkBoardAttender(
             @PathVariable Long boardId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return boardService.allowBoard(boardId, userDetails.getUser());
+        return boardService.checkBoardAttender(boardId, userDetails.getUser());
+    }
+
+    @PatchMapping("/allowAttend/{boardId}/{userId}")
+    public ResponseEntity<?> allowBoardAttend(
+            @PathVariable Long boardId,
+            @PathVariable Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        boardService.allowBoardAttend(boardId, userId, userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message("보드 가입 신청을 수락하였습니다.")
+                .build());
+    }
+
+    @PatchMapping("/rejectAttend/{boardId}/{userId}")
+    public ResponseEntity<?> rejectBoardAttend(
+            @PathVariable Long boardId,
+            @PathVariable Long userId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        boardService.rejectBoardAttend(boardId, userId, userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message("보드 가입 신청을 거절하였습니다.")
+                .build());
     }
 
 }

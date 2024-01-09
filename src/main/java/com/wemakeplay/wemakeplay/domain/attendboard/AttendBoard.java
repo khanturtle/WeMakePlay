@@ -5,29 +5,38 @@ import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.attend;
-import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.wait;
+import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.*;
 
 @Entity
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class AttendBoard {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
+    @Enumerated(EnumType.STRING)
     private Participation participation;
 
     public AttendBoard(Board board, User user, Participation participation) {
         this.user = user;
         this.board = board;
         this.participation = participation;
+    }
+
+    public void allowAttend() {
+        this.participation = attend;
+    }
+    public void rejectAttend() {
+        this.participation = reject;
     }
 }
