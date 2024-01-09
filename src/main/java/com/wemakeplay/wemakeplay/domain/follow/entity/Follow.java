@@ -26,19 +26,19 @@ public class Follow {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "following_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User user;
+    private User following;
 
     @ManyToOne
-    @JoinColumn(name = "follow_user_id")
+    @JoinColumn(name = "follower_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private User followingUser;
+    private User follower;
 
     @Builder
-    private Follow(User user, User followingUser) {
-        this.user = user;
-        this.followingUser = followingUser;
+    private Follow(User following, User follower) {
+        this.following = following;
+        this.follower = follower;
     }
 
 }
