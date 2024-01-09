@@ -52,12 +52,12 @@ public class AdminController {
         return boardService.getBoards();
     }
 
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<?> deleteBoard(
-        @PathVariable Long boardId,
-        @AuthenticationPrincipal UserDetailsImpl userDetails
+        @PathVariable Long boardId
     ) {
-        boardService.deleteBoard(boardId, userDetails.getUser());
+
+        adminService.deleteBoard(boardId);
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("보드 삭제 성공")
