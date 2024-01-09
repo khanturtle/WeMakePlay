@@ -59,8 +59,4 @@ public class Board {
         this.boardPersonnel = boardRequestDto.getBoardPersonnel();
     }
 
-    public void inviteUser(User user) {
-        AttendBoard attendBoard = new AttendBoard(this, user, Participation.wait);
-        this.attendBoards.add(attendBoard);
-    }
 }
