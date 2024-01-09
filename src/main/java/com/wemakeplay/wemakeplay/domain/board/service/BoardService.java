@@ -10,7 +10,6 @@ import com.wemakeplay.wemakeplay.domain.board.repository.BoardRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
-import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,13 +66,14 @@ public class BoardService {
     }
     //현재 사용자가 보드에 신청
     //보드 작성자가 요청할 경우 예외처리
-    @Transactional
     public void attendBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
+        //board.inviteUser(user);
         user.attendBoard(board);
     }
-    @Transactional
-    public List<AttendBoard> allowBoard(Long boardId, User user) {
+
+    //보드 신청자 목록 확인
+    public List<AttendBoard> checkBoardAttender(Long boardId, User user) {
         Board board = findBoard(boardId);
         if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
@@ -88,19 +88,32 @@ public class BoardService {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
-    //각 유저 수락/거절
+    //각 유저 수락
     @Transactional
-    public List<AttendBoard> allowBoardCheck(Long boardId, User user ) {
+    public void allowBoardAttend(Long boardId, Long userId, User user) {
         Board board = findBoard(boardId);
         if(user.getNickname().equals(board.getBoardOwner().getNickname())){
             List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
-            List<AttendBoard> attendBoardWaitingList = new ArrayList<>();
             for(AttendBoard attendBoard:attendBoardList){
-                if(attendBoard.getParticipation().equals(Participation.wait)){
-                    attendBoardWaitingList.add(attendBoard);
+                if(attendBoard.getUser().getId()==userId){
+                    attendBoard.allowAttend();
                 }
             }
-            return attendBoardWaitingList;
+        }else{
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
+        }
+    }
+    //각 유저 거절
+    @Transactional
+    public void rejectBoardAttend(Long boardId, Long userId, User user) {
+        Board board = findBoard(boardId);
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
+            List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
+            for(AttendBoard attendBoard:attendBoardList){
+                if(attendBoard.getUser().getId()==userId){
+                    attendBoard.rejectAttend();
+                }
+            }
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }

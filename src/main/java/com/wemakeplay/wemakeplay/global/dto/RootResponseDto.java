@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 @JsonInclude(Include.NON_NULL)
 @Builder
+@Getter
 public class RootResponseDto<T> {
         String code;
         String message;
