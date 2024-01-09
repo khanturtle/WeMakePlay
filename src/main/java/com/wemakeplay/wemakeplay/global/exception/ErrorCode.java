@@ -32,6 +32,8 @@ public enum ErrorCode {
     // follow (5000),
     NOT_FOLLOWING_YOURSELF(HttpStatus.BAD_REQUEST, "5001", "유저 본인을 팔로잉할 수 없습니다."),
     ALREADY_FOLLOWING_USER(HttpStatus.BAD_REQUEST, "5002", "이미 팔로잉을 했습니다."),
+    NOT_UNFOLLOWING_YOURSELF(HttpStatus.BAD_REQUEST, "5003", "유저 본인을 팔로잉 취소를 할 수 없습니다."),
+    NOT_FOLLOWING_USER(HttpStatus.BAD_REQUEST, "5004", "팔로잉을 한 유저를 찾을 수 없습니다."),
 
     // like (6000)
     NOT_LIKE_YOURSELF(HttpStatus.BAD_REQUEST, "6001", "자신에게 좋아요를 누를 수 없습니다."),
