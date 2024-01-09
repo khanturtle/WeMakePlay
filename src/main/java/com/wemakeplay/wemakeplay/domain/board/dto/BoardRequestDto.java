@@ -2,6 +2,9 @@ package com.wemakeplay.wemakeplay.domain.board.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 @NoArgsConstructor
 @Getter
@@ -11,5 +14,7 @@ public class BoardRequestDto {
     private String boardSport;
     private String boardArea;
     private String boardStadium;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date playDate;
     private int boardPersonnel;
 }

@@ -14,7 +14,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -143,6 +146,12 @@ public class BoardService {
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
+    }
+    @Transactional
+    public void deleteExpiredBoards() {
+        Date currentDate = Date.from(Instant.now());
+        List<Board> boardsToDelete = boardRepository.findByPlayDateBefore(currentDate);
+        boardRepository.deleteAll(boardsToDelete);
     }
 
     public Board findBoard(Long boardId){

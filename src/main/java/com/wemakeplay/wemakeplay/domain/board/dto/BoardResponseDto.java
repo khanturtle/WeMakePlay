@@ -6,18 +6,20 @@ import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
 public class BoardResponseDto {
     private String boardTitle;
     private String boardContent;
+    private String boardOwner;
     private String boardSport;
     private String boardArea;
+    private Date playDate;
     private String boardStadium;
     private int boardPersonnel;
     private int boardAttendPersonnel;
-    private String boardOwner;
     private List<CommentResponseDto> commentList;
 
     public BoardResponseDto(Board board) {
@@ -25,6 +27,7 @@ public class BoardResponseDto {
         this.boardContent = board.getBoardContent();
         this.boardSport = board.getBoardSport();
         this.boardArea = board.getBoardArea();
+        this.playDate = board.getPlayDate();
         this.boardStadium = board.getBoardStadium();
         this.boardPersonnel = board.getBoardPersonnel();
         this.boardAttendPersonnel = board.getBoardAttendPersonnel();
