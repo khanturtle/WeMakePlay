@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.admin.service;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_USER;
 
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.repository.BoardRepository;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
@@ -51,8 +52,8 @@ public class AdminService {
 
         for (User user : userList) {
 
-            Long followers = followRepository.countByFollowingId(user.getId());
-            Long followings = followRepository.countByFollowerId(user.getId());
+            Long followers = followRepository.countByFollowerId(user.getId());
+            Long followings = followRepository.countByFollowingId(user.getId());
             Long likes = likeRepository.countByLikeUserId(user.getId());
 
             List<FollowingResponseDto> followingList
@@ -90,5 +91,13 @@ public class AdminService {
         }
 
         return userProfileList;
+    }
+
+    public void deleteBoard(Long boardId) {
+
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new ServiceException(NOT_EXIST_USER));
+
+        boardRepository.delete(board);
     }
 }
