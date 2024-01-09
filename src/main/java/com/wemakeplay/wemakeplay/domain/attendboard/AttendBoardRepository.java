@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface AttendBoardRepository extends JpaRepository<AttendBoard,Long> {
     List<AttendBoard> findByBoardId(Long boardId);
+
 }

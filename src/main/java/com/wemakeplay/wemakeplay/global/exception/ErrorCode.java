@@ -18,8 +18,11 @@ public enum ErrorCode {
     NOT_ADMIN(HttpStatus.BAD_REQUEST, "1007", "관리자가 아닙니다."),
     NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "1008", "인증되지 않은 사용자입니다."),
     // board (2000)
-    NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "보드가 존재하지 않습니다."),
-    NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "보드 생성자가 아닙니다."),
+    NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "게시글이 존재하지 않습니다."),
+    NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "게시글 생성자가 아닙니다."),
+    BOARD_OWNER(HttpStatus.BAD_REQUEST, "2003", "게시글 생성자는 이미 가입 되어 있습니다."),
+    ALREADY_ATTENDED_BOARD(HttpStatus.BAD_REQUEST,"2004","가입 신청 대기중 입니다."),
+    ALREADY_APPLIED_BOARD(HttpStatus.BAD_REQUEST,"2005","이미 가입된 게시글 입니다."),
     // team (3000)
     NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
     NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
