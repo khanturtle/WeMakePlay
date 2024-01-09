@@ -90,21 +90,44 @@ public class UserService {
             .build();
     }
 
-    public ProfileResponseDto getMyProfile(User user) {
+    public UserProfileResponseDto getMyProfile(User user) {
+        User myProfile = findUser(user.getId());
+        return findUserProfileResponseDto(myProfile);
+    }
+
+    public UserProfileResponseDto getUserProfile(Long userId) {
+        User userProfile = findUser(userId);
+        return findUserProfileResponseDto(userProfile);
+    }
+
+    @Transactional
+    public ProfileResponseDto modifyProfile(User user, ModifyProfileRequestDto requestDto) {
         User profileUser = findUser(user.getId());
+
+        profileUser.update(requestDto);
 
         return ProfileResponseDto.builder()
             .user(profileUser)
             .build();
     }
 
-    public UserProfileResponseDto getUserProfile(Long userId) {
+    @Transactional
+    public void withdrawUser(User user) {
+        // 사용자 삭제
+        userRepository.delete(user);
+    }
 
-        User user = findUser(userId);
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+            () -> new ServiceException(NOT_EXIST_USER)
+        );
+    }
 
-        Long followers = followRepository.countByFollowingId(userId);
-        Long followings = followRepository.countByFollowerId(userId);
-        Long likes = likeRepository.countByLikeUserId(userId);
+    private UserProfileResponseDto findUserProfileResponseDto(User user) {
+
+        Long followers = followRepository.countByFollowingId(user.getId());
+        Long followings = followRepository.countByFollowerId(user.getId());
+        Long likes = likeRepository.countByLikeUserId(user.getId());
 
         List<FollowingResponseDto> followingList
             = followRepository.findByFollowingId(user.getId())
@@ -138,28 +161,5 @@ public class UserService {
             .followingList(followingList)
             .boardList(boardList)
             .build();
-    }
-
-    @Transactional
-    public ProfileResponseDto modifyProfile(User user, ModifyProfileRequestDto requestDto) {
-        User profileUser = findUser(user.getId());
-
-        profileUser.update(requestDto);
-
-        return ProfileResponseDto.builder()
-            .user(profileUser)
-            .build();
-    }
-
-    @Transactional
-    public void withdrawUser(User user) {
-        // 사용자 삭제
-        userRepository.delete(user);
-    }
-
-    private User findUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(
-            () -> new ServiceException(NOT_EXIST_USER)
-        );
     }
 }
