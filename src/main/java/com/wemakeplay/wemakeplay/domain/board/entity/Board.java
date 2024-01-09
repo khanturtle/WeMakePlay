@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
@@ -32,9 +33,11 @@ public class Board {
     @ManyToOne
     private User boardOwner;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)//, fetch = FetchType.EAGER
     private List<AttendBoard> attendBoards = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 

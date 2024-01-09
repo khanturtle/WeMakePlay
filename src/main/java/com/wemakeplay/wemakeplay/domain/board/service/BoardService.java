@@ -59,16 +59,30 @@ public class BoardService {
         Board board = findBoard(boardId);
         //삭제하려는 사람이 보드 생성자인지 확인
         if(user.getNickname().equals(board.getBoardOwner().getNickname())){
+            attendBoardRepository.deleteAll(attendBoardRepository.findByBoardId(boardId));
             boardRepository.delete(board);
         }else{
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
     //현재 사용자가 보드에 신청
-    //보드 작성자가 요청할 경우 예외처리
     @Transactional
     public void attendBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
+        //게시글 주인 예외 처리
+        if(user.getNickname().equals(board.getBoardOwner().getNickname())){
+            throw new ServiceException(ErrorCode.BOARD_OWNER);
+        }
+        List<AttendBoard> attendBoardList = user.getAttendBoards();
+        for(AttendBoard myAttendBoard:attendBoardList){
+            if(myAttendBoard.getBoard().getId()==boardId){
+                if(myAttendBoard.getParticipation()==Participation.wait){   //신청 대기자 예외 처리
+                    throw new ServiceException(ErrorCode.ALREADY_ATTENDED_BOARD);
+                }else if(myAttendBoard.getParticipation()==Participation.attend){  //가입자 예외 처리
+                    throw new ServiceException(ErrorCode.ALREADY_APPLIED_BOARD);
+                }
+            }
+        }
         AttendBoard attendBoard = AttendBoard.builder()
                 .user(user)
                 .board(board)

@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.attendboard;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -20,10 +21,12 @@ public class AttendBoard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
+    @JsonIgnore
     private Board board;
     @Enumerated(EnumType.STRING)
     private Participation participation;
