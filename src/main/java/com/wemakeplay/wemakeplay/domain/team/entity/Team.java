@@ -25,8 +25,10 @@ public class Team {
     private String teamName;
     @Column(nullable = false, unique = true)
     private String teamIntro;
+    @Column
+    private int teamPersonnel;
 
-    // 생성지
+    // 생성자
     @ManyToOne
     private User teamOwner;
 
@@ -36,11 +38,13 @@ public class Team {
     public Team(TeamRequestDto teamRequestDto, User user){
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
+        this.teamPersonnel = teamRequestDto.getTeamPersonnel();
         this.teamOwner = user;
     }
 
     public void updateTeam(TeamRequestDto teamRequestDto){
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
+        this.teamPersonnel = teamRequestDto.getTeamPersonnel();
     }
 }
