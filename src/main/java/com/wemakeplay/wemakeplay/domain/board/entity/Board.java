@@ -44,6 +44,10 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<User> users;
+
     //보드 생성
     public Board(BoardRequestDto boardRequestDto, User user) {
         this.boardTitle = boardRequestDto.getBoardTitle();
@@ -68,5 +72,23 @@ public class Board extends BaseEntity {
 
     public void attendUser() {
         this.boardAttendPersonnel++;
+    }
+
+    public String getOwner() {
+        return this.boardOwner.getUsername();
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
+        user.setBoard(this);
+    }
+
+    public void removeUser(User user) {
+        this.getUsers().remove(user);
+        user.setBoard(null); // 영속성 관리를 위해 user의 board 참조를 해제
+    }
+
+    public void keepUser() {
+        this.boardAttendPersonnel --;
     }
 }
