@@ -46,7 +46,7 @@ public class Board extends BaseEntity {
 
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     //보드 생성
     public Board(BoardRequestDto boardRequestDto, User user) {
@@ -74,18 +74,14 @@ public class Board extends BaseEntity {
         this.boardAttendPersonnel++;
     }
 
-    public String getOwner() {
-        return this.boardOwner.getUsername();
-    }
-
     public void addUser(User user) {
         this.users.add(user);
-        user.setBoard(this);
+        user.getBoards().add(this); // 연관된 양방향 매핑도 업데이트
     }
 
     public void removeUser(User user) {
         this.getUsers().remove(user);
-        user.setBoard(null); // 영속성 관리를 위해 user의 board 참조를 해제
+        user.getBoards().remove(this); // 연관된 양방향 매핑도 업데이트
     }
 
     public void keepUser() {
