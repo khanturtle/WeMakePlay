@@ -2,6 +2,7 @@ package com.wemakeplay.wemakeplay.domain.admin.controller;
 
 import com.wemakeplay.wemakeplay.domain.admin.service.AdminService;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.UserProfileResponseDto;
@@ -47,7 +48,7 @@ public class AdminController {
     }
 
     @GetMapping("/boards")
-    public List<BoardResponseDto> getBoards(
+    public List<BoardViewResponseDto> getBoards(
     ) {
         return boardService.getBoards();
     }

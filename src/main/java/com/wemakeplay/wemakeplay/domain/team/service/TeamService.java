@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final AttendTeamRepository attendTeamRepository;
-
     //팀 생성
     @Transactional
     public TeamResponseDto creatTeam(TeamRequestDto teamRequestDto, User user){
@@ -75,6 +74,7 @@ public class TeamService {
         }
         return teamResponseDtoList;
     }
+
 
 // 팀 가입 요청 목록
     @Transactional
@@ -145,6 +145,21 @@ public class TeamService {
         }else {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
+    }
+
+    //털퇴
+    @Transactional
+    public void quitTeam(Long teamId, User user) {
+        Team team = findTeamByUser(teamId);
+        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamIdAndParticipation(teamId, Participation.attend);
+        attendTeamList.forEach(attendTeam -> attendTeamRepository.delete(attendTeam));
+
+    }
+
+    public Team findTeamByUser(Long teamId) {
+        return teamRepository.findById(teamId).orElseThrow(
+            () -> new ServiceException(ErrorCode.NOT_EXIST_TEAM)
+        );
     }
 }
 
