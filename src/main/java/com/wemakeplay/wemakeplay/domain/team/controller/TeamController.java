@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.team.controller;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.service.TeamService;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
@@ -38,14 +39,15 @@ public class TeamController {
     }
 //팀 조회
     @GetMapping("")
-    public ResponseEntity<?> getTeams(){
-        List<TeamResponseDto> teams = teamService.getTeams();
+    public ResponseEntity<?> getAllTeams(){
+        List<TeamViewResponseDto> teams = teamService.getAllTeams();
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 조회 성공")
             .data(teams)
             .build());
     }
+
 //특정 팀 조회
     @GetMapping("/{teamId}")
     public ResponseEntity<?> getTeam(@PathVariable Long teamId){
@@ -56,6 +58,7 @@ public class TeamController {
             .data(teamResponseDto)
             .build());
     }
+
 
     @PatchMapping("/{teamId}")
     public ResponseEntity<?> updateTeam(
@@ -95,13 +98,14 @@ public class TeamController {
             .build());
     }
 
-    //팀에 참가한 멤버들의 목록 조회
+    //팀 요청 목록 조회
     @GetMapping("/attend/{teamId}")
-    public List<AttendTeam> checkTeamAttender(
+    public ResponseEntity<List<AttendTeam>> getTeamJoinRequests(
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return teamService.checkTeamAttender(teamId, userDetails.getUser());
+    ){
+        List<AttendTeam> JoinRequests = teamService.getTeamJoinRequests(teamId, userDetails.getUser());
+        return ResponseEntity.ok(JoinRequests);
     }
 
 
