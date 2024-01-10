@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -91,6 +92,17 @@ public class BoardController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return boardService.checkBoardAttender(boardId, userDetails.getUser());
+    }
+    @DeleteMapping("/quit/{boardId}")
+    public ResponseEntity<?> quitBoard(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        boardService.quitBoard(boardId,userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+                .code("200")
+                .message("보드에서 탈퇴하였습니다.")
+                .build());
     }
 
     @PatchMapping("/allowAttend/{boardId}/{userId}")
