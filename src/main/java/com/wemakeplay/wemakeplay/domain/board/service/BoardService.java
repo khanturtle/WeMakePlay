@@ -5,6 +5,7 @@ import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoardRepository;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.repository.BoardRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
@@ -33,13 +34,13 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
-    public List<BoardResponseDto> getBoards() {
+    public List<BoardViewResponseDto> getBoards() {
         List<Board> boardList = boardRepository.findAll();
-        List<BoardResponseDto> boardResponseDtoList = new ArrayList<>();
+        List<BoardViewResponseDto> boardViewResponseDtos = new ArrayList<>();
         for (Board board : boardList) {
-            boardResponseDtoList.add(new BoardResponseDto(board));
+            boardViewResponseDtos.add(new BoardViewResponseDto(board));
         }
-        return boardResponseDtoList;
+        return boardViewResponseDtos;
     }
 
     public BoardResponseDto getBoard(Long boardId) {
