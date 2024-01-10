@@ -30,11 +30,13 @@ public enum ErrorCode {
     NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
     NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
     ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
+    NOT_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "3003", "팀 멤버가 아닙니다."),
+    TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3003", "팀 소유자는 탈퇴할 수 없습니다."),
+
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글이 존재하지 않습니다."),
     NOT_COMMENT_OWNER(HttpStatus.BAD_REQUEST, "4003", "댓글 생성자가 아닙니다."),
-
     // follow (5000),
     NOT_FOLLOWING_YOURSELF(HttpStatus.BAD_REQUEST, "5001", "유저 본인을 팔로잉할 수 없습니다."),
     ALREADY_FOLLOWING_USER(HttpStatus.BAD_REQUEST, "5002", "이미 팔로잉을 했습니다."),

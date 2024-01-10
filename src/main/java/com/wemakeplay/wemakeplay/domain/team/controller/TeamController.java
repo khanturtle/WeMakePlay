@@ -131,4 +131,16 @@ public class TeamController {
             .build());
     }
 
+    @DeleteMapping("/quit/{teamId}")
+    public ResponseEntity<?> quitTeam(
+        @PathVariable Long teamId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        teamService.quitTeam(teamId, userDetails.getUser());
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message("팀을 탈퇴 하였습니다.")
+            .build());
+
+    }
 }
