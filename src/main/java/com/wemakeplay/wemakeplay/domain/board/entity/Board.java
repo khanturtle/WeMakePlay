@@ -36,6 +36,7 @@ public class Board extends BaseEntity {
     @ManyToOne
     private User boardOwner;
 
+
     @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)//, fetch = FetchType.EAGER
     private List<AttendBoard> attendBoards = new ArrayList<>();

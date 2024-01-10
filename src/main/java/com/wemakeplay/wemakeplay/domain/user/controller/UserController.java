@@ -33,6 +33,11 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping
+    public String showSignupForm() {
+        return "signup";
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignupRequestDto requestDto) {
 

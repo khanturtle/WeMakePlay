@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.board.controller;
 import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
@@ -34,7 +35,7 @@ public class BoardController {
     }
 
     @GetMapping
-    public List<BoardResponseDto> getBoards(
+    public List<BoardViewResponseDto> getBoards(
     ) {
         return boardService.getBoards();
     }
