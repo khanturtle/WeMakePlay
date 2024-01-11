@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.user.controller;
 
+import com.wemakeplay.wemakeplay.domain.user.dto.request.LoginRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;

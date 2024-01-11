@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Board</title>
+</head>
+<body>
+<h2>Create Board</h2>
+<form action="/boards/create" method="post">
+    <label for="boardTitle">Title:</label>
+    <input type="text" id="boardTitle" name="boardTitle" required><br>
+
+    <label for="boardContent">Content:</label>
+    <textarea id="boardContent" name="boardContent" required></textarea><br>
+
+    <label for="boardSport">Sport:</label>
+    <input type="text" id="boardSport" name="boardSport" required><br>
+
+    <label for="boardArea">Area:</label>
+    <input type="text" id="boardArea" name="boardArea" required><br>
+
+    <label for="boardStadium">Stadium:</label>
+    <input type="text" id="boardStadium" name="boardStadium" required><br>
+
+    <label for="playDate">Play Date:</label>
+    <input type="date" id="playDate" name="playDate" required><br>
+
+    <label for="boardPersonnel">Personnel:</label>
+    <input type="number" id="boardPersonnel" name="boardPersonnel" required><br>
+
+    <button type="submit">Create Board</button>
+</form>
+</body>
+</html>
