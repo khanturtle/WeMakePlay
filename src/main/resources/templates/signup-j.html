@@ -17,6 +17,12 @@
         .form-group {
             margin-bottom: 20px;
         }
+
+
+        #adminTokenContainer {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
@@ -59,6 +65,17 @@
             <textarea class="form-control" id="intro" name="intro" rows="3"></textarea>
         </div>
 
+        <div>
+            <label id="adminLabel">관리자</label>
+            <input type="checkbox" id="admin" name="admin">
+
+            <div class="form-group">
+                <label for="adminToken">관리자 암호:</label>
+                <input class="form-control" id="adminToken" name="adminToken" th:required="required">
+            </div>
+        </div>
+
+
         <button type="submit" class="btn btn-primary">가입하기</button>
     </form>
 </div>
@@ -72,6 +89,8 @@
         // 폼 직접 제출
         this.submit();
     });
+
+
 </script>
 </body>
 </html>
