@@ -85,13 +85,14 @@ public class TeamController {
 
     @PostMapping("/attend/{teamId}")
     public ResponseEntity<?> attendTeam(
+        @PathVariable Long userId,
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         teamService.attendTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
-            .message("팀 가입 신청을 왼료했습니다.")
+            .message(userId + "팀 가입 신청을 완료했습니다.")
             .build());
     }
 
@@ -128,6 +129,17 @@ public class TeamController {
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 가입 신청을 거절하였습니다.")
+            .build());
+    }
+
+    @PostMapping("/{teamId}/kick/{userId}")
+    public ResponseEntity<?> kickUserFromTeam(
+        @PathVariable Long teamId,
+        @PathVariable Long userId) {
+        teamService.kickUserFromTeam(teamId, userId);
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message(userId + "번 유저가 강퇴되었습니다.")
             .build());
     }
 

@@ -31,8 +31,9 @@ public enum ErrorCode {
     NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
     ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
     NOT_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "3003", "팀 멤버가 아닙니다."),
-    TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3003", "팀 소유자는 탈퇴할 수 없습니다."),
+    TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3004", "팀 소유자는 탈퇴할 수 없습니다."),
 
+    NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST, "3003", "팀을 찾을 수 없습니다."),
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글이 존재하지 않습니다."),

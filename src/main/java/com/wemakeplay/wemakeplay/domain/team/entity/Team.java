@@ -1,6 +1,7 @@
 package com.wemakeplay.wemakeplay.domain.team.entity;
 
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
+import com.wemakeplay.wemakeplay.domain.attendteam.Participation;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
@@ -31,6 +32,7 @@ public class Team {
     private String teamIntro;
     @Column
     private int teamPersonnel;
+    private int teamAttendPersonnel = 1;
 
     // 생성자
     @ManyToOne
@@ -50,6 +52,14 @@ public class Team {
         this.teamName = teamRequestDto.getTeamName();
         this.teamIntro = teamRequestDto.getTeamIntro();
         this.teamPersonnel = teamRequestDto.getTeamPersonnel();
+    }
+    public void inviteUser(User user){
+        AttendTeam attendTeam = new AttendTeam(this, user, Participation.wait);
+        this.attendTeams.add(attendTeam);
+    }
+
+    public void keepUser() {
+        this.teamAttendPersonnel --;
     }
 
     //특정 팀 ID에 해당하는 참가 팀을 조회

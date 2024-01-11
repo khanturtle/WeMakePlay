@@ -8,11 +8,14 @@ import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
+import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamService {
     private final TeamRepository teamRepository;
     private final AttendTeamRepository attendTeamRepository;
+    private final UserRepository userRepository;
+
     //팀 생성
     @Transactional
     public TeamResponseDto creatTeam(TeamRequestDto teamRequestDto, User user){
@@ -74,7 +79,6 @@ public class TeamService {
         }
         return teamResponseDtoList;
     }
-
 
 // 팀 가입 요청 목록
     @Transactional
@@ -160,6 +164,32 @@ public class TeamService {
         return teamRepository.findById(teamId).orElseThrow(
             () -> new ServiceException(ErrorCode.NOT_EXIST_TEAM)
         );
+    }
+
+    @Transactional
+    public void kickUserFromTeam(Long teamId, Long userId) {
+        Team team = teamRepository.findById(teamId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_TEAM));
+
+        User userToKick = userRepository.findById(userId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
+
+        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String loggedInUsername = authentication.getName();
+
+        if (!team.getTeamOwner().getUsername().equals(loggedInUsername)) {
+            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+        }
+
+        for (AttendTeam attendTeam : attendTeamList) {
+            if (attendTeam.getParticipation().equals(Participation.attend)) {
+                attendTeamRepository.delete(attendTeam);
+
+                team.keepUser();
+            }
+        }
     }
 }
 
