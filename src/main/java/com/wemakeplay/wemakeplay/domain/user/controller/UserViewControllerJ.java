@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class UserViewController {
+public class UserViewControllerJ {
     private final UserService userService;
     //회원가입
     @GetMapping("/signup")
     public String showSignupForm() {
-        return "signup";
+        return "signup-j";
     }
     //성공 시 로그인 페이지로
     @PostMapping("/signup")
@@ -28,17 +28,18 @@ public class UserViewController {
     //로그인 페이지
     @GetMapping("/login")
     public String showLoginForm(){
-        return "login";
+        return "login-j";
     }
     //성공 시 메인 페이지로
     @PostMapping("/login")
     public String login(){
+
         return "redirect:mainPage";
     }
     //메인 페이지
     @GetMapping("/mainPage")
     public String showMainPage(){
-        return "mainPage";
+        return "mainPage-j";
     }
 
 }
