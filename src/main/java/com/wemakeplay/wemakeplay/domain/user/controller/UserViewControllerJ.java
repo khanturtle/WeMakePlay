@@ -39,7 +39,7 @@ public class UserViewControllerJ {
     //메인 페이지
     @GetMapping("/mainPage")
     public String showMainPage(){
-        return "mainPage-j";
+        return "mainPage";
     }
 
 }
