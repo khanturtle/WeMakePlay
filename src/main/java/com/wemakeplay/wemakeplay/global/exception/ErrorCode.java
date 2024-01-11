@@ -30,6 +30,8 @@ public enum ErrorCode {
     ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
     NOT_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "3003", "팀 멤버가 아닙니다."),
     TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3003", "팀 소유자는 탈퇴할 수 없습니다."),
+    TEAM_OWNER(HttpStatus.BAD_REQUEST, "3004", "이미 가입 되어 있습니다."),
+    TEAM_FULL_PERSONNEL(HttpStatus.BAD_REQUEST, "3005", "정원이 다 찼습니다."),
 
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
