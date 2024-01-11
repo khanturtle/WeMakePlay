@@ -16,7 +16,7 @@ public class BoardViewResponseDto {
     private int boardPersonnel;
 
     public BoardViewResponseDto(Board board) {
-        this.id = board.getBoardOwner().getId();
+        this.id = board.getId();
         this.boardTitle = board.getBoardTitle();
         this.boardSport = board.getBoardSport();
         this.boardArea = board.getBoardArea();

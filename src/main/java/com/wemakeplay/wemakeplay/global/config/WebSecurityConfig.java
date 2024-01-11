@@ -33,6 +33,7 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -69,6 +70,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                .requestMatchers("/api/users/**").permitAll()
                 .anyRequest().permitAll()
         ).exceptionHandling(
             (exception) -> exception.authenticationEntryPoint(getAuthenticationEntryPoint())
