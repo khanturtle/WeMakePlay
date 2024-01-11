@@ -3,13 +3,11 @@ package com.wemakeplay.wemakeplay.domain.user.dto.request;
 import com.wemakeplay.wemakeplay.domain.user.entity.UserRoleEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequestDto {

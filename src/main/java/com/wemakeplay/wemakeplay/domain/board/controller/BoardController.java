@@ -131,5 +131,4 @@ public class BoardController {
                 .message("보드 가입 신청을 거절하였습니다.")
                 .build());
     }
-
 }
