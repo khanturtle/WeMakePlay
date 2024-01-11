@@ -68,11 +68,8 @@ public class WebSecurityConfig {
             authorizeHttpRequests
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/api/users/**").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         ).exceptionHandling(
             (exception) -> exception.authenticationEntryPoint(getAuthenticationEntryPoint())
         );
