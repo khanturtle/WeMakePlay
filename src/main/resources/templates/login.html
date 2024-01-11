@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 페이지</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>로그인</h2>
+    <form th:action="@{/login}" method="post" id="loginForm">
+        <!-- CSRF 토큰 추가 -->
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+        <div class="form-group">
+            <label for="username">username:</label>
+            <input type="text" class="form-control" id="username" name="username" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="password">비밀번호:</label>
+            <input type="password" class="form-control" id="password" name="password" th:required="required">
+        </div>
+
+        <button type="submit" class="btn btn-primary">로그인</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        this.submit();
+    });
+</script>
+</body>
+</html>
