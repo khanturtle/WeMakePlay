@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 페이지</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+
+        #adminTokenContainer {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>회원가입</h2>
+        <form th:action="@{/signup}" method="post" th:object="${signupRequestDto}" id="signupForm">
+
+        <div class="form-group">
+            <label for="username">사용자 이름:</label>
+            <input type="text" class="form-control" id="username" name="username" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="password">비밀번호:</label>
+            <input type="password" class="form-control" id="password" name="password" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="nickname">닉네임:</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="email">이메일:</label>
+            <input type="email" class="form-control" id="email" name="email" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="area">지역:</label>
+            <input type="text" class="form-control" id="area" name="area" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="age">나이:</label>
+            <input type="text" class="form-control" id="age" name="age" th:required="required">
+        </div>
+
+        <div class="form-group">
+            <label for="intro">소개:</label>
+            <textarea class="form-control" id="intro" name="intro" rows="3"></textarea>
+        </div>
+
+        <div>
+            <label id="adminLabel">관리자</label>
+            <input type="checkbox" id="admin" name="admin">
+
+            <div class="form-group">
+                <label for="adminToken">관리자 암호:</label>
+                <input class="form-control" id="adminToken" name="adminToken" th:required="required">
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">가입하기</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function (event) {
+        // 이벤트 기본 동작을 막음
+        event.preventDefault();
+
+        // 폼 직접 제출
+        this.submit();
+    });
+
+
+</script>
+</body>
+</html>

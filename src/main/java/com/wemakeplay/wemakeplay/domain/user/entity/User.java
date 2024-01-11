@@ -54,6 +54,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<AttendBoard> attendBoards = new ArrayList<>();
     //팀에 새로운 참여 객체 생성
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<AttendTeam> attendTeams = new ArrayList<>();
 
@@ -87,7 +88,7 @@ public class User {
     }
 
     public void attendTeam(Team team){
-        AttendTeam attendTeam = new AttendTeam(team, this, Participation.wait);
+        AttendTeam attendTeam = new AttendTeam(team, this, com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait);
         this.attendTeams.add(attendTeam);
     }
 

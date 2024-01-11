@@ -1,5 +1,6 @@
 package com.wemakeplay.wemakeplay.domain.team.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.Participation;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
@@ -7,6 +8,7 @@ import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,20 +27,24 @@ import lombok.NoArgsConstructor;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column
     private String teamName;
-    @Column(nullable = false, unique = true)
+    @Column
     private String teamIntro;
     @Column
     private int teamPersonnel;
+    @Column
     private int teamAttendPersonnel = 1;
+    @Column
+    private String memberNames;
 
     // 생성자
     @ManyToOne
     private User teamOwner;
-
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AttendTeam> attendTeams = new ArrayList<>();
 
     public Team(TeamRequestDto teamRequestDto, User user){
@@ -46,6 +52,7 @@ public class Team {
         this.teamIntro = teamRequestDto.getTeamIntro();
         this.teamPersonnel = teamRequestDto.getTeamPersonnel();
         this.teamOwner = user;
+        this.memberNames = user.getUsername();
     }
 
     public void updateTeam(TeamRequestDto teamRequestDto){
@@ -53,6 +60,7 @@ public class Team {
         this.teamIntro = teamRequestDto.getTeamIntro();
         this.teamPersonnel = teamRequestDto.getTeamPersonnel();
     }
+  
     public void inviteUser(User user){
         AttendTeam attendTeam = new AttendTeam(this, user, Participation.wait);
         this.attendTeams.add(attendTeam);
@@ -62,40 +70,7 @@ public class Team {
         this.teamAttendPersonnel --;
     }
 
-    //특정 팀 ID에 해당하는 참가 팀을 조회
-//    public void inviteUser(User user){
-//        AttendTeam attendTeam = new AttendTeam(this, user, Participation.wait);
-//        this.attendTeams.add(attendTeam);
-//    }
-//}
-
-
-    // 특정 참가상태 팀 조회
-//    private AttendTeam findAttendTeamByUser(User user) {
-//        return this.attendTeams.stream()
-//            .filter(attendTeam -> attendTeam.getUser().equals(user))
-//            .findFirst()
-//            .orElse(null);
-//    }
-
-
-//    @Transactional
-//    public void withdraw(User user){
-//        Optional<AttendTeam> optionalAttendTeam = findAttendTeamByUser(user);
-//        if (optionalAttendTeam.isPresent()) {
-//            // 참여를 찾았을 경우 삭제합니다.
-//            AttendTeam attendTeam = optionalAttendTeam.get();
-//            this.attendTeams.remove(attendTeam);
-//            attendTeam.setTeam(null); // AttendTeam과의 양방향 연관 관계 해제
-//        } else {
-//            throw new ServiceException(ErrorCode.NOT_TEAM_MEMBER);
-//        }
-//    }
-//
-//    private Optional<AttendTeam> findAttendTeamByUser(User user) {
-//        // 특정 사용자의 참여를 찾아 Optional로 반환합니다.
-//        return this.attendTeams.stream()
-//            .filter(attendTeam -> attendTeam.getUser().equals(user))
-//            .findFirst();
-//    }
+    public void attendUser(){
+        this.teamAttendPersonnel ++;
+    }
 }
