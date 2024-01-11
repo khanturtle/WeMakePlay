@@ -17,6 +17,7 @@ public enum ErrorCode {
     MODIFY_PROFILE_FAILED(HttpStatus.BAD_REQUEST, "1006", "유저 정보 수정에 실패했습니다."),
     NOT_ADMIN(HttpStatus.BAD_REQUEST, "1007", "관리자가 아닙니다."),
     NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "1008", "인증되지 않은 사용자입니다."),
+    NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "1009", "유저를 찾을 수 없습니다."),
     // board (2000)
     NOT_EXIST_BOARD(HttpStatus.BAD_REQUEST, "2001", "게시글이 존재하지 않습니다."),
     NOT_BOARD_OWNER(HttpStatus.BAD_REQUEST, "2002", "게시글 생성자가 아닙니다."),
@@ -24,15 +25,18 @@ public enum ErrorCode {
     ALREADY_ATTENDED_BOARD(HttpStatus.BAD_REQUEST,"2004","가입 신청 대기중 입니다."),
     ALREADY_APPLIED_BOARD(HttpStatus.BAD_REQUEST,"2005","이미 가입된 게시글 입니다."),
     BOARD_FULL_PERSONNEL(HttpStatus.BAD_REQUEST,"2006","정원이 다 찼습니다."),
+    NOT_FOUND_BOARD(HttpStatus.BAD_REQUEST,"2007","게시글을 찾을 수 없습니다."),
     // team (3000)
     NOT_TEAM_OWNER(HttpStatus.BAD_REQUEST, "3000", "팀 생성자가 아닙니다."),
     NOT_EXIST_TEAM(HttpStatus.BAD_REQUEST, "3001", "팀이 존재하지 않습니다."),
     ALREADY_ATTENDING_TEAM(HttpStatus.BAD_REQUEST, "3002", "이미 참여 중인 팀 입니다."),
     NOT_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "3003", "팀 멤버가 아닙니다."),
-    TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3003", "팀 소유자는 탈퇴할 수 없습니다."),
-    TEAM_OWNER(HttpStatus.BAD_REQUEST, "3004", "이미 가입 되어 있습니다."),
-    TEAM_FULL_PERSONNEL(HttpStatus.BAD_REQUEST, "3005", "정원이 다 찼습니다."),
+    TEAM_OWNER_CANNOT_WITHDRAW(HttpStatus.BAD_REQUEST, "3004", "팀 소유자는 탈퇴할 수 없습니다."),
+    TEAM_OWNER(HttpStatus.BAD_REQUEST, "3005", "이미 가입 되어 있습니다."),
+    TEAM_FULL_PERSONNEL(HttpStatus.BAD_REQUEST, "3006", "정원이 다 찼습니다."),
 
+
+    NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST, "3003", "팀을 찾을 수 없습니다."),
     // comment (4000)
     NOT_COMMENT_CONTENT(HttpStatus.BAD_REQUEST, "4001", "댓글 내용을 입력해주세요."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST, "4002", "댓글이 존재하지 않습니다."),

@@ -131,4 +131,15 @@ public class BoardController {
                 .message("보드 가입 신청을 거절하였습니다.")
                 .build());
     }
+
+    @PostMapping("/{boardId}/kick/{userId}")
+    public ResponseEntity<?> kickUserFromBoard(
+        @PathVariable Long boardId,
+        @PathVariable Long userId) {
+        boardService.kickUserFromBoard(boardId, userId);
+        return ResponseEntity.ok(RootResponseDto.builder()
+            .code("200")
+            .message(userId + "유저가 강퇴되었습니다.")
+            .build());
+    }
 }

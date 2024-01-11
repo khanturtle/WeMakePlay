@@ -2,6 +2,7 @@ package com.wemakeplay.wemakeplay.domain.team.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
+import com.wemakeplay.wemakeplay.domain.attendteam.Participation;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
@@ -59,6 +60,16 @@ public class Team {
         this.teamIntro = teamRequestDto.getTeamIntro();
         this.teamPersonnel = teamRequestDto.getTeamPersonnel();
     }
+  
+    public void inviteUser(User user){
+        AttendTeam attendTeam = new AttendTeam(this, user, Participation.wait);
+        this.attendTeams.add(attendTeam);
+    }
+
+    public void keepUser() {
+        this.teamAttendPersonnel --;
+    }
+
     public void attendUser(){
         this.teamAttendPersonnel ++;
     }
