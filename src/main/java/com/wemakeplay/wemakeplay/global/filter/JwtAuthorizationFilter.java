@@ -36,31 +36,39 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        String tokenValue = jwtUtil.getJwtFromHeader(request);
+        // 웹으로 받은 토큰 값 처리를 위한 로직
+        String tokenValueFromHeader = jwtUtil.getJwtFromHeader(request); // 헤더에 담긴 토큰
+        String tokenValueFromCookie = jwtUtil.getJwtFromCookie(request); // 쿠키에 담긴 토큰
 
-        if (StringUtils.hasText(tokenValue)) {
-            if (!jwtUtil.validateToken(tokenValue)) {
-                ObjectMapper ob = new ObjectMapper();
-                response.setStatus(400);
-
-                String json = ob.writeValueAsString(new ServiceException(TOKEN_ERROR));
-                PrintWriter writer = response.getWriter();
-
-                writer.println(json);
-                return;
-            }
-
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-            try {
-                setAuthentication(info.getSubject());
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return;
-            }
+        // 두 경로의 값을 모두 가져와 조건문 대입
+        if(StringUtils.hasText(tokenValueFromHeader)) {
+            validateToken(tokenValueFromHeader, response);
+        } else if(StringUtils.hasText(tokenValueFromCookie)){
+            validateToken(tokenValueFromCookie, response);
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void validateToken(String tokenValue, HttpServletResponse response) throws IOException {
+        if (!jwtUtil.validateToken(tokenValue)) {
+            ObjectMapper ob = new ObjectMapper();
+            response.setStatus(400);
+
+            String json = ob.writeValueAsString(new ServiceException(TOKEN_ERROR));
+            PrintWriter writer = response.getWriter();
+
+            writer.println(json);
+            return;
+        }
+
+        Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+
+        try {
+            setAuthentication(info.getSubject());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void setAuthentication(String username) {
