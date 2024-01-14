@@ -14,6 +14,7 @@ import java.util.List;
 
 @Getter
 public class BoardResponseDto {
+    private Long Id;
     private String boardTitle;
     private String boardContent;
     private String boardOwner;
@@ -27,6 +28,7 @@ public class BoardResponseDto {
     private List<String> userNickNameList;
 
     public BoardResponseDto(Board board) {
+        this.Id = board.getId();
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
         this.boardSport = board.getBoardSport();

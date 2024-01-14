@@ -33,8 +33,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
         // 웹으로 받은 토큰 값 처리를 위한 로직
         String tokenValueFromHeader = jwtUtil.getJwtFromHeader(request); // 헤더에 담긴 토큰

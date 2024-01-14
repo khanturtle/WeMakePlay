@@ -44,6 +44,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 
+
 	implementation 'org.webjars:webjars-locator:0.45'
 	implementation 'org.webjars:bootstrap:5.1.3'
 
