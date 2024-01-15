@@ -6,7 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
@@ -24,119 +23,142 @@
             height: 100vh;
         }
 
-        #login-form {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px;
-            text-align: center;
-        }
+    #login-form {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+    }
 
-        #login-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
+    #login-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+    }
 
-        #login-id-btn {
-            background-color: #f8e71c;
-            color: #333;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            outline: none;
-        }
+    #login-id-btn {
+      background-color: #f8e71c;
+      color: #333;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      outline: none;
+    }
 
-        #login-id-submit {
-            background-color: #3498db;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            outline: none;
-        }
+    #login-id-submit {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      outline: none;
+    }
 
-        .login-input-box {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+    .login-input-box {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-        #login-failed {
-            color: #d9534f;
-            font-size: 14px;
-            display: none;
-        }
-    </style>
+    #login-failed {
+      color: #d9534f;
+      font-size: 14px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
 <div id="login-form">
-    <div id="login-title">WeMakePlay 로그인</div>
-    <div>
-        <div class="login-id-label">아이디</div>
-        <input type="text" name="username" id="username" class="login-input-box">
+  <div id="login-title">WeMakePlay 로그인</div>
+  <div>
+    <div class="login-id-label">아이디</div>
+    <input type="text" name="username" id="username" class="login-input-box">
 
-        <div class="login-id-label">비밀번호</div>
-        <input type="password" name="password" id="password" class="login-input-box">
+    <div class="login-id-label">비밀번호</div>
+    <input type="password" name="password" id="password" class="login-input-box">
 
-        <button id="login-id-btn" onclick="location.href='signup'">회원 가입</button>
-        <button id="login-id-submit" onclick="onLogin()">로그인</button>
-    </div>
-    <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
+    <button id="login-id-btn" onclick="location.href='signup'">회원 가입</button>
+    <button id="login-id-submit" onclick="onLogin()">로그인</button>
+  </div>
+  <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에
+    실패하였습니다.
+  </div>
 </div>
 </body>
 <script>
-    $(document).ready(function () {
-        // 토큰 삭제
-        Cookies.remove('Authorization', {path: '/'});
+  $(document).ready(function () {
+
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', auth);
+      });
+    } else {
+      window.location.href = host + 'login';
+      return;
+    }
+
+    // 토큰 삭제
+    Cookies.remove('Authorization', {path: '/'});
+  });
+
+  const href = location.href;
+  const queryString = href.substring(href.indexOf("?") + 1)
+  if (queryString === 'error') {
+    const errorDiv = document.getElementById('login-failed');
+    errorDiv.style.display = 'block';
+  }
+
+  const host = 'http://' + window.location.host;
+
+  function onLogin() {
+    let username = $('#username').val();
+    let password = $('#password').val();
+
+    $.ajax({
+      type: "POST",
+      url: '/api/users/login',
+      contentType: "application/json",
+      data: JSON.stringify({username: username, password: password}),
+    })
+    .done(function (res, status, xhr) {
+      const token = xhr.getResponseHeader('Authorization');
+
+      Cookies.set('Authorization', token, {path: '/'})
+
+      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', token);
+      });
+
+      // 로그인 성공 시 mainPage.html로 이동
+      window.location.href = host + '/mainPage';
+
+    })
+    .fail(function (jqXHR, textStatus) {
+      alert("Login Fail");
+      window.location.href = host + '/api/user/login?error'
     });
+  }
 
-    const href = location.href;
-    const queryString = href.substring(href.indexOf("?") + 1)
-    if (queryString === 'error') {
-        const errorDiv = document.getElementById('login-failed');
-        errorDiv.style.display = 'block';
+  function getToken() {
+
+    let auth = Cookies.get('Authorization');
+
+    if (auth === undefined) {
+      return '';
     }
-
-    const host = 'http://' + window.location.host;
-
-    function onLogin() {
-        let username = $('#username').val();
-        let password = $('#password').val();
-
-        $.ajax({
-            type: "POST",
-            url: `/api/users/login`,
-            contentType: "application/json",
-            data: JSON.stringify({username: username, password: password}),
-        })
-        .done(function (res, status, xhr) {
-            const token = xhr.getResponseHeader('Authorization');
-
-            Cookies.set('Authorization', token, {path: '/'})
-
-            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                jqXHR.setRequestHeader('Authorization', token);
-            });
-
-            // 로그인 성공 시 mainPage.html로 이동
-
-            window.location.href = host + '/mainPage';
-        })
-        .fail(function (jqXHR, textStatus) {
-            alert("Login Fail");
-            window.location.href = host + '/api/user/login?error'
-        });
-    }
+  }
 </script>
 </html>
