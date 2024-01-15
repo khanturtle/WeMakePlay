@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+          integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+  <title>TopPlayer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      padding: 15px;
+      color: white;
+      text-align: center;
+      position: relative; /* Added position relative */
+    }
+
+    .auth-links {
+      display: inline-block;
+      position: absolute;
+      top: 50%; /* Position links at the vertical center of the header */
+      transform: translateY(-50%); /* Adjust to center vertically */
+      right: 20px; /* Adjust the right spacing */
+    }
+
+    .auth-links a {
+      display: inline-block;
+      color: white;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    .auth-links a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    nav {
+      background-color: #444;
+      overflow: hidden;
+    }
+
+    .main-links {
+      display: inline-block;
+      color: white;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    .main-links:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    section {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>We Make Play</h1>
+  <h3>sports community</h3>
+  <div class="auth-links">
+    <a th:href="@{/myPage}"> MyPage </a>
+    <a href="javascript:confirmLogout()"> Logout </a>
+
+  </div>
+</header>
+
+<nav>
+  <a th:href="@{/mainPage}" class="main-links" id="homeButton">Home</a>
+  <a th:href="@{/boardMain}" class="main-links">PlaySpace</a>
+  <a th:href="@{/topPlayer}" class="main-links">TopPlayer</a>
+  <a th:href="@{/teamAttend}" class="main-links">TeamAttend</a>
+</nav>
+
+<section>
+  <h1>Top Players</h1>
+</section>
+
+<table border="1" id="topPlayersTable">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Likes</th>
+    <th>Username</th>
+    <th>Nickname</th>
+    <th>Age</th>
+    <th>Area</th>
+    <th>Followers</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="player : ${topPlayers}">
+    <td th:text="${player.id}"></td>
+    <td th:text="${player.likes}"></td>
+    <td><a th:href="@{'/users/' + ${player.username}}"><span th:text="${player.username}"></span></a>
+    </td>
+    <td th:text="${player.nickname}"></td>
+    <td th:text="${player.age}"></td>
+    <td th:text="${player.area}"></td>
+    <td><a th:href="@{'/users/' + ${player.followers}}"><span th:text="${player.followers}"></span></a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<script th:inline="javascript">
+  $(document).ready(function () {
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', auth);
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+
+    $.ajax({
+      url: '/topPlayer',
+      headers: {
+        'Authorization': Cookies.get('Authorization')
+      },
+      type: 'GET',
+      dataType: 'json',
+      success: function (data) {
+        var topPlayersData = data.data;
+        var tableBody = $('#topPlayersTable tbody');
+
+        topPlayersData.forEach(player => {
+          var row = $('<tr>');
+          row.append($('<td>').text(player.id));
+          row.append($('<td>').text(player.likes));
+          row.append($('<td>').html(
+              '<a href="/users/' + player.username + '">' + player.username + '</a>'));
+          row.append($('<td>').text(player.nickname));
+          row.append($('<td>').text(player.age));
+          row.append($('<td>').text(player.area));
+          row.append($('<td>').html(
+              '<a href="/users/' + player.followers + '">' + player.followers + '</a>'));
+          row.append($('<td>').html(
+              '<a href="/users/' + player.username + '" onclick="goToUserProfile(\'' + player.username + '\')">' + player.username + '</a>'
+          ));
+
+          tableBody.append(row);
+        });
+      },
+      error: function (error) {
+        console.error('데이터 가져오기 오류:', error);
+      }
+    });
+  });
+
+  function confirmLogout() {
+    // 알럿 창 띄우기
+    var confirmLogout = window.confirm("로그아웃 하시겠습니까?");
+
+    if (confirmLogout) {
+      // 사용자가 확인을 선택한 경우
+      // logout.js에 정의된 logout 함수 호출
+      logout();
+    }
+  }
+
+  function logout() {
+    // 쿠키 삭제
+    document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // 인덱스 페이지로 이동
+    window.location.href = "/";
+  }
+
+  function getToken() {
+
+    let auth = Cookies.get('Authorization');
+
+    if (auth === undefined) {
+      return '';
+    }
+
+    return auth;
+  }
+
+  function goToUserProfile({username}) {
+    // 클릭한 유저의 프로필 페이지로 이동
+    window.location.href = '/user/' + username;
+  }
+
+</script>
+
+</body>
+</html>
