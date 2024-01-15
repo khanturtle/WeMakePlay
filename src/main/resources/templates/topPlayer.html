@@ -66,6 +66,27 @@
     section {
       padding: 20px;
     }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
   </style>
 </head>
 <body>
@@ -82,7 +103,7 @@
 
 <nav>
   <a th:href="@{/mainPage}" class="main-links" id="homeButton">Home</a>
-  <a th:href="@{/boardMain}" class="main-links">PlaySpace</a>
+  <a th:href="@{/playSpace}" class="main-links">PlaySpace</a>
   <a th:href="@{/topPlayer}" class="main-links">TopPlayer</a>
   <a th:href="@{/teamAttend}" class="main-links">TeamAttend</a>
 </nav>
@@ -107,12 +128,12 @@
   <tr th:each="player : ${topPlayers}">
     <td th:text="${player.id}"></td>
     <td th:text="${player.likes}"></td>
-    <td><a th:href="@{'/users/' + ${player.username}}"><span th:text="${player.username}"></span></a>
+    <td><a th:href="@{'/user/' + ${player.id}}"><span th:text="${player.username}"></span></a>
     </td>
     <td th:text="${player.nickname}"></td>
     <td th:text="${player.age}"></td>
     <td th:text="${player.area}"></td>
-    <td><a th:href="@{'/users/' + ${player.followers}}"><span th:text="${player.followers}"></span></a>
+    <td><a th:href="@{'/user/' + ${player.followers}}"><span th:text="${player.followers}"></span></a>
     </td>
   </tr>
   </tbody>
@@ -130,40 +151,6 @@
       window.location.href = host + '/';
       return;
     }
-
-    $.ajax({
-      url: '/topPlayer',
-      headers: {
-        'Authorization': Cookies.get('Authorization')
-      },
-      type: 'GET',
-      dataType: 'json',
-      success: function (data) {
-        var topPlayersData = data.data;
-        var tableBody = $('#topPlayersTable tbody');
-
-        topPlayersData.forEach(player => {
-          var row = $('<tr>');
-          row.append($('<td>').text(player.id));
-          row.append($('<td>').text(player.likes));
-          row.append($('<td>').html(
-              '<a href="/users/' + player.username + '">' + player.username + '</a>'));
-          row.append($('<td>').text(player.nickname));
-          row.append($('<td>').text(player.age));
-          row.append($('<td>').text(player.area));
-          row.append($('<td>').html(
-              '<a href="/users/' + player.followers + '">' + player.followers + '</a>'));
-          row.append($('<td>').html(
-              '<a href="/users/' + player.username + '" onclick="goToUserProfile(\'' + player.username + '\')">' + player.username + '</a>'
-          ));
-
-          tableBody.append(row);
-        });
-      },
-      error: function (error) {
-        console.error('데이터 가져오기 오류:', error);
-      }
-    });
   });
 
   function confirmLogout() {
