@@ -5,7 +5,6 @@ import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.service.TeamService;
-import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class TeamViewController {
     private final TeamService teamService;
-    private final UserRepository userRepository;
 
     //팀 생성 페이지
     @GetMapping("/teamCreate")
@@ -115,5 +113,13 @@ public class TeamViewController {
     ){
         teamService.rejectTeamAttend(teamId, userId, userDetails.getUser());
         return "redirect:/team/{teamId}";
+    }
+    //참여자 리스트
+    @GetMapping("/allowed/attender/{teamId}")
+    public String allowedTeam(
+        @PathVariable Long teamId, Model model){
+        TeamResponseDto teamResponseDto = teamService.getTeam(teamId);
+        model.addAttribute("teamResponseDto", teamResponseDto);
+        return "allowedTeam";
     }
 }
