@@ -6,6 +6,7 @@ import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.comment.dto.response.CommentResponseDto;
+import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -142,5 +143,36 @@ public class BoardViewController {
         commentService.createComment(userDetails.getUser(),boardId,commentRequestDto);
 
         return "redirect:/board/"+boardId;
+    }
+
+    @GetMapping("/board/{boardId}/comment/{commentId}/edit")
+    public String editCommentPage(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model) {
+        CommentResponseDto comment = commentService.updateComment(userDetails.getUser(),commentId,commentRequestDto);
+        model.addAttribute("comment", comment);
+        return "edit-comment"; // Create an HTML file (edit-comment.html) for editing comments
+    }
+
+    @PostMapping("/board/{boardId}/comment/{commentId}/edit")
+    public String editComment(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.updateComment(userDetails.getUser(), commentId, commentRequestDto);
+        return "redirect:/board/" + boardId;
+    }
+
+    @GetMapping("/board/{boardId}/comment/{commentId}/delete")
+    public String deleteComment(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(userDetails.getUser(), commentId);
+        return "redirect:/board/" + boardId;
     }
 }
