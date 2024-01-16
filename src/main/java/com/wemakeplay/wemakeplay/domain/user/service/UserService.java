@@ -152,6 +152,7 @@ public class UserService {
             .username(user.getUsername())
             .nickname(user.getNickname())
             .email(user.getEmail())
+            .intro(user.getIntro())
             .area(user.getArea())
             .age(user.getAge())
             .likes(likes)
