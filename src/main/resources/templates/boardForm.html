@@ -4,30 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
 <h2>Create Board</h2>
 <form action="/boardCreate" method="post">
     <label for="boardTitle">Title:</label>
-    <input type="text" id="boardTitle" name="boardTitle" required><br>
+    <input type="text" id="boardTitle" name="boardTitle" required>
 
     <label for="boardContent">Content:</label>
-    <textarea id="boardContent" name="boardContent" required></textarea><br>
+    <textarea id="boardContent" name="boardContent" required></textarea>
 
     <label for="boardSport">Sport:</label>
-    <input type="text" id="boardSport" name="boardSport" required><br>
+    <select id="boardSport" name="boardSport" required>
+        <option value="축구">축구</option>
+        <option value="축구">풋살</option>
+        <option value="야구">야구</option>
+        <option value="농구">농구</option>
+    </select>
 
     <label for="boardArea">Area:</label>
-    <input type="text" id="boardArea" name="boardArea" required><br>
+    <input type="text" id="boardArea" name="boardArea" required>
 
     <label for="boardStadium">Stadium:</label>
-    <input type="text" id="boardStadium" name="boardStadium" required><br>
+    <input type="text" id="boardStadium" name="boardStadium" required>
 
     <label for="playDate">Play Date:</label>
-    <input type="date" id="playDate" name="playDate" required><br>
-
+    <input type="date" id="playDate" name="playDate" required>
+    <!-- datetime-local-->
     <label for="boardPersonnel">Personnel:</label>
-    <input type="number" id="boardPersonnel" name="boardPersonnel" required><br>
+    <input type="number" id="boardPersonnel" name="boardPersonnel" required>
 
     <button type="submit">Create Board</button>
 </form>

@@ -24,6 +24,7 @@ public class BoardResponseDto {
     private String boardStadium;
     private int boardPersonnel;
     private int boardAttendPersonnel;
+    private int commentNum;
     private List<CommentResponseDto> commentList;
     private List<String> userNickNameList;
 
@@ -36,6 +37,7 @@ public class BoardResponseDto {
         this.playDate = board.getPlayDate();
         this.boardStadium = board.getBoardStadium();
         this.boardPersonnel = board.getBoardPersonnel();
+        this.commentNum = board.getComments().size();
         this.boardAttendPersonnel = board.getBoardAttendPersonnel();
         this.boardOwner = board.getBoardOwner().getNickname();
 
