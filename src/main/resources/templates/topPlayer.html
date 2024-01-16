@@ -77,7 +77,7 @@
     }
 
     .card-header {
-      background-color: #333;
+      background-color: #d3d2d2;
       color: white;
       padding: 10px;
     }
@@ -132,7 +132,8 @@
 
 <div class="card" th:each="player : ${topPlayers}">
   <div class="card-header">
-    <h3 th:text="${player.username}"></h3>
+    <h3><a th:href="@{'/user/' + ${player.id}}"><span th:text="${player.username}"></span></a></h3>
+
   </div>
   <div class="card-body">
     <p>ID: <span th:text="${player.id}"></span></p>
