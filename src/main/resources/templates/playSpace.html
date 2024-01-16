@@ -110,12 +110,10 @@
         <th>Area</th>
         <th>Attend Personnel</th>
         <th>Total Personnel</th>
-        <!-- 필요한 다른 속성들을 추가할 수 있습니다. -->
     </tr>
     </thead>
     <tbody>
     <!-- Thymeleaf를 이용하여 리스트를 순회하면서 데이터를 표시합니다. -->
-<!--    <tr th:each="board : ${boardList}">-->
     <tr th:each="board : ${boardList}">
         <td><a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a></td>
         <td th:text="${board.boardTitle}"></td>
@@ -123,7 +121,6 @@
         <td th:text="${board.boardArea}"></td>
         <td th:text="${board.boardAttendPersonnel}"></td>
         <td th:text="${board.boardPersonnel}"></td>
-        <!-- 필요한 다른 속성들을 추가할 수 있습니다. -->
     </tr>
     </tbody>
 </table>
