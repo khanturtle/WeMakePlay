@@ -29,7 +29,7 @@ public class TeamService {
 
     //팀 생성
     @Transactional
-    public TeamResponseDto creatTeam(TeamRequestDto teamRequestDto, User user){
+    public TeamResponseDto createTeam(TeamRequestDto teamRequestDto, User user){
         Team team = new Team(teamRequestDto, user);
         teamRepository.save(team);
         return new TeamResponseDto(team);
@@ -64,7 +64,7 @@ public class TeamService {
     }
 // 삭제
     @Transactional
-    public void deletTeam(Long teamId, User user){
+    public void deleteTeam(Long teamId, User user){
         Team team = findTeam(teamId);
         if(user.getNickname().equals(team.getTeamOwner().getNickname())){
             teamRepository.delete(team);
@@ -82,8 +82,6 @@ public class TeamService {
         }
         return teamResponseDtoList;
     }
-
-// 팀 가입 요청 목록
 
 
     //사용자가 팀에 신청
@@ -115,15 +113,22 @@ public class TeamService {
             .build();
         attendTeamRepository.save(attendTeam);
     }
-
-
-    public List<AttendTeam> getTeamJoinRequests(Long teamId, User user){
+    //요청 목록
+    public List<AttendTeam> checkTeamAttender(Long teamId, User user){
         Team team = findTeam(teamId);
-
-        if (!user.getNickname().equals(team.getTeamOwner().getNickname())){
+        if (user.getNickname().equals(team.getTeamOwner().getNickname())){
+            List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
+            List<AttendTeam> attendTeamWaitingList = new ArrayList<>();
+            for (AttendTeam attendTeam : attendTeamList) {
+                if (attendTeam.getParticipation().equals(
+                    com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait)){
+                    attendTeamWaitingList.add(attendTeam);
+                }
+            }
+            return attendTeamWaitingList;
+        }else {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
-        return attendTeamRepository.findByTeamIdAndParticipation(teamId, com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait);
     }
 
     // 요청 수락
@@ -181,7 +186,7 @@ public class TeamService {
             () -> new ServiceException(ErrorCode.NOT_EXIST_TEAM)
         );
     }
-
+    //강퇴
     @Transactional
     public void kickUserFromTeam(Long teamId, Long userId) {
         Team team = teamRepository.findById(teamId)

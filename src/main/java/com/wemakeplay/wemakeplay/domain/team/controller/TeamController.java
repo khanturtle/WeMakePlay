@@ -3,7 +3,6 @@ package com.wemakeplay.wemakeplay.domain.team.controller;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
-import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.service.TeamService;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
@@ -30,7 +29,7 @@ public class TeamController {
     public ResponseEntity<?> createTeam(
         @RequestBody TeamRequestDto teamRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        TeamResponseDto teamResponseDto = teamService.creatTeam(teamRequestDto, userDetails.getUser());
+        TeamResponseDto teamResponseDto = teamService.createTeam(teamRequestDto, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("201")
             .message("팀 생성 성공")
@@ -39,8 +38,8 @@ public class TeamController {
     }
 //팀 조회
     @GetMapping("")
-    public ResponseEntity<?> getAllTeams(){
-        List<TeamViewResponseDto> teams = teamService.getAllTeams();
+    public ResponseEntity<?> getTeams(){
+        List<TeamResponseDto> teams = teamService.getTeams();
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 조회 성공")
@@ -79,7 +78,7 @@ public class TeamController {
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        teamService.deletTeam(teamId, userDetails.getUser());
+        teamService.deleteTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 삭제가 완료되었습니다.")
@@ -101,12 +100,12 @@ public class TeamController {
 
     //팀 요청 목록 조회
     @GetMapping("/attend/{teamId}")
-    public ResponseEntity<List<AttendTeam>> getTeamJoinRequests(
+    public  List<AttendTeam> checkTeamAttender(
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        List<AttendTeam> JoinRequests = teamService.getTeamJoinRequests(teamId, userDetails.getUser());
-        return ResponseEntity.ok(JoinRequests);
+
+        return teamService.checkTeamAttender(teamId, userDetails.getUser());
     }
 
 
