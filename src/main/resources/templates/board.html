@@ -189,14 +189,15 @@
                 <li class="list-group-item" th:each="comment : ${boardResponseDto.commentList}">
                     <span th:text="${comment.content}"></span>
                     <div class="btn-group">
-                        <button class="btn btn-warning btn-sm" onclick="editComment(${comment.id})">수정</button>
+                        <!--댓글 수정-->
+                        <a href="#" class="btn btn-primary btn-lg"
+                           th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/'+${comment.id}+ '/edit'}">수정</a>
+                        <!--댓글 삭제-->
                         <a href="#" class="btn btn-danger btn-lg" onclick="deleteComment()"
                            th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/' + ${comment.id} + '/delete'}">삭제</a>
                     </div>
                 </li>
             </ul>
-
-
         </div>
     </div>
 </div>

@@ -4,9 +4,13 @@ import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.comment.dto.response.CommentResponseDto;
 import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
+import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
+import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
+import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +33,7 @@ import java.util.List;
 public class BoardViewController {
     private final BoardService boardService;
     private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     //보드 생성 페이지
     @GetMapping("/boardCreate")
@@ -138,8 +143,7 @@ public class BoardViewController {
     public String addComment(
             @PathVariable("boardId") Long boardId,
             @ModelAttribute CommentRequestDto commentRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Model model) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentService.createComment(userDetails.getUser(),boardId,commentRequestDto);
 
         return "redirect:/board/"+boardId;
@@ -153,8 +157,10 @@ public class BoardViewController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             Model model) {
         CommentResponseDto comment = commentService.updateComment(userDetails.getUser(),commentId,commentRequestDto);
+        BoardResponseDto board = boardService.getBoard(boardId);
+        model.addAttribute("board",board);
         model.addAttribute("comment", comment);
-        return "edit-comment"; // Create an HTML file (edit-comment.html) for editing comments
+        return "edit-comment";
     }
 
     @PostMapping("/board/{boardId}/comment/{commentId}/edit")
@@ -162,8 +168,13 @@ public class BoardViewController {
             @PathVariable Long boardId,
             @PathVariable Long commentId,
             @ModelAttribute CommentRequestDto commentRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                ()-> new ServiceException(ErrorCode.NOT_EXIST_COMMENT)
+        );
         commentService.updateComment(userDetails.getUser(), commentId, commentRequestDto);
+        model.addAttribute("comment", comment);
         return "redirect:/board/" + boardId;
     }
 
