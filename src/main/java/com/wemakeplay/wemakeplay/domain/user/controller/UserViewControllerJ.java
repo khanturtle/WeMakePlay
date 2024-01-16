@@ -1,10 +1,14 @@
 package com.wemakeplay.wemakeplay.domain.user.controller;
 
+import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
+import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
+import com.wemakeplay.wemakeplay.domain.follow.service.FollowService;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.UserProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.service.UserService;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class UserViewControllerJ {
 
     private final UserService userService;
+    private final FollowService followService;
 
     //회원가입
     @GetMapping("/signup")
@@ -105,6 +110,28 @@ public class UserViewControllerJ {
     ) {
         userService.withdrawUser(userDetails.getUser());
         return "/";
+    }
+
+    @GetMapping("/user/followers")
+    public String showFollowerList(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        Model model
+    ) {
+        List<FollowerResponseDto> followerResponseDtoList =
+            followService.getFollower(userDetails.getUser());
+        model.addAttribute("followers", followerResponseDtoList);
+        return "followerList";
+    }
+
+    @GetMapping("/user/followings")
+    public String showFollowingList(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        Model model
+    ) {
+        List<FollowingResponseDto> followingResponseDtoList =
+            followService.getFollowing(userDetails.getUser());
+        model.addAttribute("followings", followingResponseDtoList);
+        return "followingList";
     }
 
 }
