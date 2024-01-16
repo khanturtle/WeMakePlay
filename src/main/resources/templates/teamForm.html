@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Team</title>
+</head>
+<body>
+<h2>Create Team</h2>
+<form action = "/teamCreate" method="post">
+  <label for="teamName">TeamName:</label>
+  <input type="text" id="teamName" name="teamName" required><br>
+
+  <label for="teamIntro">TeamIntroduction:</label>
+  <input type="text" id="teamIntro" name="teamIntro" required><br>
+
+  <label for="teamPersonnel">Personnel:</label>
+  <input type="number" id="teamPersonnel" name="teamPersonnel" required><br>
+
+  <button type="submit">Create Team</button>
+</form>
+</body>
+</html>
