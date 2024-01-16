@@ -114,12 +114,4 @@ public class TeamViewController {
         teamService.rejectTeamAttend(teamId, userId, userDetails.getUser());
         return "redirect:/team/{teamId}";
     }
-    //참여자 리스트
-    @GetMapping("/allowed/attender/{teamId}")
-    public String allowedTeam(
-        @PathVariable Long teamId, Model model){
-        TeamResponseDto teamResponseDto = teamService.getTeam(teamId);
-        model.addAttribute("teamResponseDto", teamResponseDto);
-        return "allowedTeam";
-    }
 }
