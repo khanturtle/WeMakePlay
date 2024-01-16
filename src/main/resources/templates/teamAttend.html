@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Page</title>
+  <title>Team Main</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,7 +15,7 @@
       padding: 15px;
       color: white;
       text-align: center;
-      position: relative; /* Added position relative */
+      position: relative;
     }
 
     .auth-links {
@@ -52,7 +50,7 @@
       text-decoration: none;
     }
 
-    .main-links:hover {
+    .main-links:hover, .auth-links a:hover {
       background-color: #ddd;
       color: black;
     }
@@ -60,10 +58,24 @@
     section {
       padding: 20px;
     }
-  </style>
-</head>
-<body>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+  </style>
+<body>
 <header>
   <h1>We Make Play</h1>
   <h3>sports community</h3>
@@ -75,27 +87,39 @@
 </header>
 
 <nav>
-  <a href="/" class="main-links">Home</a>
-  <a href="/boardMain" class="main-links">PlaySpace</a>
+  <a href="/mainPage" class="main-links">Home</a>
+  <a href="/playSpace" class="main-links">PlaySpace</a>
   <a href="/topplayer" class="main-links">TopPlayer</a>
-  <a href="/teamMain" class="main-links">TeamAttend</a>
+  <a href="/teamAttend" class="main-links">TeamAttend</a>
 </nav>
 
 <section>
-  <h2>보드 공간</h2>
-
+  <h2>Team Attend</h2>
+  <div class="create-post-btn">
+    <a th:href="@{/teamCreate}" style="color: white; text-decoration: none; padding: 14px 16px; background-color: #4CAF50;
+display: inline-block; border-radius: 4px;">팀 생성</a>
+  </div>
 </section>
 
-<section>
-  <h2>탑 플레이어 공간</h2>
+<table>
+  <thead>
+  <tr>
+    <th>TeamName</th>
+    <th>팀 소개</th>
+    <th>Attend Personnel</th>
+    <th>Total Personnel</th>
+  </tr>
+  </thead>
+  <tbody>
 
-</section>
-
-<section>
-  <h2>팀 가입신청 공간</h2>
-
-</section>
-
+  <tr th:each="team : ${teamList}">
+    <td><a th:href="@{'/team/' + ${team.id}}" th:text="${team.teamName}"></a></td>
+    <td th:text="${team.teamIntro}"></td>
+    <td th:text="${team.teamAttendPersonnel}"></td>
+    <td th:text="${team.teamPersonnel}"></td>
+  </tr>
+  </tbody>
+</table>
 
 </body>
 </html>
