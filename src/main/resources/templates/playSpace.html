@@ -113,9 +113,13 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Thymeleaf를 이용하여 리스트를 순회하면서 데이터를 표시합니다. -->
     <tr th:each="board : ${boardList}">
-        <td><a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a></td>
+        <td>
+            <img th:if="${board.boardSport eq '축구'}" th:src="@{/image/sports/축구공.png}" alt="Soccer" width="50">
+            <img th:if="${board.boardSport eq '풋살'}" th:src="@{/image/sports/축구공.png}" alt="Football" width="50">
+            <img th:if="${board.boardSport eq '농구'}" th:src="@{/image/sports/농구공.png}" alt="Basketball" width="50">
+            <img th:if="${board.boardSport eq '야구'}" th:src="@{/image/sports/야구공.png}" alt="Baseball" width="50">
+            <a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a></td>
         <td th:text="${board.boardTitle}"></td>
         <td th:text="${board.boardSport}"></td>
         <td th:text="${board.boardArea}"></td>
