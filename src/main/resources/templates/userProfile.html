@@ -9,7 +9,7 @@
           integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
           crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
-  <title>TopPlayer</title>
+  <title>User Profile Page</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -97,7 +97,6 @@
   <div class="auth-links">
     <a th:href="@{/myPage}"> MyPage </a>
     <a href="javascript:confirmLogout()"> Logout </a>
-
   </div>
 </header>
 
@@ -109,31 +108,37 @@
 </nav>
 
 <section>
-  <h1>Top Players</h1>
+  <h1>Profile</h1>
 </section>
 
-<table border="1" id="topPlayersTable">
+<table border="1" id="userTable">
   <thead>
   <tr>
     <th>ID</th>
-    <th>Likes</th>
     <th>Username</th>
     <th>Nickname</th>
-    <th>Age</th>
+    <th>Email</th>
+    <th>Intro</th>
     <th>Area</th>
+    <th>Age</th>
+    <th>Likes</th>
     <th>Followers</th>
+    <th>Followings</th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="player : ${topPlayers}">
-    <td th:text="${player.id}"></td>
-    <td th:text="${player.likes}"></td>
-    <td><a th:href="@{'/user/' + ${player.id}}"><span th:text="${player.username}"></span></a>
+  <tr th:each="user : ${userProfile}">
+    <td th:text="${userProfile.id}"></td>
+    <td th:text="${userProfile.username}"></td>
+    <td th:text="${userProfile.nickname}"></td>
+    <td th:text="${userProfile.email}"></td>
+    <td th:text="${userProfile.intro}"></td>
+    <td th:text="${userProfile.area}"></td>
+    <td th:text="${userProfile.age}"></td>
+    <td th:text="${userProfile.likes}"></td>
+    <td><a th:href="@{'/user/' + ${userProfile.followers}}"><span th:text="${userProfile.followers}"></span></a>
     </td>
-    <td th:text="${player.nickname}"></td>
-    <td th:text="${player.age}"></td>
-    <td th:text="${player.area}"></td>
-    <td><a th:href="@{'/user/' + ${player.followers}}"><span th:text="${player.followers}"></span></a>
+    <td><a th:href="@{'/user/' + ${userProfile.followings}}"><span th:text="${userProfile.followings}"></span></a>
     </td>
   </tr>
   </tbody>
@@ -182,13 +187,6 @@
 
     return auth;
   }
-
-  function goToUserProfile({username}) {
-    // 클릭한 유저의 프로필 페이지로 이동
-    window.location.href = '/user/' + username;
-  }
-
 </script>
-
 </body>
 </html>

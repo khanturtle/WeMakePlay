@@ -15,6 +15,7 @@ public class UserProfileResponseDto {
     private String username;
     private String nickname;
     private String email;
+    private String intro;
     private String area;
     private String age;
     private Long likes;
