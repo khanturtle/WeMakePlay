@@ -134,10 +134,10 @@
     </div>
 </header>
 <nav>
-    <a href="/mainPage" class="main-links">Home</a>
-    <a href="/playSpace" class="main-links">PlaySpace</a>
-    <a href="/topplayer" class="main-links">TopPlayer</a>
-    <a href="/teamattend" class="main-links">TeamAttend</a>
+    <a th:href="@{/mainPage}" class="main-links" id="homeButton">Home</a>
+    <a th:href="@{/playSpace}" class="main-links">PlaySpace</a>
+    <a th:href="@{/topPlayer}" class="main-links">TopPlayer</a>
+    <a th:href="@{/teamAttend}" class="main-links">TeamAttend</a>
 </nav>
 
 <div class="container mt-5">
@@ -153,8 +153,6 @@
                 <!-- Join button -->
                 <a href="#" class="btn btn-success btn-lg" onclick="attendBoard()"
                    th:href="@{'/attend/' + ${boardResponseDto.id}}">가입 신청</a>
-
-
                 <!-- Participants list button -->
                 <a href="#" class="btn btn-info btn-lg" th:href="@{'/attender/' + ${boardResponseDto.id}}">신청자확인</a>
             </div>
@@ -181,19 +179,25 @@
             </ul>
 
             <hr>
-
+            <form th:action="@{'/board/'+${boardResponseDto.id}}" method="post" >
             <h3>댓글</h3>
+                <label for="content">댓글</label>
+                <textarea id="content" name="content"></textarea>
+                <button type="submit">입력</button>
+            </form>
             <ul class="list-group">
-                <li class="list-group-item" th:each="comment : ${boardResponseDto.commentList}"
-                    th:text="${comment.content}"></li>
+                <li class="list-group-item" th:each="comment : ${boardResponseDto.commentList}">
+                    <span th:text="${comment.content}"></span>
+                    <div class="btn-group">
+                        <!--댓글 수정-->
+                        <a href="#" class="btn btn-primary btn-lg"
+                           th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/'+${comment.id}+ '/edit'}">수정</a>
+                        <!--댓글 삭제-->
+                        <a href="#" class="btn btn-danger btn-lg" onclick="deleteComment()"
+                           th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/' + ${comment.id} + '/delete'}">삭제</a>
+                    </div>
+                </li>
             </ul>
-
-
-            <!-- Comment Form -->
-            <div class="comment-form">
-                <input type="text" class="comment-input" placeholder="댓글 작성칸" />
-                <button class="btn btn-primary comment-btn" onclick="postComment()">입력</button>
-            </div>
         </div>
     </div>
 </div>
@@ -208,23 +212,28 @@
         crossorigin="anonymous"></script>
 <script>
     function confirmDelete() {
-        const result = confirm("Do you want to delete this post?");
+        const result = confirm("게시글을 삭제하시겠습니까?");
         if (result) {
             window.location.href = event.currentTarget.getAttribute("href");
         } else {
             return false;
         }
     }
-
     function attendBoard() {
         // Example: Display an alert indicating successful join
         alert("가입 신청 되었습니다!");
         document.getElementById("attendForm").submit();
     }
-
-    function postComment() {
-        // Example: Display an alert indicating successful comment post
-        alert("Your comment has been posted!");
+    function editComment(commentId) {
+        window.location.href = "/board/${boardResponseDto.id}/comment/" + commentId + "/edit";
+    }
+    function deleteComment() {
+    const result = confirm("댓글을 삭제하시겠습니까?");
+        if (result) {
+            window.location.href = event.currentTarget.getAttribute("href");
+        } else {
+            return false;
+        }
     }
 </script>
 </body>

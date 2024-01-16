@@ -1,7 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
     <title>Board Main</title>
     <style>
         body {
@@ -81,17 +89,17 @@
     <h1>We Make Play</h1>
     <h3>sports community</h3>
     <div class="auth-links">
-        <a th:href = "@{/signup}"> Signup </a>
-        <a th:href = "@{/login}"> Login </a>
+        <a th:href = "@{/myPage}"> MyPage </a>
+        <a href = "javascript:confirmLogout()"> Logout </a>
 
     </div>
 </header>
 
 <nav>
-    <a href="/mainPage" class="main-links">Home</a>
-    <a href="/playSpace" class="main-links">PlaySpace</a>
-    <a href="/topplayer" class="main-links">TopPlayer</a>
-    <a href="/teamattend" class="main-links">TeamAttend</a>
+    <a th:href="@{/mainPage}" class="main-links" id="homeButton">Home</a>
+    <a th:href="@{/playSpace}" class="main-links">PlaySpace</a>
+    <a th:href="@{/topPlayer}" class="main-links">TopPlayer</a>
+    <a th:href="@{/teamAttend}" class="main-links">TeamAttend</a>
 </nav>
 
 <section>
@@ -110,12 +118,10 @@
         <th>Area</th>
         <th>Attend Personnel</th>
         <th>Total Personnel</th>
-        <!-- 필요한 다른 속성들을 추가할 수 있습니다. -->
     </tr>
     </thead>
     <tbody>
     <!-- Thymeleaf를 이용하여 리스트를 순회하면서 데이터를 표시합니다. -->
-<!--    <tr th:each="board : ${boardList}">-->
     <tr th:each="board : ${boardList}">
         <td><a th:href="@{'/board/' + ${board.id}}" th:text="${board.boardTitle}"></a></td>
         <td th:text="${board.boardTitle}"></td>
@@ -123,10 +129,54 @@
         <td th:text="${board.boardArea}"></td>
         <td th:text="${board.boardAttendPersonnel}"></td>
         <td th:text="${board.boardPersonnel}"></td>
-        <!-- 필요한 다른 속성들을 추가할 수 있습니다. -->
     </tr>
     </tbody>
 </table>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        const auth = getToken();
+
+        if (auth !== undefined && auth !== '') {
+            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                jqXHR.setRequestHeader('Authorization', auth);
+            });
+        } else {
+            window.location.href = host + '/';
+            return;
+        }
+    });
+
+    function confirmLogout() {
+        // 알럿 창 띄우기
+        var confirmLogout = window.confirm("로그아웃 하시겠습니까?");
+
+        if (confirmLogout) {
+            // 사용자가 확인을 선택한 경우
+            // logout.js에 정의된 logout 함수 호출
+            logout();
+        }
+    }
+
+    function logout() {
+        // 쿠키 삭제
+        document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        // 인덱스 페이지로 이동
+        window.location.href = "/";
+    }
+
+    function getToken() {
+
+        let auth = Cookies.get('Authorization');
+
+        if (auth === undefined) {
+            return '';
+        }
+
+        return auth;
+    }
+</script>
 
 </body>
 </html>
