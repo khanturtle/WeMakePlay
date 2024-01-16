@@ -201,7 +201,9 @@
   </div>
   <div class="profile-actions">
     <button id="followButton" style="background-color: #3498db; color: white;" onclick="pressFollow()">팔로우 추가</button>
+    <button id="unFollowButton" style="background-color: #d5d5d5; color: #666666;" onclick="unPressFollow()">팔로우 취소</button>
     <button id="likeButton" style="background-color: #f600ff; color: white;" onclick="pressLike()">좋아요</button>
+    <button id="unLikeButton" style="background-color: #d5d5d5; color: #666666;" onclick="unPressLike()">좋아요 취소</button>
 
   </div>
 
@@ -244,6 +246,33 @@
     }
   }
 
+  function unPressLike(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'DELETE',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/likes/' + $('#userId').val(),
+        success: function (data) {
+          // 성공적으로 좋아요를 누른 경우의 처리
+          alert('좋아요가 성공적으로 취소되었습니다.');
+          // 여기에 필요한 추가 동작을 수행할 수 있습니다.
+        },
+        error: function (error) {
+          // 좋아요 등록 실패 시의 처리
+          alert('좋아요 취소에 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
+
   function pressFollow(userId) {
     // 좋아요 요청 보내는 Ajax 코드
     const auth = getToken();
@@ -256,12 +285,38 @@
         },
         url: '/api/follows/' + $('#userId').val(),
         success: function (data) {
-          // 성공적으로 좋아요를 누른 경우의 처리
+
           alert('팔로우가 성공적으로 등록되었습니다.');
         },
         error: function (error) {
-          // 좋아요 등록 실패 시의 처리
-          alert('좋아요 등록에 실패하였습니다. 다시 시도해주세요.');
+
+          alert('팔로우 등록에 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
+
+  function unPressFollow(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'DELETE',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/follows/' + $('#userId').val(),
+        success: function (data) {
+
+          alert('팔로우가 성공적으로 취소되었습니다.');
+        },
+        error: function (error) {
+
+          alert('팔로우 취소가 실패하였습니다. 다시 시도해주세요.');
         }
       });
     } else {
