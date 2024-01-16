@@ -4,21 +4,25 @@ import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
-import com.wemakeplay.wemakeplay.domain.user.entity.User;
-import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
+import com.wemakeplay.wemakeplay.domain.comment.dto.response.CommentResponseDto;
+import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
+import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import com.wemakeplay.wemakeplay.domain.comment.dto.request.CommentRequestDto;
+import com.wemakeplay.wemakeplay.domain.comment.service.CommentService;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -28,8 +32,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardViewController {
     private final BoardService boardService;
-    private final UserRepository userRepository;
-
+    private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     //보드 생성 페이지
     @GetMapping("/boardCreate")
@@ -125,5 +129,61 @@ public class BoardViewController {
     ) {
         boardService.rejectBoardAttend(boardId, userId, userDetails.getUser());
         return "redirect:/board/{boardId}";
+    }
+    @GetMapping("/allowed/attender/{boardId}")
+    public String allowedAttender(
+            @PathVariable Long boardId,
+            Model model){
+        BoardResponseDto boardResponseDto = boardService.getBoard(boardId);
+        model.addAttribute("boardResponseDto", boardResponseDto);
+        return "allowedAttender";
+    }
+    //댓글달기
+    @PostMapping("/board/{boardId}")
+    public String addComment(
+            @PathVariable("boardId") Long boardId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.createComment(userDetails.getUser(),boardId,commentRequestDto);
+
+        return "redirect:/board/"+boardId;
+    }
+
+    @GetMapping("/board/{boardId}/comment/{commentId}/edit")
+    public String editCommentPage(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model) {
+        CommentResponseDto comment = commentService.updateComment(userDetails.getUser(),commentId,commentRequestDto);
+        BoardResponseDto board = boardService.getBoard(boardId);
+        model.addAttribute("board",board);
+        model.addAttribute("comment", comment);
+        return "edit-comment";
+    }
+
+    @PostMapping("/board/{boardId}/comment/{commentId}/edit")
+    public String editComment(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Model model) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                ()-> new ServiceException(ErrorCode.NOT_EXIST_COMMENT)
+        );
+        commentService.updateComment(userDetails.getUser(), commentId, commentRequestDto);
+        model.addAttribute("comment", comment);
+        return "redirect:/board/" + boardId;
+    }
+
+    @GetMapping("/board/{boardId}/comment/{commentId}/delete")
+    public String deleteComment(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.deleteComment(userDetails.getUser(), commentId);
+        return "redirect:/board/" + boardId;
     }
 }
