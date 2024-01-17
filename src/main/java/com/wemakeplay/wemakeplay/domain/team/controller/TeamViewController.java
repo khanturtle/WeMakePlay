@@ -65,7 +65,7 @@ public class TeamViewController {
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails){
         teamService.updateTeam(teamId, teamRequestDto, userDetails.getUser());
-        return "redirect:/teamAttend";
+        return "redirect:/team/{teamId}";
     }
     //삭제
     @GetMapping("/team/{teamId}/delete")
