@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.user.controller;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.service.FollowService;
+import com.wemakeplay.wemakeplay.domain.like.service.LikeService;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.UserProfileResponseDto;
@@ -17,9 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @Controller
@@ -28,6 +29,7 @@ public class UserViewControllerJ {
 
     private final UserService userService;
     private final FollowService followService;
+    private final LikeService likeService;
 
     //회원가입
     @GetMapping("/signup")
@@ -134,4 +136,25 @@ public class UserViewControllerJ {
         return "followingList";
     }
 
+    @GetMapping("/user/{userId}/followers")
+    public String showUserFollowerList(
+    Model model,
+    @PathVariable(name = "userId") Long userId
+    ) {
+        UserProfileResponseDto responseDto =
+            userService.getUserProfile(userId);
+        model.addAttribute("userFollowers", responseDto);
+        return "userFollowerList";
+    }
+
+    @GetMapping("/user/{userId}/followings")
+    public String showUserFollowingList(
+        Model model,
+        @PathVariable(name = "userId") Long userId
+    ) {
+        UserProfileResponseDto responseDto =
+            userService.getUserProfile(userId);
+        model.addAttribute("userFollowings", responseDto);
+        return "userFollowingList";
+    }
 }

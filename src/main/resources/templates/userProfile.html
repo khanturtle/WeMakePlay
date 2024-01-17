@@ -184,6 +184,7 @@
   <div class="profile-info">
     <div class="profile-details">
       <!-- 각 항목을 카드에 추가 -->
+      <input type="hidden" th:value="${userProfile.id}" id="userId">
       <h2 th:text="${userProfile.username}"></h2>
       <p th:text="${userProfile.nickname}"></p>
       <p th:text="${userProfile.intro}"></p>
@@ -194,29 +195,198 @@
   </div>
   <div class="profile-stats">
     <!-- 팔로워, 팔로잉, 좋아요 등의 통계를 추가 -->
-    <a href="/user/followers" th:text="${userProfile.followers} + ' Followers'"></a>
-    <a href="/user/followings" th:text="${userProfile.followings} + ' Followings'"></a>
+    <a href="#" onclick="goToFollowers()" th:text="${userProfile.followers} + ' Followers'"></a>
+    <a href="#" onclick="goToFollowings()" th:text="${userProfile.followings} + ' Followings'"></a>
     <span th:text="${userProfile.likes} + ' Likes'"></span>
   </div>
   <div class="profile-actions">
-    <button id="followButton" style="background-color: #3498db; color: white;">팔로우 추가</button>
-    <button id="likeButton" style="background-color: #f600ff; color: white;">좋아요</button>
+    <button id="followButton" style="background-color: #3498db; color: white;" onclick="pressFollow()">팔로우 추가</button>
+    <button id="unFollowButton" style="background-color: #d5d5d5; color: #666666;" onclick="unPressFollow()">팔로우 취소</button>
+    <button id="likeButton" style="background-color: #f600ff; color: white;" onclick="pressLike()">좋아요</button>
+    <button id="unLikeButton" style="background-color: #d5d5d5; color: #666666;" onclick="unPressLike()">좋아요 취소</button>
 
   </div>
+  <!-- 보드 리스트 표시 -->
+  <div>
+    <h3>My Boards</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>제목</th>
+        <th>종목</th>
+        <th>지역</th>
+        <th>경기장</th>
+        <th>총 인원</th>
+        <th>참여 인원</th>
+        <!-- 필요한 다른 컬럼 추가 -->
+      </tr>
+      </thead>
+      <tbody>
+      <!-- 보드 리스트를 반복하여 표시 -->
+      <tr th:each="board : ${userProfile.boardList}">
+        <td th:text="${board.getBoardTitle()}"></td>
+        <td th:text="${board.getBoardSport()}"></td>
+        <td th:text="${board.getBoardArea()}"></td>
+        <td th:text="${board.getBoardStadium()}"></td>
+        <td th:text="${board.getBoardPersonnel()}"></td>
+        <td th:text="${board.getBoardAttendPersonnel()}"></td>
+        <!-- 추가: 보드 ID를 데이터 속성으로 추가 -->
+        <td class="board-id" th:text="${board.id}" style="display: none;"></td>
+        <!-- 필요한 다른 컬럼 추가 -->
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <script th:inline="javascript">
   $(document).ready(function () {
     const auth = getToken();
 
     if (auth !== undefined && auth !== '') {
-      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-        jqXHR.setRequestHeader('Authorization', auth);
-      });
+
     } else {
       window.location.href = host + '/';
       return;
     }
   });
+
+  $(document).ready(function () {
+    // 보드 행에 마우스를 올렸을 때의 이벤트 처리
+    $('tbody tr').hover(
+        function () {
+          $(this).css('background-color', '#ddd'); // 마우스를 올렸을 때 배경색 변경
+        },
+        function () {
+          $(this).css('background-color', ''); // 마우스를 떼었을 때 배경색 원래대로 복원
+        }
+    );
+
+    // 보드 행을 클릭했을 때 해당 보드로 이동하는 이벤트 처리
+    $('tbody tr').click(function () {
+
+      // 수정: 클릭된 행에서 보드 ID를 가져오기
+      var boardId = $(this).find('.board-id').text();
+      // 이동 처리
+      window.location.href = '/board/' + boardId;
+    });
+  });
+
+  function goToFollowers() {
+    var userId = $('#userId').val();
+    window.location.href = '/user/' + userId + '/followers';
+  }
+
+  function goToFollowings() {
+    var userId = $('#userId').val();
+    window.location.href = '/user/' + userId + '/followings';
+  }
+
+  function pressLike(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'POST',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/likes/' + $('#userId').val(),
+        success: function (data) {
+          // 성공적으로 좋아요를 누른 경우의 처리
+          alert('좋아요가 성공적으로 등록되었습니다.');
+          // 여기에 필요한 추가 동작을 수행할 수 있습니다.
+        },
+        error: function (error) {
+          // 좋아요 등록 실패 시의 처리
+          alert('좋아요 등록에 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
+
+  function unPressLike(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'DELETE',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/likes/' + $('#userId').val(),
+        success: function (data) {
+          // 성공적으로 좋아요를 누른 경우의 처리
+          alert('좋아요가 성공적으로 취소되었습니다.');
+          // 여기에 필요한 추가 동작을 수행할 수 있습니다.
+        },
+        error: function (error) {
+          // 좋아요 등록 실패 시의 처리
+          alert('좋아요 취소에 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
+
+  function pressFollow(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'POST',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/follows/' + $('#userId').val(),
+        success: function (data) {
+
+          alert('팔로우가 성공적으로 등록되었습니다.');
+        },
+        error: function (error) {
+
+          alert('팔로우 등록에 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
+
+  function unPressFollow(userId) {
+    // 좋아요 요청 보내는 Ajax 코드
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'DELETE',
+        headers : {
+          Authorization : auth
+        },
+        url: '/api/follows/' + $('#userId').val(),
+        success: function (data) {
+
+          alert('팔로우가 성공적으로 취소되었습니다.');
+        },
+        error: function (error) {
+
+          alert('팔로우 취소가 실패하였습니다. 다시 시도해주세요.');
+        }
+      });
+    } else {
+      window.location.href = host + '/';
+      return;
+    }
+  }
 
   function confirmLogout() {
     // 알럿 창 띄우기
