@@ -157,6 +157,12 @@
     .profile-actions button.danger:hover {
       background-color: #d32f2f;
     }
+
+    /* 보드에 마우스를 올렸을 때의 스타일 */
+    tbody tr:hover {
+      background-color: #ddd; /* 마우스를 올렸을 때 배경색 변경 */
+      cursor: pointer; /* 커서 모양을 포인터로 변경 */
+    }
   </style>
 </head>
 
@@ -187,6 +193,7 @@
   <div class="profile-info">
     <div class="profile-details">
       <!-- 각 항목을 카드에 추가 -->
+      <input type="hidden" th:value="${myProfile.id}" id="userId">
       <h2 th:text="${myProfile.username}"></h2>
       <p th:text="${myProfile.nickname}"></p>
       <p th:text="${myProfile.intro}"></p>
@@ -204,8 +211,41 @@
   <div class="profile-actions">
     <button onclick="location.href='/user/edit'">수정</button>
     <button onclick="confirmWithdraw()">회원탈퇴</button>
-
   </div>
+  <!-- 보드 리스트 표시 -->
+  <div>
+    <h3>My Boards</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>제목</th>
+        <th>종목</th>
+        <th>지역</th>
+        <th>경기장</th>
+        <th>총 인원</th>
+        <th>참여 인원</th>
+        <!-- 필요한 다른 컬럼 추가 -->
+      </tr>
+      </thead>
+      <tbody>
+      <!-- 보드 리스트를 반복하여 표시 -->
+      <tr th:each="board : ${myProfile.boardList}">
+        <td th:text="${board.getBoardTitle()}"></td>
+        <td th:text="${board.getBoardSport()}"></td>
+        <td th:text="${board.getBoardArea()}"></td>
+        <td th:text="${board.getBoardStadium()}"></td>
+        <td th:text="${board.getBoardPersonnel()}"></td>
+        <td th:text="${board.getBoardAttendPersonnel()}"></td>
+        <!-- 추가: 보드 ID를 데이터 속성으로 추가 -->
+        <td class="board-id" th:text="${board.id}" style="display: none;"></td>
+        <!-- 필요한 다른 컬럼 추가 -->
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
 
 <script th:inline="javascript">
   $(document).ready(function () {
@@ -219,6 +259,27 @@
       window.location.href = host + '/';
       return;
     }
+  });
+
+  $(document).ready(function () {
+    // 보드 행에 마우스를 올렸을 때의 이벤트 처리
+    $('tbody tr').hover(
+        function () {
+          $(this).css('background-color', '#ddd'); // 마우스를 올렸을 때 배경색 변경
+        },
+        function () {
+          $(this).css('background-color', ''); // 마우스를 떼었을 때 배경색 원래대로 복원
+        }
+    );
+
+    // 보드 행을 클릭했을 때 해당 보드로 이동하는 이벤트 처리
+    $('tbody tr').click(function () {
+
+      // 수정: 클릭된 행에서 보드 ID를 가져오기
+      var boardId = $(this).find('.board-id').text();
+      // 이동 처리
+      window.location.href = '/board/' + boardId;
+    });
   });
 
   function confirmLogout() {
@@ -263,11 +324,26 @@
   }
 
   function withdraw() {
-    // 회원탈퇴 로직 추가
-    // ...
-
-    // 인덱스 페이지로 이동 또는 다른 처리
-    window.location.href = "/";
+    // 회원탈퇴 요청 보내기
+    const auth = getToken();
+    if (auth !== undefined && auth !== '') {
+      $.ajax({
+        type: 'DELETE', // 또는 'DELETE'를 사용할 수 있습니다.
+        headers: {
+          Authorization: auth
+        },
+        url: 'api/users/withdraw',
+        success: function (data) {
+          // 회원 탈퇴 성공 시 로직
+          alert('회원 탈퇴가 성공적으로 처리되었습니다.');
+          logout(); // 로그아웃과 동일하게 처리
+        },
+        error: function (error) {
+          // 회원 탈퇴 실패 시 로직
+          alert('회원 탈퇴에 실패하였습니다.');
+        }
+      });
+    }
   }
 
 </script>
