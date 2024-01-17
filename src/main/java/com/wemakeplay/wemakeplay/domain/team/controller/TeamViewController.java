@@ -76,7 +76,7 @@ public class TeamViewController {
         return "redirect:/teamAttend";
     }
     //팀 참여
-    @GetMapping("/attend/{teamId}")
+    @GetMapping("/teamAttend/{teamId}")
     public String attendTeam(
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -84,7 +84,7 @@ public class TeamViewController {
         return "redirect:/team/{teamId}";
     }
     //신청자 목록
-    @GetMapping("/attender/{teamId}")
+    @GetMapping("/teamAttender/{teamId}")
     public String checkTeamAttender(
         @PathVariable Long teamId,
         Model model,
@@ -95,7 +95,7 @@ public class TeamViewController {
         return "teamAttender";
     }
     //수락
-    @GetMapping("/allow/{teamId}/{userId}")
+    @GetMapping("/allowTeam/{teamId}/{userId}")
     public String allowTeamAttend(
         @PathVariable Long teamId,
         @PathVariable Long userId,
@@ -105,7 +105,7 @@ public class TeamViewController {
         return "redirect:/team/{teamId}";
     }
     //거절
-    @GetMapping("/reject/{teamId}/{userId}")
+    @GetMapping("/rejectTeam/{teamId}/{userId}")
     public String rejectTeamAttend(
         @PathVariable Long teamId,
         @PathVariable Long userId,
@@ -113,5 +113,14 @@ public class TeamViewController {
     ){
         teamService.rejectTeamAttend(teamId, userId, userDetails.getUser());
         return "redirect:/team/{teamId}";
+    }
+    // 참여자 확인
+    @GetMapping("/allowedTeam/attender/{teamId}")
+    public String allowedAttender(
+        @PathVariable Long teamId,
+        Model model){
+        TeamResponseDto teamResponseDto = teamService.getTeam(teamId);
+        model.addAttribute("teamResponseDto", teamResponseDto);
+        return "allowedAttender";
     }
 }
