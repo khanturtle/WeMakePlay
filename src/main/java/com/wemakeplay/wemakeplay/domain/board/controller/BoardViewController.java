@@ -10,18 +10,17 @@ import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import com.wemakeplay.wemakeplay.domain.comment.dto.request.CommentRequestDto;
 import com.wemakeplay.wemakeplay.domain.comment.service.CommentService;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -61,10 +60,23 @@ public class BoardViewController {
 
     //보드 전체 조회
     @GetMapping("/playSpace") //(http://localhost:8080/playSpace)
-    public String getBoards(Model model) {
-        List<BoardViewResponseDto> boardsList = boardService.getBoards();
-        model.addAttribute("boardList", boardsList);
-        return "PlaySpace/playSpace"; //templates 폴더 내에 html파일 (playSpace.html)
+    public String getBoards(
+            Model model,
+            @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
+        // Pageable 객체를 생성하여 페이지 번호와 페이지 크기를 설정
+        PageRequest pageable = PageRequest.of(page, pageSize);
+        // 페이지 처리된 게시글 목록을 가져오는 메서드 호출
+        Page<BoardViewResponseDto> boardPage = boardService.getBoards(pageable);
+        // 현재 페이지의 게시글 목록과 전체 페이지 수를 모델에 추가
+        model.addAttribute("boardList", boardPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", boardPage.getTotalPages());
+        return "PlaySpace/playSpace";
+
+//        List<BoardViewResponseDto> boardsList = boardService.getBoards();
+//        model.addAttribute("boardList", boardsList);
+//        return "PlaySpace/playSpace"; //templates 폴더 내에 html파일 (playSpace.html)
     }
 
     //보드 수정

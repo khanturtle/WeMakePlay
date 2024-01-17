@@ -36,7 +36,6 @@ public class Board extends BaseEntity {
     @ManyToOne
     private User boardOwner;
 
-
     @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)//, fetch = FetchType.EAGER
     private List<AttendBoard> attendBoards = new ArrayList<>();
@@ -44,7 +43,6 @@ public class Board extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();

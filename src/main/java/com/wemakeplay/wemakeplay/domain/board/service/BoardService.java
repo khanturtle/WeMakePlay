@@ -14,6 +14,8 @@ import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -48,7 +50,10 @@ public class BoardService {
         }
         return boardViewResponseDtos;
     }
-
+    public Page<BoardViewResponseDto> getBoards(Pageable pageable) {
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+        return boardPage.map(BoardViewResponseDto::new);
+    }
     public BoardResponseDto getBoard(Long boardId) {
         Board board = findBoard(boardId);
         return new BoardResponseDto(board);
