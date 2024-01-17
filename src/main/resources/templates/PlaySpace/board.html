@@ -193,6 +193,7 @@
             <p class="attendance" onclick="toggleAttendance()">참여자 확인</p>
                 <div class="attendanceCheck" id="attendanceCheck">
                     <ul class="list-group">
+                        <li class="list-group-item" th:text ="${boardResponseDto.boardOwner}" ></li>
                         <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}"
                             th:text="${userNickname}"></li>
                     </ul>

@@ -73,10 +73,6 @@ public class BoardViewController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", boardPage.getTotalPages());
         return "PlaySpace/playSpace";
-
-//        List<BoardViewResponseDto> boardsList = boardService.getBoards();
-//        model.addAttribute("boardList", boardsList);
-//        return "PlaySpace/playSpace"; //templates 폴더 내에 html파일 (playSpace.html)
     }
 
     //보드 수정

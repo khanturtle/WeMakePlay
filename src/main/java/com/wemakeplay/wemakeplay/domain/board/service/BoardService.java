@@ -38,7 +38,6 @@ public class BoardService {
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
         Board board = new Board(boardRequestDto, user);
         boardRepository.save(board);
-        attendBoardRepository.save(new AttendBoard(board,user,Participation.attend));
         return new BoardResponseDto(board);
     }
 
