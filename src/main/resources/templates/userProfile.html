@@ -195,8 +195,8 @@
   </div>
   <div class="profile-stats">
     <!-- 팔로워, 팔로잉, 좋아요 등의 통계를 추가 -->
-    <a href="/user/followers" th:text="${userProfile.followers} + ' Followers'"></a>
-    <a href="/user/followings" th:text="${userProfile.followings} + ' Followings'"></a>
+    <a href="#" onclick="goToFollowers()" th:text="${userProfile.followers} + ' Followers'"></a>
+    <a href="#" onclick="goToFollowings()" th:text="${userProfile.followings} + ' Followings'"></a>
     <span th:text="${userProfile.likes} + ' Likes'"></span>
   </div>
   <div class="profile-actions">
@@ -271,6 +271,16 @@
       window.location.href = '/board/' + boardId;
     });
   });
+
+  function goToFollowers() {
+    var userId = $('#userId').val();
+    window.location.href = '/user/' + userId + '/followers';
+  }
+
+  function goToFollowings() {
+    var userId = $('#userId').val();
+    window.location.href = '/user/' + userId + '/followings';
+  }
 
   function pressLike(userId) {
     // 좋아요 요청 보내는 Ajax 코드

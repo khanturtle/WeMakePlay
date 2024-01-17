@@ -135,4 +135,26 @@ public class UserViewControllerJ {
         model.addAttribute("followings", followingResponseDtoList);
         return "followingList";
     }
+
+    @GetMapping("/user/{userId}/followers")
+    public String showUserFollowerList(
+    Model model,
+    @PathVariable(name = "userId") Long userId
+    ) {
+        UserProfileResponseDto responseDto =
+            userService.getUserProfile(userId);
+        model.addAttribute("userFollowers", responseDto);
+        return "userFollowerList";
+    }
+
+    @GetMapping("/user/{userId}/followings")
+    public String showUserFollowingList(
+        Model model,
+        @PathVariable(name = "userId") Long userId
+    ) {
+        UserProfileResponseDto responseDto =
+            userService.getUserProfile(userId);
+        model.addAttribute("userFollowings", responseDto);
+        return "userFollowingList";
+    }
 }
