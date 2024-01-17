@@ -99,9 +99,9 @@
             <!-- 수락 버튼과 거절 버튼을 담을 컨테이너 -->
             <div class="btn-container">
                 <!-- 수락 버튼 -->
-                <a th:href="@{'/allow/' + ${boardId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="allowAndShowAlert()">수락</a>
+                <a th:href="@{'/allowBoard/' + ${boardId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="allowAndShowAlert()">수락</a>
                 <!-- 거절 버튼 -->
-                <a th:href="@{'/reject/' + ${boardId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="rejectAndShowAlert()">거절</a>
+                <a th:href="@{'/rejectBoard/' + ${boardId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="rejectAndShowAlert()">거절</a>
             </div>
             <hr>
         </li>

@@ -108,12 +108,24 @@
             background-color: #ddd;
             color: black;
         }
+        .attendance{
+            background-color: skyblue;
+            width: 100px;
+            text-align: center;
+            border-radius: 10px;
+            cursor:pointer;
+        }
 
         .attendanceCheck{
-            display: none;
+            visibility: hidden;
+            position: absolute;
+            opacity: 0;
         }
-        .hoverAttendance:hover+ .attendanceCheck{
-            display: block;
+        .attendanceCheck.show {
+            visibility: visible;
+            position: static;
+            opacity: 1;
+            transition: visibility 0s, opacity 0.5s ease;
         }
 
     </style>
@@ -143,6 +155,7 @@
             <!-- 수정 버튼 -->
                 <a href="#"  th:href="@{'/board/' + ${boardResponseDto.id} + '/edit'}">수정</a>
             <!-- 삭제 버튼 -->
+                |
                 <span class="text-danger" onclick="confirmDelete()"
                   th:style="'cursor: pointer;'"
                   th:onclick="|if (confirm('게시글을 삭제하시겠습니까?')) window.location.href = '/board/' + ${boardResponseDto.id} + '/delete'; else false;|">
@@ -155,9 +168,9 @@
             <div class="btn-group">
                 <!-- Join button -->
                 <a href="#" class="btn btn-success btn-lg" onclick="attendBoard()"
-                   th:href="@{'/attend/' + ${boardResponseDto.id}}">가입 신청</a>
+                   th:href="@{'/boardAttend/' + ${boardResponseDto.id}}">가입 신청</a>
                 <!-- Participants list button -->
-                <a href="#" class="btn btn-info btn-lg" th:href="@{'/attender/' + ${boardResponseDto.id}}">신청자 확인</a>
+                <a href="#" class="btn btn-info btn-lg" th:href="@{'/boardAttender/' + ${boardResponseDto.id}}">신청자 확인</a>
             </div>
 
             <hr>
@@ -177,9 +190,10 @@
             <p class="participants-info"
                th:text="'참여자 : ' + ${boardResponseDto.boardAttendPersonnel} +' / ' + ${boardResponseDto.boardPersonnel}"></p>
 
-            <p class="hoverAttendance">참여자 확인</p>
-                <div class="attendanceCheck">
+            <p class="attendance" onclick="toggleAttendance()">참여자 확인</p>
+                <div class="attendanceCheck" id="attendanceCheck">
                     <ul class="list-group">
+                        <li class="list-group-item" th:text ="${boardResponseDto.boardOwner}" ></li>
                         <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}"
                             th:text="${userNickname}"></li>
                     </ul>
@@ -203,7 +217,11 @@
                         <a href="#" th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/'+${comment.id}+ '/edit'}">수정</a>
                         |
                         <!--댓글 삭제-->
-                        <a href="#" onclick="deleteComment()" th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/' + ${comment.id} + '/delete'}">삭제</a>
+                        <span class="text-danger" onclick="deleteComment()"
+                              th:style="'cursor: pointer;'"
+                              th:onclick="|if (confirm('댓글을 삭제하시겠습니까?')) window.location.href = '/board/' + ${boardResponseDto.id} +'/comment/' + ${comment.id} + '/delete'; else false;|">
+                            삭제
+                        </span>
                     </div>
                     <hr>
                 </li>
@@ -234,9 +252,26 @@
         alert("가입 신청 되었습니다!");
         document.getElementById("attendForm").submit();
     }
-    function editComment(commentId) {
-        window.location.href = "/board/${boardResponseDto.id}/comment/" + commentId + "/edit";
+
+    let isAttendanceCheckVisible = false;
+    function toggleAttendance() {
+        const attendanceCheckElement = document.getElementById("attendanceCheck");
+
+        // 번갈아가면서 가시성을 변경
+        isAttendanceCheckVisible = !isAttendanceCheckVisible;
+
+        if (isAttendanceCheckVisible) {
+            attendanceCheckElement.classList.add("show");
+        } else {
+            attendanceCheckElement.classList.remove("show");
+        }
     }
+    function editComment(commentId) {
+        // 새로운 팝업 창을 열어서 수정 페이지를 표시
+        const editUrl = "/board/${boardResponseDto.id}/comment/" + commentId + "/edit";
+        window.open(editUrl, "Edit Comment", "width=600,height=400");
+    }
+
     function deleteComment() {
     const result = confirm("댓글을 삭제하시겠습니까?");
         if (result) {

@@ -33,6 +33,7 @@ application.properties
 /dist/
 /nbdist/
 /.nb-gradle/
+apikey.js
 
 ### VS Code ###
 .vscode/

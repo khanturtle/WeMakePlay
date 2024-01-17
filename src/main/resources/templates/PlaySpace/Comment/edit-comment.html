@@ -10,12 +10,13 @@
 <body>
 <div class="container mt-5">
     <h2>Edit Comment</h2>
+
     <form action="@{/board/{boardId}/comment/{commentId}/edit" method="post" th:object="${comment}" th:action="@{'/board/' + ${board.id} + '/comment/'+${comment.id}+'/edit'}">
         <input type="hidden" name="id" th:value="${comment.id}" />
-            <div class="mb-3">
-                <label for="content" class="form-label">댓글</label>
-                <input type="text" class="form-control" id="content" th:field="${comment.content}" th:value="${comment.content}" th:required="required">
-            </div>
+        <div class="mb-3">
+            <label for="commentContent" class="form-label">댓글</label>
+            <input type="text" class="form-control" id="commentContent" th:field="${comment.content}" th:required="required">
+        </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
 </div>
