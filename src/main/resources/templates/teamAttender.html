@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
   <meta charset="UTF-8">
   <title>Team Main</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -81,6 +82,7 @@
       gap: 10px;
     }
   </style>
+</head>
 <body>
 <header>
   <h1>신청자 확인</h1>
@@ -92,12 +94,10 @@
         <strong>Nickname:</strong> <span th:text="${attender.getUser().getNickname()}"></span>
       </div>
       <div class="btn-container">
-        <form th:action="@{'/allow/' + ${teamId} + '/' + ${attender.getUser().getId()}}" method="post">
-          <button type="submit" class="btn btn-success" onclick="allowAndShowAlert()">수락</button>
-        </form>
-        <form th:action="@{'/reject/' + ${teamId} + '/' + ${attender.getUser().getId()}}" method="post">
-          <button type="submit" class="btn btn-danger" onclick="rejectAndShowAlert()">거절</button>
-        </form>
+        <!-- 수락 버튼 -->
+        <a th:href="@{'/allowTeam/' + ${teamId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="allowAndShowAlert()">수락</a>
+        <!-- 거절 버튼 -->
+        <a th:href="@{'/rejectTeam/' + ${teamId} + '/' + ${attender.getUser().getId()}}" class="btn btn-success" onclick="rejectAndShowAlert()">거절</a>
       </div>
       <hr>
     </li>
