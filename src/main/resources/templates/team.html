@@ -157,7 +157,7 @@
         <!-- 삭제 버튼 -->
         <span class="text-danger" onclick="confirmDelete()"
               th:style="'cursor: pointer;'"
-              th:onclick="|if (confirm('게시글을 삭제하시겠습니까?')) window.location.href = '/team/' + ${teamResponseDto.id} + '/delete'; else false;|">
+              th:onclick="|if (confirm('팀을 삭제하시겠습니까?')) window.location.href = '/team/' + ${teamResponseDto.id} + '/delete'; else false;|">
                     삭제
                 </span>
       </div>
