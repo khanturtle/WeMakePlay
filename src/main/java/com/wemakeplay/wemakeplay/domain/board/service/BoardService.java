@@ -22,9 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +43,19 @@ public class BoardService {
         List<Board> boardList = boardRepository.findAll();
         List<BoardViewResponseDto> boardViewResponseDtos = new ArrayList<>();
         for (Board board : boardList) {
+            boardViewResponseDtos.add(new BoardViewResponseDto(board));
+        }
+        return boardViewResponseDtos;
+    }
+
+    public List<BoardViewResponseDto> get3Boards() {
+        List<Board> boardList = boardRepository.findAll();
+        // createdAt을 기준으로 내림차순 정렬
+        Collections.sort(boardList, Comparator.comparing(Board::getCreatedAt).reversed());
+        List<BoardViewResponseDto> boardViewResponseDtos = new ArrayList<>();
+        // 상위 3개의 보드를 선택
+        for (int i = 0; i < Math.min(boardList.size(), 3); i++) {
+            Board board = boardList.get(i);
             boardViewResponseDtos.add(new BoardViewResponseDto(board));
         }
         return boardViewResponseDtos;
