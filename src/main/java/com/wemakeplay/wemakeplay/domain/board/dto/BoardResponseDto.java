@@ -19,6 +19,7 @@ public class BoardResponseDto {
     private String boardTitle;
     private String boardContent;
     private String boardOwner;
+    private Long boardOwnerId;
     private String boardSport;
     private String boardArea;
     private Date playDate;
@@ -42,6 +43,7 @@ public class BoardResponseDto {
         this.commentNum = board.getComments().size();
         this.boardAttendPersonnel = board.getBoardAttendPersonnel();
         this.boardOwner = board.getBoardOwner().getNickname();
+        this.boardOwnerId = board.getBoardOwner().getId();
 
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
         for (Comment comment : board.getComments()) {
