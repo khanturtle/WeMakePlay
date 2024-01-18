@@ -156,6 +156,21 @@
     </tr>
     </tbody>
 </table>
+<!-- Pagination section -->
+<div class="pagination justify-content-center">
+    <ul class="pagination">
+        <li class="page-item" th:class="${currentPage == 0} ? 'disabled' : ''">
+            <a class="page-link" th:if="${currentPage > 0}" th:href="@{'/playSpace?page=' + ${(currentPage - 1)}}">Previous</a>
+        </li>
+        <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages - 1)}">
+            <a class="page-link" th:href="@{'/playSpace?page=' + ${stat.index}}" th:text="${stat.index + 1}"></a>
+        </li>
+        <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">
+            <a class="page-link" th:if="${currentPage < totalPages - 1}" th:href="@{'/playSpace?page=' + ${(currentPage + 1)}}">Next</a>
+        </li>
+    </ul>
+</div>
+
 
 <script th:inline="javascript">
     $(document).ready(function () {
@@ -181,7 +196,6 @@
             logout();
         }
     }
-
     function logout() {
         // 쿠키 삭제
         document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";

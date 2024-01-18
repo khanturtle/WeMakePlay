@@ -4,25 +4,23 @@ import com.wemakeplay.wemakeplay.domain.attendboard.AttendBoard;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardRequestDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
-import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.comment.dto.response.CommentResponseDto;
 import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import com.wemakeplay.wemakeplay.domain.comment.dto.request.CommentRequestDto;
 import com.wemakeplay.wemakeplay.domain.comment.service.CommentService;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -40,7 +38,7 @@ public class BoardViewController {
     public String showCreateForm(
             Model model) {
         model.addAttribute("boardRequestDto", new BoardRequestDto());
-        return "boardForm";
+        return "PlaySpace/boardForm";
     }
 
     //보드 생성 요청
@@ -57,15 +55,24 @@ public class BoardViewController {
     public String getBoard(@PathVariable Long boardId, Model model) {
         BoardResponseDto boardResponseDto = boardService.getBoard(boardId);
         model.addAttribute("boardResponseDto", boardResponseDto);
-        return "board";
+        return "PlaySpace/board";
     }
 
     //보드 전체 조회
     @GetMapping("/playSpace") //(http://localhost:8080/playSpace)
-    public String getBoards(Model model) {
-        List<BoardViewResponseDto> boardsList = boardService.getBoards();
-        model.addAttribute("boardList", boardsList);
-        return "playSpace"; //templates 폴더 내에 html파일 (playSpace.html)
+    public String getBoards(
+            Model model,
+            @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 10; // 한 페이지에 보여줄 게시글 수
+        // Pageable 객체를 생성하여 페이지 번호와 페이지 크기를 설정
+        PageRequest pageable = PageRequest.of(page, pageSize);
+        // 페이지 처리된 게시글 목록을 가져오는 메서드 호출
+        Page<BoardViewResponseDto> boardPage = boardService.getBoards(pageable);
+        // 현재 페이지의 게시글 목록과 전체 페이지 수를 모델에 추가
+        model.addAttribute("boardList", boardPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", boardPage.getTotalPages());
+        return "PlaySpace/playSpace";
     }
 
     //보드 수정
@@ -73,9 +80,8 @@ public class BoardViewController {
     public String editBoardForm(@PathVariable Long boardId, Model model) {
         BoardResponseDto boardResponseDto = boardService.getBoard(boardId);
         model.addAttribute("board", boardResponseDto);
-        return "editBoardForm";
+        return "PlaySpace/editBoardForm";
     }
-
     @PostMapping("/board/{boardId}/edit")
     public String editBoard(
             @ModelAttribute BoardRequestDto boardRequestDto,
@@ -94,7 +100,7 @@ public class BoardViewController {
         return "redirect:/playSpace";
     }
     //보드 참여
-    @GetMapping("/attend/{boardId}")
+    @GetMapping("/boardAttend/{boardId}")
     public String attendBoard(
             @PathVariable Long boardId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -102,7 +108,7 @@ public class BoardViewController {
         return "redirect:/board/{boardId}";
     }
     //신청자 목록 조회
-    @GetMapping("/attender/{boardId}")
+    @GetMapping("/boardAttender/{boardId}")
     public String checkBoardAttender(
             @PathVariable Long boardId,
             Model model,
@@ -110,9 +116,10 @@ public class BoardViewController {
     ) {
         List<AttendBoard> attenderList=boardService.checkBoardAttender(boardId,userDetails.getUser());
         model.addAttribute("attenderList", attenderList);
-        return "boardAttender";
+        return "PlaySpace/BoardAttend/boardAttender";
     }
-    @GetMapping("/allow/{boardId}/{userId}")
+    //신청 승인
+    @GetMapping("/allowBoard/{boardId}/{userId}")
     public String allowBoardAttend(
             @PathVariable Long boardId,
             @PathVariable Long userId,
@@ -121,7 +128,8 @@ public class BoardViewController {
         boardService.allowBoardAttend(boardId, userId, userDetails.getUser());
         return "redirect:/board/{boardId}";
     }
-    @GetMapping("/reject/{boardId}/{userId}")
+    //신청 거절
+    @GetMapping("/rejectBoard/{boardId}/{userId}")
     public String rejectBoardAttend(
             @PathVariable Long boardId,
             @PathVariable Long userId,
@@ -130,15 +138,16 @@ public class BoardViewController {
         boardService.rejectBoardAttend(boardId, userId, userDetails.getUser());
         return "redirect:/board/{boardId}";
     }
+    //참여자 확인
     @GetMapping("/allowed/attender/{boardId}")
     public String allowedAttender(
             @PathVariable Long boardId,
             Model model){
         BoardResponseDto boardResponseDto = boardService.getBoard(boardId);
         model.addAttribute("boardResponseDto", boardResponseDto);
-        return "allowedAttender";
+        return "PlaySpace/BoardAttend/allowedAttender";
     }
-    //댓글달기
+    //댓글 달기
     @PostMapping("/board/{boardId}")
     public String addComment(
             @PathVariable("boardId") Long boardId,
@@ -148,23 +157,9 @@ public class BoardViewController {
 
         return "redirect:/board/"+boardId;
     }
-
+    //댓글 수정
     @GetMapping("/board/{boardId}/comment/{commentId}/edit")
     public String editCommentPage(
-            @PathVariable Long boardId,
-            @PathVariable Long commentId,
-            @ModelAttribute CommentRequestDto commentRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            Model model) {
-        CommentResponseDto comment = commentService.updateComment(userDetails.getUser(),commentId,commentRequestDto);
-        BoardResponseDto board = boardService.getBoard(boardId);
-        model.addAttribute("board",board);
-        model.addAttribute("comment", comment);
-        return "edit-comment";
-    }
-
-    @PostMapping("/board/{boardId}/comment/{commentId}/edit")
-    public String editComment(
             @PathVariable Long boardId,
             @PathVariable Long commentId,
             @ModelAttribute CommentRequestDto commentRequestDto,
@@ -173,8 +168,18 @@ public class BoardViewController {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
                 ()-> new ServiceException(ErrorCode.NOT_EXIST_COMMENT)
         );
-        commentService.updateComment(userDetails.getUser(), commentId, commentRequestDto);
+        BoardResponseDto board = boardService.getBoard(boardId);
+        model.addAttribute("board",board);
         model.addAttribute("comment", comment);
+        return "PlaySpace/Comment/edit-comment";
+    }
+    @PostMapping("/board/{boardId}/comment/{commentId}/edit")
+    public String editComment(
+            @PathVariable Long boardId,
+            @PathVariable Long commentId,
+            @ModelAttribute CommentRequestDto commentRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        commentService.updateComment(userDetails.getUser(), commentId, commentRequestDto);
         return "redirect:/board/" + boardId;
     }
 

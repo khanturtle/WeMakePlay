@@ -13,27 +13,27 @@
     <h2>Edit Board</h2>
     <form action="@{/board/{boardId}/edit}" method="post" th:object="${board}" th:action="@{'/board/' + ${board.id} + '/edit'}">
     <input type="hidden" name="id" th:value="${board.id}" />
+    <input type="hidden" name="boardSport" th:value="${board.boardSport}" />
+    <input type="hidden" name="boardArea" th:value="${board.boardArea}" />
         <div class="mb-3">
             <label for="boardTitle" class="form-label">제목</label>
             <input type="text" class="form-control" id="boardTitle" th:field="${board.boardTitle}" th:required="required">
         </div>
 
         <div class="mb-3">
-            <label for="boardSport" class="form-label">운동 종목</label>
-            <input type="text" class="form-control" id="boardSport" th:field="${board.boardSport}" th:required="required">
+            <label for="boardContent" class="form-label">내용</label>
+            <input type="text" class="form-control" id="boardContent" th:field="${board.boardContent}" th:required="required">
         </div>
 
         <div class="mb-3">
-            <label for="boardArea" class="form-label">지역</label>
-            <input type="text" class="form-control" id="boardArea" th:field="${board.boardArea}" th:required="required">
+            <label for="boardStadium" class="form-label">경기장</label>
+            <input type="text" class="form-control" id="boardStadium" th:field="${board.boardStadium}" th:required="required">
         </div>
 
         <div class="mb-3">
             <label for="boardPersonnel" class="form-label">총원</label>
             <input type="number" class="form-control" id="boardPersonnel" th:field="${board.boardPersonnel}" th:required="required">
         </div>
-
-        <!-- 기타 필드들도 유사하게 추가 -->
 
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
