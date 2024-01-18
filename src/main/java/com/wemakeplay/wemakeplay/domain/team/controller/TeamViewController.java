@@ -115,12 +115,12 @@ public class TeamViewController {
         return "redirect:/team/{teamId}";
     }
     // 참여자 확인
-    @GetMapping("/allowedTeam/attender/{teamId}")
-    public String allowedAttender(
+    @GetMapping("/allowed/attender/team/{teamId}")
+    public String allowedAttenderTeam(
         @PathVariable Long teamId,
         Model model){
         TeamResponseDto teamResponseDto = teamService.getTeam(teamId);
         model.addAttribute("teamResponseDto", teamResponseDto);
-        return "allowedAttender";
+        return "allowedAttenderTeam";
     }
 }
