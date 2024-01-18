@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.team.controller;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.service.TeamService;
 import com.wemakeplay.wemakeplay.global.dto.RootResponseDto;
 import com.wemakeplay.wemakeplay.global.security.UserDetailsImpl;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
     private final TeamService teamService;
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<?> createTeam(
         @RequestBody TeamRequestDto teamRequestDto,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -37,9 +38,9 @@ public class TeamController {
             .build());
     }
 //팀 조회
-    @GetMapping("")
-    public ResponseEntity<?> getTeams(){
-        List<TeamResponseDto> teams = teamService.getTeams();
+    @GetMapping
+    public ResponseEntity<?> getAllTeams(){
+        List<TeamViewResponseDto> teams = teamService.getAllTeams();
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message("팀 조회 성공")
