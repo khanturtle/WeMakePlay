@@ -3,8 +3,6 @@ package com.wemakeplay.wemakeplay.domain.team.service;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeamRepository;
-import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
-import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
@@ -97,7 +95,6 @@ public class TeamService {
         }
         return teamResponseDtoList;
     }
-
 
     //사용자가 팀에 신청
     //작성자일 경우 예외처리
@@ -195,7 +192,6 @@ public class TeamService {
             }
         }
     }
-
     public Team findTeam(Long teamId) {
         return teamRepository.findById(teamId).orElseThrow(
             () -> new ServiceException(ErrorCode.NOT_EXIST_TEAM)
