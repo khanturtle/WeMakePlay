@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class TeamResponseDto {
-    private Long Id;
+    private Long id;
     private String teamName;
     private String teamIntro;
     private String teamOwner;
@@ -20,7 +20,7 @@ public class TeamResponseDto {
     private List<String> memberNameList;
 
     public TeamResponseDto(Team team){
-        this.Id = team.getId();
+        this.id = team.getId();
         this.teamName = team.getTeamName();
         this.teamIntro = team.getTeamIntro();
         this.teamPersonnel = team.getTeamPersonnel();
