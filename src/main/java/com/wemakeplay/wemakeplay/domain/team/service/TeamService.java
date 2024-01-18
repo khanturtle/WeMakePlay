@@ -3,6 +3,8 @@ package com.wemakeplay.wemakeplay.domain.team.service;
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeamRepository;
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
@@ -13,6 +15,8 @@ import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -45,6 +49,17 @@ public class TeamService {
         return teamViewResponseDtos;
     }
 
+    public List<TeamViewResponseDto> get3Teams() {
+        List<Team> teamList = teamRepository.findAll();
+        Collections.sort(teamList, Comparator.comparing(Team::getTeamAttendPersonnel).reversed());
+        List<TeamViewResponseDto> teamViewResponseDtos = new ArrayList<>();
+        // 상위 3개의 팀 선택
+        for (int i = 0; i < Math.min(teamList.size(), 3); i++) {
+            Team team = teamList.get(i);
+            teamViewResponseDtos.add(new TeamViewResponseDto(team));
+        }
+        return teamViewResponseDtos;
+    }
     //해당 팀 조회 (teamId)에 해당하는 팀 조회
     public TeamResponseDto getTeam(Long teamId){
         Team team = findTeam(teamId);

@@ -40,4 +40,25 @@ public class PlayerService {
 
         return topPlayerList;
     }
+
+    public List<TopPlayerResponseDto> get3TopPlayers(User user) {
+        List<TopPlayerResponseDto> topPlayerList = new ArrayList<>();
+        List<User> userList = likeRepository.findTopPlayer(user.getId());
+        for (int i = 0; i < Math.min(userList.size(), 3); i++) {
+            User topUser = userList.get(i);
+            Long likes = likeRepository.countByLikeUserId(topUser.getId());
+            Long followers = followRepository.countByFollowerId(topUser.getId());
+
+            topPlayerList.add(TopPlayerResponseDto.builder()
+                    .id(topUser.getId())
+                    .username(topUser.getUsername())
+                    .nickname(topUser.getNickname())
+                    .age(topUser.getAge())
+                    .area(topUser.getArea())
+                    .likes(likes)
+                    .followers(followers)
+                    .build());
+        }
+        return topPlayerList;
+    }
 }

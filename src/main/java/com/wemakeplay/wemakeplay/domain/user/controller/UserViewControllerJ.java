@@ -1,9 +1,16 @@
 package com.wemakeplay.wemakeplay.domain.user.controller;
 
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.service.FollowService;
 import com.wemakeplay.wemakeplay.domain.like.service.LikeService;
+import com.wemakeplay.wemakeplay.domain.player.dto.TopPlayerResponseDto;
+import com.wemakeplay.wemakeplay.domain.player.service.PlayerService;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.service.TeamService;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.UserProfileResponseDto;
@@ -30,6 +37,9 @@ public class UserViewControllerJ {
     private final UserService userService;
     private final FollowService followService;
     private final LikeService likeService;
+    private final BoardService boardService;
+    private final PlayerService playerService;
+    private final TeamService teamService;
 
     //회원가입
     @GetMapping("/signup")
@@ -59,7 +69,15 @@ public class UserViewControllerJ {
 
     //메인 페이지
     @GetMapping("/mainPage")
-    public String showMainPage() {
+    public String showMainPage(
+            Model model,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<BoardViewResponseDto> boardList = boardService.get3Boards();
+        model.addAttribute("boardList",boardList);
+        List<TopPlayerResponseDto> responseDto = playerService.get3TopPlayers(userDetails.getUser());
+        model.addAttribute("topPlayers", responseDto);
+        List<TeamViewResponseDto> teamList = teamService.get3Teams();
+        model.addAttribute("teamList", teamList);
         return "mainPage";
     }
 
