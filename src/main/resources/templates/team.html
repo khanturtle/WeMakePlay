@@ -163,7 +163,6 @@
       </div>
       <p class="participants-info"
          th:text="'글쓴이: ' + ${teamResponseDto.teamOwner}"></p>
-
       <div class="btn-group">
         <!-- Join button -->
         <a href="#" class="btn btn-success btn-lg" onclick="attendTeam()"
@@ -176,7 +175,7 @@
       <p class="participants-info"
          th:text="'참여자 : ' + ${teamResponseDto.teamAttendPersonnel} +' / ' + ${teamResponseDto.teamPersonnel}"></p>
 
-      <p class="attendance" onclick="toggleAttendance()">참여자 확인</p>
+      <p class="attendance" onclick="ParticipantConfirmation()">참여자 확인</p>
       <div class="attendanceCheck" id="attendanceCheck">
         <ul class="list-group">
           <li class="list-group-item" th:text ="${teamResponseDto.teamOwner}" ></li>
@@ -204,13 +203,21 @@
   }
 
   function attendTeam() {
-    if (confirm("가입 신청 하시겠습니까?")) {
       alert("가입 신청 되었습니다!");
       document.getElementById("attendForm").submit();
     }
 
-    let isAttendanceCheckVisible = false
+    let isAttendanceCheckVisible = false;
+    function ParticipantConfirmation() {
+      const attendanceCheckElement = document.getElementById("attendanceCheck");
 
+      isAttendanceCheckVisible = !isAttendanceCheckVisible;
+
+      if (isAttendanceCheckVisible) {
+        attendanceCheckElement.classList.add("show");
+      } else {
+        attendanceCheckElement.classList.remove("show");
+      }
   }
 
 </script>
