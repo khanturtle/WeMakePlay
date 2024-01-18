@@ -84,11 +84,6 @@
     th {
       background-color: #f2f2f2;
     }
-    .playServiceTeam {
-      width: 100%;
-      display: flex;
-      align-items: center;
-    }
 
     .teamText {
       flex: 1;
@@ -134,14 +129,12 @@
   <tbody>
   <tr th:each="team : ${teamList}">
     <td>
-      <div class="playServiceTeam">
-        <div class="teamText">
-          <a th:href="@{'/team/' + ${team.id}}">
-            <p th:text="${team.teamName}"></p>
-          </a>
-          <p th:text="${team.teamIntro}"></p>
-          <p th:text="'정원 : ' + ${team.teamAttendPersonnel} + '/'+ ${team.teamPersonnel}"></p>
-        </div>
+      <div class="teamText">
+        <a th:href="@{'/team/' + ${team.id}}">
+          <p th:text="${team.teamName}"></p>
+        </a>
+        <p th:text="${team.teamIntro}"></p>
+        <p th:text="'정원 : ' + ${team.teamAttendPersonnel} + '/'+ ${team.teamPersonnel}"></p>
       </div>
     </td>
   </tr>
