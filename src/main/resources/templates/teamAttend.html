@@ -84,18 +84,13 @@
     th {
       background-color: #f2f2f2;
     }
-    .playServiceTeam {
-      width: 100%;
-      display: flex; /* flex 속성 추가 */
-      align-items: center; /* 세로 중앙 정렬 */
-    }
 
     .teamText {
-      flex: 1; /* 나머지 공간을 차지하도록 설정 */
+      flex: 1;
     }
 
     .teamText p:first-child {
-      font-size: 1.2em; /* 원하는 크기로 조절 */
+      font-size: 1.2em;
     }
 
     .btn-success {
@@ -134,12 +129,13 @@
   <tbody>
   <tr th:each="team : ${teamList}">
     <td>
-        <div class="teamText">
-          <a th:href="@{'/team/' + ${team.id}}">
-            <p th:text="${team.teamName} + '('+ ${team.teamIntro} +')'"></p>
-          </a>
-          <p th:text="'정원 : ' + ${team.teamAttendPersonnel} + '/'+ ${team.teamPersonnel}"></p>
-        </div>
+      <div class="teamText">
+        <a th:href="@{'/team/' + ${team.id}}">
+          <p th:text="${team.teamName}"></p>
+        </a>
+        <p th:text="${team.teamIntro}"></p>
+        <p th:text="'정원 : ' + ${team.teamAttendPersonnel} + '/'+ ${team.teamPersonnel}"></p>
+      </div>
     </td>
   </tr>
   </tbody>

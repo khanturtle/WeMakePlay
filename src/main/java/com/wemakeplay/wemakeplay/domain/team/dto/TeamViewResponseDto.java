@@ -14,7 +14,7 @@ public class TeamViewResponseDto {
     private int teamPersonnel;
 
     public TeamViewResponseDto(Team team){
-        this.id = team.getTeamOwner().getId();
+        this.id = team.getId();
         this.teamName = team.getTeamName();
         this.teamIntro = team.getTeamIntro();
         this.teamPersonnel = team.getTeamPersonnel();
