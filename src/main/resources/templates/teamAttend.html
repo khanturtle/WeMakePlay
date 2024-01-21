@@ -140,6 +140,20 @@
   </tr>
   </tbody>
 </table>
+
+<div class="pagination justify-content-center">
+  <ul class="pagination">
+    <li class="page-item" th:class="${currentPage == 0} ? 'disabled' : ''">
+      <a class="page-link" th:if="${currentPage > 0}" th:href="@{'/teamAttend?page=' + ${(currentPage - 1)}}">Previous</a>
+    </li>
+    <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages - 1)}">
+      <a class="page-link" th:href="@{'/teamAttend?page=' + ${stat.index}}" th:text="${stat.index + 1}"></a>
+    </li>
+    <li class="page-item" th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">
+      <a class="page-link" th:if="${currentPage < totalPages - 1}" th:href="@{'/teamAtend?page=' + ${(currentPage + 1)}}">Next</a>
+    </li>
+  </ul>
+</div>
 <script th:inline="javascript">
   $(document).ready(function () {
     const auth = getToken();
