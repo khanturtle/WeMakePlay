@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,7 @@ public class TeamService {
 
     public List<TeamViewResponseDto> get3Teams() {
         List<Team> teamList = teamRepository.findAll();
-        Collections.sort(teamList, Comparator.comparing(Team::getTeamAttendPersonnel).reversed());
+        Collections.sort(teamList, Comparator.comparing(Team::getTeamName).reversed());
         List<TeamViewResponseDto> teamViewResponseDtos = new ArrayList<>();
         // 상위 3개의 팀 선택
         for (int i = 0; i < Math.min(teamList.size(), 3); i++) {
@@ -57,6 +59,10 @@ public class TeamService {
             teamViewResponseDtos.add(new TeamViewResponseDto(team));
         }
         return teamViewResponseDtos;
+    }
+    public Page<TeamViewResponseDto> getAllTeams(Pageable pageable) {
+        Page<Team> teamPage = teamRepository.findAll(pageable);
+        return teamPage.map(TeamViewResponseDto::new);
     }
     //해당 팀 조회 (teamId)에 해당하는 팀 조회
     public TeamResponseDto getTeam(Long teamId){
