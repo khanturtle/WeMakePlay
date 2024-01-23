@@ -241,7 +241,7 @@
                     <span th:text="${comment.content}"></span>
                     <div class="btn-group">
                         <!--댓글 수정-->
-                        <a href="#" th:href="@{'/board/' + ${boardResponseDto.id} + '/comment/'+${comment.id}+ '/edit'}">수정</a>
+                        <a href="#" onclick="editComment()">수정</a>
                         |
                         <!--댓글 삭제-->
                         <span class="text-danger" onclick="deleteComment()"
@@ -384,10 +384,34 @@
             attendanceCheckElement.classList.remove("show");
         }
     }
-    function editComment(commentId) {
-        // 새로운 팝업 창을 열어서 수정 페이지를 표시
-        const editUrl = "/board/${boardResponseDto.id}/comment/" + commentId + "/edit";
-        window.open(editUrl, "Edit Comment", "width=600,height=400");
+    function editComment() {
+        const boardId = $('#boardId').val();
+        const commentId = $('#commentId').val();
+        const result = confirm("댓글을 수정 하시겠습니까?");
+        if(result){
+            const auth = getToken();
+
+            if (auth !== undefined && auth !== '') {
+                // AJAX를 이용하여 현재 사용자가 게시글 작성자인지 확인
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        Authorization: auth
+                    },
+                    url: '/api/comments/checkOwner/' + commentId,
+                    success: function (data) {
+                        // 성공 시, 게시글 작성자인 경우 수정 폼으로 이동
+                        window.location.href = '/board/' + boardId +'/comment/'+commentId + '/edit';
+                    },
+                    error: function (error) {
+                        // 실패 시, 게시글 작성자가 아닌 경우 알림창 띄우기
+                        console.error('Error:', error);
+                        alert('댓글 작성자만 수정할 수 있습니다.');
+                    }
+                });
+            } else {
+                window.location.href = host + '/';
+            }}
     }
 
     function deleteComment() {
