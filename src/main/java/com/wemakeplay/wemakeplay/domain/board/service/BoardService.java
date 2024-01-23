@@ -230,4 +230,13 @@ public class BoardService {
             }
         }
     }
+
+    public void checkBoardOwner(Long boardId, User user) {
+        Board board=findBoard(boardId);
+        if(board.getBoardOwner().getNickname().equals(user.getNickname())){
+            return;
+        }else {
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
+        }
+    }
 }

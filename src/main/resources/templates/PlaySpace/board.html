@@ -179,12 +179,11 @@
             <input type="hidden" th:value="${boardResponseDto.id}" id="boardId">
             <div style="text-align: right;">
             <!-- 수정 버튼 -->
-                <a href="#"  th:href="@{'/board/' + ${boardResponseDto.id} + '/edit'}">수정</a>
+                <a href="#"  onclick="editBoard()">수정</a>
             <!-- 삭제 버튼 -->
                 |
                 <span class="text-danger" onclick="confirmDelete()"
-                  th:style="'cursor: pointer;'"
-                  th:onclick="|if (confirm('게시글을 삭제하시겠습니까?')) window.location.href = '/board/' + ${boardResponseDto.id} + '/delete'; else false;|">
+                  th:style="'cursor: pointer;'">
                     삭제
                 </span>
             </div>
@@ -268,13 +267,63 @@
 
 <script>
     function confirmDelete() {
-        const result = confirm("게시글을 삭제하시겠습니까?");
+        // 확인 창을 띄우기
+        const result = confirm("게시글을 삭제 하시겠습니까?");
         if (result) {
-            window.location.href = event.currentTarget.getAttribute("href");
+            // 사용자가 확인을 선택한 경우
+            const auth = getToken();
+            if (auth !== undefined && auth !== '') {
+                $.ajax({
+                    type: 'DELETE',
+                    headers: {
+                        Authorization: auth
+                    },
+                    url: '/api/boards/' + $('#boardId').val(),
+                    success: function (data) {
+                        alert('게시글이 삭제되었습니다.');
+                        window.location.href = '/playSpace';
+                    },
+                    error: function (error) {
+                        alert('작성자만 삭제할 수 있습니다.');
+                    }
+                });
+            } else {
+                // 인증되지 않은 사용자라면 로그인 페이지로 이동하거나 다른 처리를 수행
+                window.location.href = host + '/';
+            }
         } else {
-            return false;
+            // 사용자가 취소를 선택한 경우 아무 동작 없음
         }
     }
+    function editBoard() {
+        const boardId = $('#boardId').val();
+        const result = confirm("게시글을 수정 하시겠습니까?");
+        if(result){
+        const auth = getToken();
+
+        if (auth !== undefined && auth !== '') {
+            // AJAX를 이용하여 현재 사용자가 게시글 작성자인지 확인
+            $.ajax({
+                type: 'GET',
+                headers: {
+                    Authorization: auth
+                },
+                url: '/api/boards/checkOwner/' + boardId,
+                success: function (data) {
+                    // 성공 시, 게시글 작성자인 경우 수정 폼으로 이동
+                    window.location.href = '/board/' + boardId + '/edit';
+                },
+                error: function (error) {
+                    // 실패 시, 게시글 작성자가 아닌 경우 알림창 띄우기
+                    console.error('Error:', error);
+                    alert('게시글 작성자만 수정할 수 있습니다.');
+                }
+            });
+        } else {
+            window.location.href = host + '/';
+        }}
+    }
+
     function attendBoard() {
         console.log('Attend button clicked!');
         const auth = getToken();
