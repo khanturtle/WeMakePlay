@@ -86,20 +86,11 @@ public class TeamService {
     public void deleteTeam(Long teamId, User user){
         Team team = findTeam(teamId);
         if(user.getNickname().equals(team.getTeamOwner().getNickname())){
+            attendTeamRepository.deleteAll(attendTeamRepository.findByTeamId(teamId));
             teamRepository.delete(team);
         }else{
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
-    }
-
-// 모든 팀 조회
-    public List<TeamResponseDto> getTeams() {
-        List<Team> teamList = teamRepository.findAll();
-        List<TeamResponseDto> teamResponseDtoList = new ArrayList<>();
-        for (Team team : teamList){
-            teamResponseDtoList.add(new TeamResponseDto(team));
-        }
-        return teamResponseDtoList;
     }
 
     //사용자가 팀에 신청
@@ -227,6 +218,14 @@ public class TeamService {
 
                 team.keepUser();
             }
+        }
+    }
+    public void checkTeamOwner(Long teamId, User user) {
+        Team team = findTeam(teamId);
+        if(team.getTeamOwner().getNickname().equals(user.getNickname())){
+            return;
+        }else {
+            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
     }
 }

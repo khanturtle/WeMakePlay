@@ -11,21 +11,23 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class TeamResponseDto {
-    private Long id;
+    private Long Id;
     private String teamName;
     private String teamIntro;
     private String teamOwner;
+    private Long teamOwnerId;
     private int teamPersonnel;
     private int teamAttendPersonnel;
     private List<String> memberNameList;
 
     public TeamResponseDto(Team team){
-        this.id = team.getId();
+        this.Id = team.getId();
         this.teamName = team.getTeamName();
         this.teamIntro = team.getTeamIntro();
         this.teamPersonnel = team.getTeamPersonnel();
         this.teamAttendPersonnel = team.getTeamAttendPersonnel();
         this.teamOwner = team.getTeamOwner().getNickname();
+        this.teamOwnerId = team.getTeamOwner().getId();
 
         List<String> memberNameList = new ArrayList<>();
         List<AttendTeam> attendTeamList = team.getAttendTeams();
