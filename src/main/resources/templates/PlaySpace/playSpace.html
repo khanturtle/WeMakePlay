@@ -14,6 +14,35 @@
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <title>Board Main</title>
     <style>
+        a{
+            text-decoration-line: none;
+            color: black;
+        }
+        a:hover{
+            text-decoration-line: underline;
+        }
+        .main-links {
+            display: inline-block;
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-family: 'Comic Sans MS', cursive;
+        }
+        .main-links:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        nav {
+            background-color: #444;
+            overflow: hidden;
+        }
+        .boardThumbnail {
+            margin-right: 20px; /* 이미지와 내용 사이의 간격 조절 */
+        }
+
+        .boardText {
+            flex: 1; /* 나머지 공간을 차지하도록 설정 */
+        }
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -49,23 +78,6 @@
             color: black;
         }
 
-        nav {
-            background-color: #444;
-            overflow: hidden;
-        }
-
-        .main-links {
-            display: inline-block;
-            color: white;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .main-links:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
         section {
             padding: 20px;
         }
@@ -88,14 +100,6 @@
             width: 100%;
             display: flex; /* flex 속성 추가 */
             align-items: center; /* 세로 중앙 정렬 */
-        }
-
-        .boardThumbnail {
-            margin-right: 10px; /* 이미지와 내용 사이의 간격 조절 */
-        }
-
-        .boardText {
-            flex: 1; /* 나머지 공간을 차지하도록 설정 */
         }
 
         .boardText p:first-child {
@@ -148,6 +152,7 @@
                     <a th:href="@{'/board/' + ${board.id}}">
                         <p th:text="${board.boardTitle} + '('+ ${board.commentNum} +')'"></p>
                     </a>
+                    <p th:text="'글쓴이 : '+ ${board.boardOwner}"></p>
                     <p th:text="'지역 : ' + ${board.boardArea} + ' | 경기장 :' + ${board.boardStadium}"></p>
                     <p th:text="'정원 : ' + ${board.boardAttendPersonnel} + '/'+ ${board.boardPersonnel}"></p>
                 </div>

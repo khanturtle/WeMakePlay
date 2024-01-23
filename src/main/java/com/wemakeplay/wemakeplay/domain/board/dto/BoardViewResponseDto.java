@@ -13,6 +13,7 @@ public class BoardViewResponseDto {
     private String boardSport;
     private String boardArea;
     private String boardStadium;
+    private String boardOwner;
     private int commentNum;
     private int boardAttendPersonnel;
     private int boardPersonnel;
@@ -23,6 +24,7 @@ public class BoardViewResponseDto {
         this.boardSport = board.getBoardSport();
         this.boardArea = board.getBoardArea();
         this.boardStadium=board.getBoardStadium();
+        this.boardOwner=board.getBoardOwner().getNickname();
         this.commentNum = board.getComments().size();
         this.boardAttendPersonnel = board.getBoardAttendPersonnel();
         this.boardPersonnel = board.getBoardPersonnel();
