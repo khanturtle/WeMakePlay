@@ -168,6 +168,7 @@ public class BoardService {
             for (AttendBoard attendBoard : attendBoardList) {
                 if (attendBoard.getUser().getId() == userId) {
                     attendBoard.rejectAttend();
+                    attendBoardRepository.delete(attendBoard);
                 }
             }
         } else {
@@ -227,6 +228,15 @@ public class BoardService {
 
                 board.keepUser();
             }
+        }
+    }
+
+    public void checkBoardOwner(Long boardId, User user) {
+        Board board=findBoard(boardId);
+        if(board.getBoardOwner().getNickname().equals(user.getNickname())){
+            return;
+        }else {
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
 }

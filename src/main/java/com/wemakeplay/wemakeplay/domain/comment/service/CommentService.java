@@ -12,6 +12,7 @@ import com.wemakeplay.wemakeplay.domain.comment.dto.response.CommentResponseDto;
 import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
+import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -70,5 +71,14 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+    }
+
+    public void checkCommentOwner(Long commentId, User user) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        if(comment.getUser().getNickname().equals(user.getNickname())){
+            return;
+        }else{
+            throw new ServiceException(NOT_COMMENT_OWNER);
+        }
     }
 }

@@ -61,6 +61,13 @@ public class BoardController {
                 .data(boardResponseDto)
                 .build());
     }
+    @GetMapping("/checkOwner/{boardId}")
+    public void checkOwner(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        boardService.checkBoardOwner(boardId,userDetails.getUser());
+    }
 
     @DeleteMapping("/{boardId}")
     public ResponseEntity<?> deleteBoard(
