@@ -168,6 +168,7 @@ public class BoardService {
             for (AttendBoard attendBoard : attendBoardList) {
                 if (attendBoard.getUser().getId() == userId) {
                     attendBoard.rejectAttend();
+                    attendBoardRepository.delete(attendBoard);
                 }
             }
         } else {
