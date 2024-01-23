@@ -68,10 +68,18 @@ public class TeamController {
     ){
         TeamResponseDto teamResponseDto = teamService.updateTeam(teamId, teamRequestDto, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
-            .code("200")
+            .code("201")
             .message("팀 수정이 완료되었습니다.")
             .data(teamResponseDto)
             .build());
+    }
+
+    @GetMapping("/checkOwner/{teamId}")
+    public void checkOwner(
+        @PathVariable Long teamId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        teamService.checkTeamOwner(teamId, userDetails.getUser());
     }
 
     @DeleteMapping("/{teamId}")
