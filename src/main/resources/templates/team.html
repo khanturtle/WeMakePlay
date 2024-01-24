@@ -193,7 +193,7 @@
         <!-- Join button -->
         <button class="btn btn-success btn-lg" onclick="attendTeam()">가입 신청</button>
         <!-- Participants list button -->
-        <a href="#" class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</a>
+        <a class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</a>
       </div>
 
       <hr>
@@ -282,7 +282,7 @@
         headers: {
           Authorization: auth
         },
-        url: '/api/teams/attend' + $('#teamId').val(),
+        url: '/api/teams/attend/' + $('#teamId').val(),
         success: function (data) {
           alert('가입 신청 되었습니다!');
         },
