@@ -96,14 +96,13 @@ public class TeamController {
 
     @PostMapping("/attend/{teamId}")
     public ResponseEntity<?> attendTeam(
-        @PathVariable Long userId,
         @PathVariable Long teamId,
         @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         teamService.attendTeam(teamId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
-            .message(userId + "팀 가입 신청을 완료했습니다.")
+            .message("팀 가입 신청을 완료했습니다.")
             .build());
     }
 
