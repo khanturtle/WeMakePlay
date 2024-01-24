@@ -196,7 +196,7 @@
                 <!-- Join button -->
                 <button class="btn btn-success btn-lg" onclick="attendBoard()">가입 신청</button>
                 <!-- Participants list button -->
-                <a href="#" class="btn btn-info btn-lg" onclick="checkAttender()">신청자 확인</a>
+                <a class="btn btn-info btn-lg" onclick="checkAttender()">신청자 확인</a>
             </div>
 
             <hr>
@@ -350,6 +350,7 @@
 
     function checkAttender() {
         const auth = getToken();
+        const boardId = $('#boardId').val();
         if (auth !== undefined && auth !== '') {
             $.ajax({
                 type: 'GET',
@@ -358,6 +359,7 @@
                 },
                 url: '/api/boards/attend/' + $('#boardId').val(),
                 success: function (data) {
+                    window.location.href = '/boardAttender/' + boardId;
                     console.log('Success:', data);
                 },
                 error: function (error) {
