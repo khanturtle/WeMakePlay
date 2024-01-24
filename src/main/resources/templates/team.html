@@ -193,7 +193,7 @@
         <!-- Join button -->
         <button class="btn btn-success btn-lg" onclick="attendTeam()">가입 신청</button>
         <!-- Participants list button -->
-        <a href="#" class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</a>
+        <a class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</a>
       </div>
 
       <hr>
@@ -274,7 +274,6 @@
   }
 
   function attendTeam() {
-    console.log('Attend button clicked!');
     const auth = getToken();
     if (auth !== undefined && auth !== '') {
       $.ajax({
@@ -282,7 +281,7 @@
         headers: {
           Authorization: auth
         },
-        url: '/api/teams/attend' + $('#teamId').val(),
+        url: '/api/teams/attend/' + $('#teamId').val(),
         success: function (data) {
           alert('가입 신청 되었습니다!');
         },
@@ -296,14 +295,16 @@
   }
     function checkTeamAttender() {
       const auth = getToken();
+      const teamId = $('#teamId').val();
       if (auth !== undefined && auth !== '') {
         $.ajax({
           type: 'GET',
           headers: {
             Authorization: auth
           },
-          url: '/api/teams/attend/' + $('#teamId').val(),
+          url: '/api/teams/attend/' + teamId,
           success: function (data) {
+            window.location.href = '/teamAttender/' + teamId;
           },
           error: function (error) {
             alert('팀 생성자만 확인 가능합니다.');
