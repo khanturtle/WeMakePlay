@@ -12,10 +12,6 @@ import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +20,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class TeamService {
 
@@ -32,33 +33,26 @@ public class TeamService {
     private final AttendTeamRepository attendTeamRepository;
     private final UserRepository userRepository;
 
-    //팀 생성
-    @Transactional
     public TeamResponseDto createTeam(TeamRequestDto teamRequestDto, User user) {
         Team team = new Team(teamRequestDto, user);
         teamRepository.save(team);
         return new TeamResponseDto(team);
     }
 
-    // 모든 팀 조회
     public List<TeamViewResponseDto> getAllTeams() {
         List<Team> teamList = teamRepository.findAll();
-        List<TeamViewResponseDto> teamViewResponseDtos = new ArrayList<>();
-        for (Team team : teamList) {
-            teamViewResponseDtos.add(new TeamViewResponseDto(team));
-        }
-        return teamViewResponseDtos;
+        return teamList.stream()
+            .map(TeamViewResponseDto::new)
+            .collect(Collectors.toList());
     }
 
     public List<TeamViewResponseDto> get3Teams() {
         List<Team> teamList = teamRepository.findAll();
-        Collections.sort(teamList, Comparator.comparing(Team::getTeamName).reversed());
-        List<TeamViewResponseDto> teamViewResponseDtos = new ArrayList<>();
-        // 상위 3개의 팀 선택
-        for (int i = 0; i < Math.min(teamList.size(), 3); i++) {
-            Team team = teamList.get(i);
-            teamViewResponseDtos.add(new TeamViewResponseDto(team));
-        }
+        List<TeamViewResponseDto> teamViewResponseDtos = teamList.stream()
+            .sorted(Comparator.comparing(Team::getTeamName).reversed())
+            .limit(3)
+            .map(TeamViewResponseDto::new)
+            .collect(Collectors.toList());
         return teamViewResponseDtos;
     }
 
@@ -67,38 +61,30 @@ public class TeamService {
         return teamPage.map(TeamViewResponseDto::new);
     }
 
-    //해당 팀 조회 (teamId)에 해당하는 팀 조회
     public TeamResponseDto getTeam(Long teamId) {
         Team team = findTeam(teamId);
         return new TeamResponseDto(team);
     }
 
-    //수정
     @Transactional
     public TeamResponseDto updateTeam(Long teamId, TeamRequestDto teamRequestDto, User user) {
         Team team = findTeam(teamId);
-        if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            team.updateTeam(teamRequestDto);
-            return new TeamResponseDto(team);
-        } else {
+        if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
+        team.updateTeam(teamRequestDto);
+        return new TeamResponseDto(team);
     }
 
-    // 삭제
     @Transactional
     public void deleteTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
-        if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            attendTeamRepository.deleteAll(attendTeamRepository.findByTeamId(teamId));
-            teamRepository.delete(team);
-        } else {
+        if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
+        attendTeamRepository.deleteAll(attendTeamRepository.findByTeamId(teamId));
+        teamRepository.delete(team);
     }
-
-    //사용자가 팀에 신청
-    //작성자일 경우 예외처리
 
     @Transactional
     public void attendTeam(Long teamId, User user) {
@@ -109,17 +95,11 @@ public class TeamService {
         if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
             throw new ServiceException(ErrorCode.TEAM_OWNER);
         }
-        List<AttendTeam> attendTeamList = user.getAttendTeams();
-        for (AttendTeam myAttendTeam : attendTeamList) {
-            if (myAttendTeam.getTeam().getId() == teamId) {
-                if (myAttendTeam.getParticipation()
-                    == com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait) {
-                    throw new ServiceException(ErrorCode.ALREADY_ATTENDING_TEAM);
-                } else if (myAttendTeam.getParticipation()
-                    == com.wemakeplay.wemakeplay.domain.attendteam.Participation.attend) {
-                    throw new ServiceException(ErrorCode.ALREADY_ATTENDING_TEAM);
-                }
-            }
+        if (user.getAttendTeams().stream()
+            .anyMatch(t -> t.getTeam().getId().equals(teamId) &&
+                (t.getParticipation() == com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait ||
+                    t.getParticipation() == com.wemakeplay.wemakeplay.domain.attendteam.Participation.attend))) {
+            throw new ServiceException(ErrorCode.ALREADY_ATTENDING_TEAM);
         }
         AttendTeam attendTeam = AttendTeam.builder()
             .user(user)
@@ -129,25 +109,18 @@ public class TeamService {
         attendTeamRepository.save(attendTeam);
     }
 
-    //요청 목록
+
     public List<AttendTeam> checkTeamAttender(Long teamId, User user) {
         Team team = findTeam(teamId);
-        if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
-            List<AttendTeam> attendTeamWaitingList = new ArrayList<>();
-            for (AttendTeam attendTeam : attendTeamList) {
-                if (attendTeam.getParticipation().equals(
-                    com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait)) {
-                    attendTeamWaitingList.add(attendTeam);
-                }
-            }
-            return attendTeamWaitingList;
-        } else {
+        if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
+        return attendTeamRepository.findByTeamId(teamId)
+            .stream()
+            .filter(attendTeam -> attendTeam.getParticipation().equals(Participation.wait))
+            .collect(Collectors.toList());
     }
 
-    // 요청 수락
     @Transactional
     public void allowTeamAttend(Long teamId, Long userId, User user) {
         Team team = findTeam(teamId);
@@ -156,54 +129,43 @@ public class TeamService {
                 throw new ServiceException(ErrorCode.TEAM_FULL_PERSONNEL);
             }
             List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
-            for (AttendTeam attendTeam : attendTeamList) {
-                if (attendTeam.getUser().getId() == userId) {
-                    attendTeam.allowAttend();
-                }
-            }
+            attendTeamList.stream()
+                .filter(attendTeam -> attendTeam.getUser().getId().equals(userId))
+                .forEach(AttendTeam::allowAttend);
             team.attendUser();
         } else {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
     }
 
-    // 요청 거절
     @Transactional
     public void rejectTeamAttend(Long teamId, Long userId, User user) {
         Team team = findTeam(teamId);
         if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
             List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
-            for (AttendTeam attendTeam : attendTeamList) {
-                if (attendTeam.getUser().getId() == userId) {
-                    attendTeam.rejectAttend();
-                }
-            }
+            attendTeamList.stream()
+                .filter(attendTeam -> attendTeam.getUser().getId().equals(userId))
+                .forEach(AttendTeam::rejectAttend);
         } else {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
     }
 
-    //탈퇴
     @Transactional
     public void quitTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
-        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
-        for (AttendTeam attendTeam : attendTeamList) {
-            if (attendTeam.getUser().getId() == user.getId()) {
-                if (attendTeam.getParticipation().equals(Participation.attend)) {
-                    attendTeamRepository.delete(attendTeam);
-                }
-            }
-        }
+        attendTeamRepository.findByTeamId(teamId)
+            .stream()
+            .filter(attendTeam -> attendTeam.getUser().getId().equals(user.getId())
+                && attendTeam.getParticipation().equals(Participation.attend))
+            .forEach(attendTeamRepository::delete);
     }
 
     public Team findTeam(Long teamId) {
-        return teamRepository.findById(teamId).orElseThrow(
-            () -> new ServiceException(ErrorCode.NOT_EXIST_TEAM)
-        );
+        return teamRepository.findById(teamId)
+            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_EXIST_TEAM));
     }
 
-    // 강퇴
     @Transactional
     public void kickUserFromTeam(Long teamId, Long userId) {
         Team team = teamRepository.findById(teamId)
@@ -212,8 +174,6 @@ public class TeamService {
         User userToKick = userRepository.findById(userId)
             .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
 
-        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUsername = authentication.getName();
 
@@ -221,30 +181,26 @@ public class TeamService {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
 
-        for (AttendTeam attendTeam : attendTeamList) {
-            if (attendTeam.getParticipation().equals(Participation.attend) &&
-                attendTeam.getUser().getId().equals(userId)) {
+        attendTeamRepository.findByTeamId(teamId)
+            .stream()
+            .filter(attendTeam -> attendTeam.getParticipation().equals(Participation.attend)
+                && attendTeam.getUser().getId().equals(userId))
+            .findFirst()
+            .ifPresent(attendTeam -> {
                 attendTeamRepository.delete(attendTeam);
                 team.keepUser();
-                return; // 사용자를 찾았으므로 더 이상 반복할 필요가 없음
-            }
-        }
+            });
 
         if (userToKick.equals(team.getTeamOwner())) {
-            // 팀 소유자를 강퇴하려고 하는 경우
             throw new ServiceException(ErrorCode.CANNOT_KICK_TEAM_OWNER);
         } else {
-            // 팀에 참가 중이 아님
             throw new ServiceException(ErrorCode.NOT_TEAM_MEMBER);
         }
     }
 
-
     public void checkTeamOwner(Long teamId, User user) {
         Team team = findTeam(teamId);
-        if (team.getTeamOwner().getNickname().equals(user.getNickname())) {
-            return;
-        } else {
+        if (!team.getTeamOwner().getNickname().equals(user.getNickname())) {
             throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
         }
     }
