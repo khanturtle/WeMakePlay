@@ -15,7 +15,9 @@ import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class BoardService {
 
     public List<BoardViewResponseDto> getBoards() {
         List<Board> boardList = boardRepository.findAll();
+        Collections.sort(boardList,Comparator.comparing(Board::getModifiedAt).reversed());
         List<BoardViewResponseDto> boardViewResponseDtos = new ArrayList<>();
         for (Board board : boardList) {
             boardViewResponseDtos.add(new BoardViewResponseDto(board));
@@ -61,7 +64,7 @@ public class BoardService {
         return boardViewResponseDtos;
     }
     public Page<BoardViewResponseDto> getBoards(Pageable pageable) {
-        Page<Board> boardPage = boardRepository.findAll(pageable);
+        Page<Board> boardPage = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("modifiedAt"))));
         return boardPage.map(BoardViewResponseDto::new);
     }
     public BoardResponseDto getBoard(Long boardId) {
