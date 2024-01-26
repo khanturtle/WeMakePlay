@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -43,7 +42,7 @@ public class BoardService {
 
     public List<BoardViewResponseDto> getBoards() {
         List<Board> boardList = boardRepository.findAll();
-        Collections.sort(boardList,Comparator.comparing(Board::getModifiedAt).reversed());
+        Collections.sort(boardList, Comparator.comparing(Board::getModifiedAt).reversed());
         List<BoardViewResponseDto> boardViewResponseDtos = new ArrayList<>();
         for (Board board : boardList) {
             boardViewResponseDtos.add(new BoardViewResponseDto(board));
@@ -63,10 +62,12 @@ public class BoardService {
         }
         return boardViewResponseDtos;
     }
+
     public Page<BoardViewResponseDto> getBoards(Pageable pageable) {
         Page<Board> boardPage = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("modifiedAt"))));
         return boardPage.map(BoardViewResponseDto::new);
     }
+
     public BoardResponseDto getBoard(Long boardId) {
         Board board = findBoard(boardId);
         return new BoardResponseDto(board);
@@ -191,12 +192,19 @@ public class BoardService {
     public void quitBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
         List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
+        boolean flag = true;
         for (AttendBoard attendBoard : attendBoardList) {
-            if (attendBoard.getUser().getId() == user.getId()) {
-                if (attendBoard.getParticipation().equals(Participation.attend)) {
-                    attendBoardRepository.delete(attendBoard);
-                }
+            if (user.getId().equals(board.getBoardOwner().getId())) {
+                throw new ServiceException(ErrorCode.BOARD_OWNER_CANNOT_QUIT);
+            } else if (attendBoard.getUser().getId().equals(user.getId()) && attendBoard.getParticipation().equals(Participation.attend)) {
+                attendBoardRepository.delete(attendBoard);
+                break;
+            } else {
+                flag = false;
             }
+        }
+        if (!flag) {
+            throw new ServiceException(ErrorCode.NOT_BOARD_ATTENDER);
         }
     }
 
@@ -210,10 +218,10 @@ public class BoardService {
     @Transactional
     public void kickUserFromBoard(Long boardId, Long userId) {
         Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_BOARD));
+                .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_BOARD));
 
         User userToKick = userRepository.findById(userId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
 
         List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
 
@@ -235,10 +243,10 @@ public class BoardService {
     }
 
     public void checkBoardOwner(Long boardId, User user) {
-        Board board=findBoard(boardId);
-        if(board.getBoardOwner().getNickname().equals(user.getNickname())){
+        Board board = findBoard(boardId);
+        if (board.getBoardOwner().getNickname().equals(user.getNickname())) {
             return;
-        }else {
+        } else {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
