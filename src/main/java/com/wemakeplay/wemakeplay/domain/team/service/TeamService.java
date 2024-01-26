@@ -1,11 +1,7 @@
 package com.wemakeplay.wemakeplay.domain.team.service;
 
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.ALREADY_ATTENDING_TEAM;
-import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.CANNOT_KICK_TEAM_OWNER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_TEAM;
-import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_FOUND_TEAM;
-import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_FOUND_USER;
-import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_MEMBER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_OWNER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_FULL_PERSONNEL;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_OWNER;
@@ -20,6 +16,7 @@ import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
+import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import java.util.Comparator;
 import java.util.List;
@@ -27,8 +24,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -175,34 +170,21 @@ public class TeamService {
     }
 
     @Transactional
-    public void kickUserFromTeam(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new ServiceException(NOT_FOUND_TEAM));
-
+    public void kickUserFromTeam(Long teamId, Long userId, User user) {
+        Team team = findTeam(teamId);
         User userToKick = userRepository.findById(userId)
-            .orElseThrow(() -> new ServiceException(NOT_FOUND_USER));
+            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
+        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUsername = authentication.getName();
-
-        if (!team.getTeamOwner().getUsername().equals(loggedInUsername)) {
+        if (team.getTeamOwner().getId().equals(user.getId())) {
+            for (AttendTeam attendTeam : attendTeamList) {
+                if (attendTeam.getUser().getId().equals(userToKick.getId())){
+                    attendTeamRepository.delete(attendTeam);
+                    team.kickUser();
+                }
+            }
+        }else{
             throw new ServiceException(NOT_TEAM_OWNER);
-        }
-
-        attendTeamRepository.findByTeamId(teamId)
-            .stream()
-            .filter(attendTeam -> attendTeam.getParticipation().equals(Participation.attend)
-                && attendTeam.getUser().getId().equals(userId))
-            .findFirst()
-            .ifPresent(attendTeam -> {
-                attendTeamRepository.delete(attendTeam);
-                team.keepUser();
-            });
-
-        if (userToKick.equals(team.getTeamOwner())) {
-            throw new ServiceException(CANNOT_KICK_TEAM_OWNER);
-        } else {
-            throw new ServiceException(NOT_TEAM_MEMBER);
         }
     }
 
