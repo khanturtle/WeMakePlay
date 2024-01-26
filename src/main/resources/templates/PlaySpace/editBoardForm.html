@@ -13,7 +13,6 @@
     <h2>Edit Board</h2>
     <form action="@{/board/{boardId}/edit}" method="post" th:object="${board}" th:action="@{'/board/' + ${board.id} + '/edit'}">
     <input type="hidden" name="id" th:value="${board.id}" />
-    <input type="hidden" name="boardSport" th:value="${board.boardSport}" />
     <input type="hidden" name="boardArea" th:value="${board.boardArea}" />
         <div class="mb-3">
             <label for="boardTitle" class="form-label">제목</label>
@@ -26,13 +25,29 @@
         </div>
 
         <div class="mb-3">
-            <label for="boardStadium" class="form-label">경기장</label>
+            <label for="boardSport" class="form-label">Sports:</label>
+            <select id="boardSport" name="boardSport" required>
+                <option value="축구">축구</option>
+                <option value="축구">풋살</option>
+                <option value="야구">야구</option>
+                <option value="농구">농구</option>
+                <option value="배드민턴">배드민턴</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="boardStadium" class="form-label">운동할 경기장</label>
             <input type="text" class="form-control" id="boardStadium" th:field="${board.boardStadium}" th:required="required">
         </div>
 
         <div class="mb-3">
-            <label for="boardPersonnel" class="form-label">총원</label>
-            <input type="number" class="form-control" id="boardPersonnel" th:field="${board.boardPersonnel}" th:required="required">
+            <label for="playDate">운동할 날짜 : </label>
+            <input type="date" id="playDate" name="playDate" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="boardPersonnel" class="form-label">총 정원</label>
+            <input type="number" class="form-control" id="boardPersonnel" th:field="${board.boardPersonnel}" th:required="required" th:attr="min=1">
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>

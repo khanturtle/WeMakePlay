@@ -139,11 +139,12 @@ public class BoardController {
                 .build());
     }
 
-    @PostMapping("/{boardId}/kick/{userId}")
+    @DeleteMapping("/{boardId}/kick/{userId}")
     public ResponseEntity<?> kickUserFromBoard(
         @PathVariable Long boardId,
-        @PathVariable Long userId) {
-        boardService.kickUserFromBoard(boardId, userId);
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        boardService.kickUserFromBoard(boardId, userId,userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message(userId + "유저가 강퇴되었습니다.")

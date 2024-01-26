@@ -52,13 +52,13 @@
 <body>
 <h2>Create Board</h2>
 <form action="/boardCreate" method="post">
-    <label for="boardTitle">Title:</label>
+    <label for="boardTitle">글 제목:</label>
     <input type="text" id="boardTitle" name="boardTitle" required>
 
-    <label for="boardContent">Content:</label>
+    <label for="boardContent">내용:</label>
     <textarea id="boardContent" name="boardContent" required></textarea>
 
-    <label for="boardSport">Sport:</label>
+    <label for="boardSport">Sports:</label>
     <select id="boardSport" name="boardSport" required>
         <option value="축구">축구</option>
         <option value="축구">풋살</option>
@@ -67,17 +67,17 @@
         <option value="배드민턴">배드민턴</option>
     </select>
 
-    <label for="boardArea">Area:</label>
+    <label for="boardArea">운동할 지역:</label>
     <input type="text" id="boardArea" name="boardArea" required>
 
-    <label for="boardStadium">Stadium:</label>
+    <label for="boardStadium">운동할 경기장:</label>
     <input type="text" id="boardStadium" name="boardStadium" required>
 
-    <label for="playDate">Play Date:</label>
+    <label for="playDate">운동할 날짜:</label>
     <input type="date" id="playDate" name="playDate" required>
     <!-- datetime-local-->
-    <label for="boardPersonnel">Personnel:</label>
-    <input type="number" id="boardPersonnel" name="boardPersonnel" required>
+    <label for="boardPersonnel">총 정원:</label>
+    <input type="number" id="boardPersonnel" name="boardPersonnel" required min="1">
 
     <button type="submit">Create Board</button>
 </form>
