@@ -229,7 +229,7 @@ public class BoardService {
             if (attendBoard.getParticipation().equals(Participation.attend)) {
                 attendBoardRepository.delete(attendBoard);
 
-                board.keepUser();
+                board.kickUser();
             }
         }
     }
