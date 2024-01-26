@@ -107,6 +107,14 @@ public class BoardViewController {
         boardService.attendBoard(boardId,userDetails.getUser());
         return "redirect:/board/{boardId}";
     }
+    //보드 탈퇴
+    @GetMapping("/board/{boardId}/quit")
+    public String quitBoard(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        boardService.quitBoard(boardId,userDetails.getUser());
+        return "redirect:/playSpace";
+    }
     //신청자 목록 조회
     @GetMapping("/boardAttender/{boardId}")
     public String checkBoardAttender(

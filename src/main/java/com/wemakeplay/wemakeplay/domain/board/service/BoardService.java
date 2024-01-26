@@ -192,19 +192,22 @@ public class BoardService {
     public void quitBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
         List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
-        boolean flag = true;
-        for (AttendBoard attendBoard : attendBoardList) {
-            if (user.getId().equals(board.getBoardOwner().getId())) {
-                throw new ServiceException(ErrorCode.BOARD_OWNER_CANNOT_QUIT);
-            } else if (attendBoard.getUser().getId().equals(user.getId()) && attendBoard.getParticipation().equals(Participation.attend)) {
-                attendBoardRepository.delete(attendBoard);
-                break;
-            } else {
-                flag = false;
+        //게시글 생성자 예외처리
+        if (user.getId().equals(board.getBoardOwner().getId())) {
+            throw new ServiceException(ErrorCode.BOARD_OWNER_CANNOT_QUIT);
+        }else {
+            boolean isAttender=false;
+            for (AttendBoard attendBoard : attendBoardList) {
+                if (attendBoard.getUser().getId().equals(user.getId()) && attendBoard.getParticipation().equals(Participation.attend)) {
+                    attendBoardRepository.delete(attendBoard);
+                    isAttender=true;
+                    break;
+                }
             }
-        }
-        if (!flag) {
-            throw new ServiceException(ErrorCode.NOT_BOARD_ATTENDER);
+            //참여자가 아닌 사용자 예외처리
+            if (!isAttender) {
+                throw new ServiceException(ErrorCode.NOT_BOARD_ATTENDER);
+            }
         }
     }
 
