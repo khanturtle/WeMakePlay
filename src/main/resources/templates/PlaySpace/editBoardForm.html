@@ -26,9 +26,9 @@
 
         <div class="mb-3">
             <label for="boardSport" class="form-label">Sports:</label>
-            <select id="boardSport" name="boardSport" required>
+            <select id="boardSport" name="boardSport" th:field="${board.boardSport}" required>
                 <option value="축구">축구</option>
-                <option value="축구">풋살</option>
+                <option value="풋살">풋살</option>
                 <option value="야구">야구</option>
                 <option value="농구">농구</option>
                 <option value="배드민턴">배드민턴</option>
@@ -42,7 +42,7 @@
 
         <div class="mb-3">
             <label for="playDate">운동할 날짜 : </label>
-            <input type="date" id="playDate" name="playDate" required>
+            <input type="date" id="playDate" name="playDate" th:value="${#dates.format(board.playDate, 'yyyy-MM-dd')}" required>
         </div>
 
         <div class="mb-3">
