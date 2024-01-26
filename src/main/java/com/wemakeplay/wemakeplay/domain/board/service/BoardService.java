@@ -220,29 +220,21 @@ public class BoardService {
 
 
     @Transactional
-    public void kickUserFromBoard(Long boardId, Long userId) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_BOARD));
-
+    public void kickUserFromBoard(Long boardId, Long userId, User user) {
+        Board board = findBoard(boardId);
         User userToKick = userRepository.findById(userId)
                 .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
-
         List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
 
-        // 현재 로그인한 사용자가 보드의 소유자인지 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUsername = authentication.getName();
-
-        if (!board.getBoardOwner().getUsername().equals(loggedInUsername)) {
-            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
-        }
-
-        for (AttendBoard attendBoard : attendBoardList) {
-            if (attendBoard.getParticipation().equals(Participation.attend)) {
-                attendBoardRepository.delete(attendBoard);
-
-                board.kickUser();
+        if (board.getBoardOwner().getId().equals(user.getId())) {
+            for (AttendBoard attendBoard : attendBoardList) {
+                if (attendBoard.getUser().getId().equals(userToKick.getId())){
+                    attendBoardRepository.delete(attendBoard);
+                    board.kickUser();
+                }
             }
+        }else{
+            throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
     }
 
