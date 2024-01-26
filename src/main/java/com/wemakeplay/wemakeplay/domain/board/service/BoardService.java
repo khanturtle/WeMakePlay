@@ -200,6 +200,7 @@ public class BoardService {
             for (AttendBoard attendBoard : attendBoardList) {
                 if (attendBoard.getUser().getId().equals(user.getId()) && attendBoard.getParticipation().equals(Participation.attend)) {
                     attendBoardRepository.delete(attendBoard);
+                    board.quitBoard();
                     isAttender=true;
                     break;
                 }
