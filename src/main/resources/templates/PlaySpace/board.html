@@ -16,6 +16,13 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <style>
+        a{
+            text-decoration-line: none;
+            color: black;
+        }
+        a:hover{
+            text-decoration-line: underline;
+        }
         body {
             font-family: 'Verdana', sans-serif; /* 변경된 폰트 */
             background-color: #f4f4f4;
@@ -196,7 +203,8 @@
                 <!-- Join button -->
                 <button class="btn btn-success btn-lg" onclick="attendBoard()">가입 신청</button>
                 <!-- Participants list button -->
-                <a class="btn btn-info btn-lg" onclick="checkAttender()">신청자 확인</a>
+                <button class="btn btn-info btn-lg" onclick="checkAttender()">신청자 확인</button>
+                <button class="btn btn-danger" onclick="quitBoard()">탈퇴</button>
             </div>
 
             <hr>
@@ -345,6 +353,41 @@
             });
         } else {
             window.location.href = host + '/';
+        }
+    }
+    function quitBoard(){
+        const auth = getToken();
+        const result = confirm("게시글에서 탈퇴 하시겠습니까?");
+        if (result) {
+            // 사용자가 확인을 선택한 경우
+            const auth = getToken();
+            if (auth !== undefined && auth !== '') {
+                $.ajax({
+                    type: 'DELETE',
+                    headers: {
+                        Authorization: auth
+                    },
+                    url: '/api/boards/quit/' + $('#boardId').val(),
+                    success: function (data) {
+                        alert('게시글에서 탈퇴되었습니다.');
+                        window.location.href = '/playSpace';
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 403) {
+                            alert('게시글 작성자는 탈퇴할 수 없습니다.');
+                        } else if (xhr.status === 404) {
+                            alert('가입된 상태가 아닙니다.');
+                        } else {
+                            alert('알 수 없는 오류가 발생했습니다.');
+                        }
+                    }
+                });
+            } else {
+                // 인증되지 않은 사용자라면 로그인 페이지로 이동하거나 다른 처리를 수행
+                window.location.href = host + '/';
+            }
+        } else {
+            // 사용자가 취소를 선택한 경우 아무 동작 없음
         }
     }
 

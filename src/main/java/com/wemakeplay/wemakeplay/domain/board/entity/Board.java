@@ -82,7 +82,9 @@ public class Board extends BaseEntity {
         this.getUsers().remove(user);
         user.getBoards().remove(this); // 연관된 양방향 매핑도 업데이트
     }
-
+    public void quitBoard() {
+        this.boardAttendPersonnel --;
+    }
     public void kickUser() {
         this.boardAttendPersonnel --;
     }
