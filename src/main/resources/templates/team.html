@@ -193,7 +193,8 @@
         <!-- Join button -->
         <button class="btn btn-success btn-lg" onclick="attendTeam()">가입 신청</button>
         <!-- Participants list button -->
-        <a class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</a>
+        <button class="btn btn-info btn-lg" onclick="checkTeamAttender()">신청자 확인</button>
+        <button class="btn btn-danger" onclick="quitTeam()">탈퇴</button>
       </div>
 
       <hr>
@@ -204,8 +205,10 @@
       <div class="attendanceCheck" id="attendanceCheck">
         <ul class="list-group">
           <li class="list-group-item" th:text ="${teamResponseDto.teamOwner}" ></li>
-          <li class="list-group-item" th:each="userNickname : ${teamResponseDto.memberNameList}"
-              th:text="${userNickname}"></li>
+          <li class="list-group-item" th:each="userNickname : ${teamResponseDto.memberNameList}">
+            <span th:text="${userNickname}"></span>
+            <button class="btn btn-sm btn-secondary" onclick="kickTeam()">강퇴</button>
+          </li>
         </ul>
       </div>
     </div>
@@ -314,6 +317,70 @@
         window.location.href = host + '/';
       }
     }
+
+    function quitTeam(){
+    const auth = getToken();
+    const result = confirm("팀에서 탈퇴 하시겠습니까?");
+    if (result) {
+      const auth = getToken();
+      if (auth !== undefined && auth !== '') {
+        $.ajax({
+          type: 'DELETE',
+          headers: {
+            Authorization: auth
+          },
+        url: '/api/teams/quit/' + $('#teamId').val(),
+        success: function (data) {
+            alert('팀에서 탈퇴 되었습니다.');
+            window.location.href = '/teamAttend';},
+        error: function (xhr){
+            if (xhr.status === 403){
+              alert('팀 생성자는 탈퇴할 수 없습니다.');
+            }else if (xhr.status === 404) {
+              alert('가입자가 아닙니다..');
+            }else {
+              alert('알 수 없는 오류가 발생했습니다.');
+            }
+           }
+        });
+      }else {
+        window.location.href = host + '/';
+      }
+    }else {
+
+    }
+  }
+
+  function kickTeam() {
+    const userId = $('#userId').val();
+    const result = confirm("강퇴 하시겠습니까?");
+    if (result) {
+      const auth = getToken();
+      if (auth !== undefined && auth !== '') {
+        $.ajax({
+          type: 'DELETE',
+          headers: {
+            Authorization: auth
+          },
+          url: 'api/teams/' + $('#teamId').val() + '/kick/' + userId,
+          success: function (data) {
+            alert('강퇴 되었습니다.');
+            window.location.href = '/team/' + $('#teamId').val();
+          },
+          error: function (xhr, textStatus, errorThrown) {
+            if (xhr.status === 403) {
+              alert('팀 생성자만 강퇴할 수 있습니다.');
+            } else {
+              // 기타 오류 처리
+              alert('서버에서 오류가 발생했습니다.');
+            }
+          }
+        });
+      } else {
+        window.location.href = host + '/';
+      }
+    }
+  }
 
     let isAttendanceCheckVisible = false;
     function ParticipantConfirmation() {
