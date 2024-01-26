@@ -92,6 +92,14 @@ public class TeamViewController {
         teamService.attendTeam(teamId, userDetails.getUser());
         return "redirect:/team/{teamId}";
     }
+    // 탈퇴
+    @GetMapping("/team/{teamId}/quit")
+    public String quitTeam(
+        @PathVariable Long teamId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        teamService.quitTeam(teamId, userDetails.getUser());
+        return "redirect:/teamAttend";
+    }
     //신청자 목록
     @GetMapping("/teamAttender/{teamId}")
     public String checkTeamAttender(
