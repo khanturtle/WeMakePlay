@@ -72,10 +72,42 @@ public class UserViewControllerJ {
     public String showMainPage(
             Model model,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails==null){
+            boolean notLoggedIn=false;
+            model.addAttribute("notLoggedin",notLoggedIn);
+            List<BoardViewResponseDto> boardList = boardService.get3Boards();
+            model.addAttribute("boardList",boardList);
+
+            List<TeamViewResponseDto> teamList = teamService.get3Teams();
+            model.addAttribute("teamList", teamList);
+            return "mainPage";
+        }
         List<BoardViewResponseDto> boardList = boardService.get3Boards();
         model.addAttribute("boardList",boardList);
         List<TopPlayerResponseDto> responseDto = playerService.get3TopPlayers(userDetails.getUser());
         model.addAttribute("topPlayers", responseDto);
+        List<TeamViewResponseDto> teamList = teamService.get3Teams();
+        model.addAttribute("teamList", teamList);
+        return "mainPage";
+    }
+
+    @GetMapping
+    public String indexPage(
+            Model model,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if(userDetails==null){
+            boolean notLoggedIn=false;
+            model.addAttribute("notLoggedin",notLoggedIn);
+            List<BoardViewResponseDto> boardList = boardService.get3Boards();
+            model.addAttribute("boardList",boardList);
+
+            List<TeamViewResponseDto> teamList = teamService.get3Teams();
+            model.addAttribute("teamList", teamList);
+            return "mainPage";
+        }
+        List<BoardViewResponseDto> boardList = boardService.get3Boards();
+        model.addAttribute("boardList",boardList);
+
         List<TeamViewResponseDto> teamList = teamService.get3Teams();
         model.addAttribute("teamList", teamList);
         return "mainPage";
