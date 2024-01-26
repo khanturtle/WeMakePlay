@@ -66,6 +66,7 @@ public class Board extends BaseEntity {
         this.boardSport = boardRequestDto.getBoardSport();
         this.boardArea = boardRequestDto.getBoardArea();
         this.boardStadium = boardRequestDto.getBoardStadium();
+        this.playDate = boardRequestDto.getPlayDate();
         this.boardPersonnel = boardRequestDto.getBoardPersonnel();
     }
 
