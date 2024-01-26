@@ -88,7 +88,7 @@ public class BoardViewController {
             @PathVariable Long boardId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         boardService.updateBoard(boardId, boardRequestDto, userDetails.getUser());
-        return "redirect:/playSpace";
+        return "redirect:/board/{boardId}";
     }
 
     //보드 삭제
