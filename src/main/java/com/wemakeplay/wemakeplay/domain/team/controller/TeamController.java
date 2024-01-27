@@ -143,11 +143,12 @@ public class TeamController {
             .build());
     }
 
-    @PostMapping("/{teamId}/kick/{userId}")
+    @DeleteMapping("/{teamId}/kick/{userId}")
     public ResponseEntity<?> kickUserFromTeam(
         @PathVariable Long teamId,
-        @PathVariable Long userId) {
-        teamService.kickUserFromTeam(teamId, userId);
+        @PathVariable Long userId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        teamService.kickUserFromTeam(teamId, userId, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
             .message(userId + "번 유저가 강퇴되었습니다.")
