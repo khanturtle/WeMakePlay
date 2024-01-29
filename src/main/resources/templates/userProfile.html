@@ -297,6 +297,7 @@
           // 성공적으로 좋아요를 누른 경우의 처리
           alert('좋아요가 성공적으로 등록되었습니다.');
           // 여기에 필요한 추가 동작을 수행할 수 있습니다.
+          window.location.href = '/user/' + $('#userId').val()
         },
         error: function (error) {
           // 좋아요 등록 실패 시의 처리
@@ -324,6 +325,7 @@
           // 성공적으로 좋아요를 누른 경우의 처리
           alert('좋아요가 성공적으로 취소되었습니다.');
           // 여기에 필요한 추가 동작을 수행할 수 있습니다.
+          window.location.href = '/user/' + $('#userId').val()
         },
         error: function (error) {
           // 좋아요 등록 실패 시의 처리
@@ -350,6 +352,7 @@
         success: function (data) {
 
           alert('팔로우가 성공적으로 등록되었습니다.');
+          window.location.href = '/user/' + $('#userId').val()
         },
         error: function (error) {
 
@@ -376,6 +379,7 @@
         success: function (data) {
 
           alert('팔로우가 성공적으로 취소되었습니다.');
+          window.location.href = '/user/' + $('#userId').val()
         },
         error: function (error) {
 
