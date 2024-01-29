@@ -195,13 +195,13 @@ public class BoardService {
         //게시글 생성자 예외처리
         if (user.getId().equals(board.getBoardOwner().getId())) {
             throw new ServiceException(ErrorCode.BOARD_OWNER_CANNOT_QUIT);
-        }else {
-            boolean isAttender=false;
+        } else {
+            boolean isAttender = false;
             for (AttendBoard attendBoard : attendBoardList) {
                 if (attendBoard.getUser().getId().equals(user.getId()) && attendBoard.getParticipation().equals(Participation.attend)) {
                     attendBoardRepository.delete(attendBoard);
                     board.quitBoard();
-                    isAttender=true;
+                    isAttender = true;
                     break;
                 }
             }
@@ -212,13 +212,6 @@ public class BoardService {
         }
     }
 
-    public Board findBoard(Long boardId) {
-        return boardRepository.findById(boardId).orElseThrow(
-                () -> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
-        );
-    }
-
-
     @Transactional
     public void kickUserFromBoard(Long boardId, Long userId, User user) {
         Board board = findBoard(boardId);
@@ -228,14 +221,29 @@ public class BoardService {
 
         if (board.getBoardOwner().getId().equals(user.getId())) {
             for (AttendBoard attendBoard : attendBoardList) {
-                if (attendBoard.getUser().getId().equals(userToKick.getId())){
+                if (attendBoard.getUser().getId().equals(userToKick.getId())) {
                     attendBoardRepository.delete(attendBoard);
                     board.kickUser();
                 }
             }
-        }else{
+        } else {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
+    }
+
+    public List<String> getBoardAreas() {
+        List<Board> boardList = boardRepository.findAll();
+        HashSet<String> boardAreaList = new HashSet<>();
+        for (Board board : boardList) {
+            boardAreaList.add(board.getBoardArea());
+        }
+        return boardAreaList.stream().toList();
+    }
+
+    public Board findBoard(Long boardId) {
+        return boardRepository.findById(boardId).orElseThrow(
+                () -> new ServiceException(ErrorCode.NOT_EXIST_BOARD)
+        );
     }
 
     public void checkBoardOwner(Long boardId, User user) {
@@ -245,5 +253,16 @@ public class BoardService {
         } else {
             throw new ServiceException(ErrorCode.NOT_BOARD_OWNER);
         }
+    }
+
+    public Page<BoardViewResponseDto> getBoardsByArea(String area, PageRequest pageable) {
+    // BoardRepository에서 지역별로 게시글을 가져오는 메서드 호출
+        Page<Board> boardPage;
+        if(area.equals("선택 없음")){
+            boardPage = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("modifiedAt"))));
+        }else{
+            boardPage = boardRepository.findByBoardArea(area, pageable);
+        }
+        return boardPage.map(BoardViewResponseDto::new);
     }
 }

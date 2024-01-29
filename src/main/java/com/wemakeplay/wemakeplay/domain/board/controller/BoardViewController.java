@@ -62,16 +62,27 @@ public class BoardViewController {
     @GetMapping("/playSpace") //(http://localhost:8080/playSpace)
     public String getBoards(
             Model model,
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String area) {
         int pageSize = 10; // 한 페이지에 보여줄 게시글 수
         // Pageable 객체를 생성하여 페이지 번호와 페이지 크기를 설정
         PageRequest pageable = PageRequest.of(page, pageSize);
-        // 페이지 처리된 게시글 목록을 가져오는 메서드 호출
-        Page<BoardViewResponseDto> boardPage = boardService.getBoards(pageable);
-        // 현재 페이지의 게시글 목록과 전체 페이지 수를 모델에 추가
-        model.addAttribute("boardList", boardPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", boardPage.getTotalPages());
+
+        List<String> boardAreaList = boardService.getBoardAreas();
+        model.addAttribute("boardAreaList",boardAreaList);
+        if (area != null && !area.isEmpty()) {
+            // 선택한 지역에 해당하는 게시글만 가져오는 메서드 호출
+            Page<BoardViewResponseDto> boardPage = boardService.getBoardsByArea(area, pageable);
+            model.addAttribute("boardList", boardPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", boardPage.getTotalPages());
+        } else {
+            // 모든 게시글을 가져오는 메서드 호출
+            Page<BoardViewResponseDto> boardPage = boardService.getBoards(pageable);
+            model.addAttribute("boardList", boardPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", boardPage.getTotalPages());
+        }
         return "PlaySpace/playSpace";
     }
 

@@ -133,6 +133,12 @@
 
 <section>
     <h1>Play Space</h1>
+    <label for="boardArea">지역별 : </label>
+    <select id="boardArea" name="boardArea" onchange="loadBoardsByArea()">
+        <option value="">선택 없음</option>
+        <option th:each="area : ${boardAreaList}" th:value="${area}" th:text="${area}"></option>
+    </select>
+
     <a href="#" class="btn btn-success btn-lg"
        th:href="@{/boardCreate}">글 작성</a>
 </section>
@@ -219,7 +225,34 @@
         }
         return auth;
     }
+    function loadBoardsByArea() {
+        var selectedArea = document.getElementById("boardArea").value;
+        // 선택한 지역을 쿠키에 저장
+        Cookies.set('selectedArea', selectedArea);
+
+        window.location.href = "/playSpace?area=" + selectedArea;
+    }
+
+    $(document).ready(function () {
+        const auth = getToken();
+
+        if (auth !== undefined && auth !== '') {
+            $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                jqXHR.setRequestHeader('Authorization', auth);
+            });
+        } else {
+            window.location.href = host + '/';
+            return;
+        }
+
+        // 페이지 로딩 시에 쿠키에서 선택한 지역을 가져와서 설정
+        var selectedArea = Cookies.get('selectedArea');
+        if (selectedArea !== undefined) {
+            $("#boardArea").val(selectedArea);
+        }
+    });
 </script>
+
 
 </body>
 </html>
