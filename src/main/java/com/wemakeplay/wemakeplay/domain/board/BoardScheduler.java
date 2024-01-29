@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class BoardScheduler {
     private final BoardService boardService;
 
-    @Scheduled(fixedRate = 60000)//60초
+    @Scheduled(fixedRate = 600000)//10분
     public void deleteExpiredBoards(){
         boardService.deleteExpiredBoards();
     }
