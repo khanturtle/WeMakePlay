@@ -1,5 +1,11 @@
 package com.wemakeplay.wemakeplay.domain.team.service;
 
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.ALREADY_ATTENDING_TEAM;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_TEAM;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_OWNER;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_FULL_PERSONNEL;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_OWNER;
+
 import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeamRepository;
@@ -12,17 +18,14 @@ import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -70,7 +73,7 @@ public class TeamService {
     public TeamResponseDto updateTeam(Long teamId, TeamRequestDto teamRequestDto, User user) {
         Team team = findTeam(teamId);
         if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
         team.updateTeam(teamRequestDto);
         return new TeamResponseDto(team);
@@ -80,7 +83,7 @@ public class TeamService {
     public void deleteTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
         attendTeamRepository.deleteAll(attendTeamRepository.findByTeamId(teamId));
         teamRepository.delete(team);
@@ -90,16 +93,16 @@ public class TeamService {
     public void attendTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (team.getTeamAttendPersonnel() >= team.getTeamPersonnel()) {
-            throw new ServiceException(ErrorCode.TEAM_FULL_PERSONNEL);
+            throw new ServiceException(TEAM_FULL_PERSONNEL);
         }
         if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            throw new ServiceException(ErrorCode.TEAM_OWNER);
+            throw new ServiceException(TEAM_OWNER);
         }
         if (user.getAttendTeams().stream()
             .anyMatch(t -> t.getTeam().getId().equals(teamId) &&
                 (t.getParticipation() == com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait ||
                     t.getParticipation() == com.wemakeplay.wemakeplay.domain.attendteam.Participation.attend))) {
-            throw new ServiceException(ErrorCode.ALREADY_ATTENDING_TEAM);
+            throw new ServiceException(ALREADY_ATTENDING_TEAM);
         }
         AttendTeam attendTeam = AttendTeam.builder()
             .user(user)
@@ -113,7 +116,7 @@ public class TeamService {
     public List<AttendTeam> checkTeamAttender(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
         return attendTeamRepository.findByTeamId(teamId)
             .stream()
@@ -126,7 +129,7 @@ public class TeamService {
         Team team = findTeam(teamId);
         if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
             if (team.getTeamAttendPersonnel() >= team.getTeamPersonnel()) {
-                throw new ServiceException(ErrorCode.TEAM_FULL_PERSONNEL);
+                throw new ServiceException(TEAM_FULL_PERSONNEL);
             }
             List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
             attendTeamList.stream()
@@ -134,7 +137,7 @@ public class TeamService {
                 .forEach(AttendTeam::allowAttend);
             team.attendUser();
         } else {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
 
@@ -147,7 +150,7 @@ public class TeamService {
                 .filter(attendTeam -> attendTeam.getUser().getId().equals(userId))
                 .forEach(AttendTeam::rejectAttend);
         } else {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
 
@@ -163,45 +166,32 @@ public class TeamService {
 
     public Team findTeam(Long teamId) {
         return teamRepository.findById(teamId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_EXIST_TEAM));
+            .orElseThrow(() -> new ServiceException(NOT_EXIST_TEAM));
     }
 
     @Transactional
-    public void kickUserFromTeam(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_TEAM));
-
+    public void kickUserFromTeam(Long teamId, Long userId, User user) {
+        Team team = findTeam(teamId);
         User userToKick = userRepository.findById(userId)
             .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
+        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUsername = authentication.getName();
-
-        if (!team.getTeamOwner().getUsername().equals(loggedInUsername)) {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
-        }
-
-        attendTeamRepository.findByTeamId(teamId)
-            .stream()
-            .filter(attendTeam -> attendTeam.getParticipation().equals(Participation.attend)
-                && attendTeam.getUser().getId().equals(userId))
-            .findFirst()
-            .ifPresent(attendTeam -> {
-                attendTeamRepository.delete(attendTeam);
-                team.keepUser();
-            });
-
-        if (userToKick.equals(team.getTeamOwner())) {
-            throw new ServiceException(ErrorCode.CANNOT_KICK_TEAM_OWNER);
-        } else {
-            throw new ServiceException(ErrorCode.NOT_TEAM_MEMBER);
+        if (team.getTeamOwner().getId().equals(user.getId())) {
+            for (AttendTeam attendTeam : attendTeamList) {
+                if (attendTeam.getUser().getId().equals(userToKick.getId())){
+                    attendTeamRepository.delete(attendTeam);
+                    team.kickUser();
+                }
+            }
+        }else{
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
 
     public void checkTeamOwner(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (!team.getTeamOwner().getNickname().equals(user.getNickname())) {
-            throw new ServiceException(ErrorCode.NOT_TEAM_OWNER);
+            throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
 }
