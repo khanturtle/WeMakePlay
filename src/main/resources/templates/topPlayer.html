@@ -115,8 +115,6 @@
   <h3>sports community</h3>
   <div class="auth-links">
     <a th:href="@{/myPage}"> MyPage </a>
-    <a th:href = "@{/login}"> 로그인 </a>
-    <a th:href = "@{/signup}"> 회원가입 </a>
     <a href="javascript:confirmLogout()"> Logout </a>
   </div>
 </header>
@@ -143,7 +141,7 @@
     <p>Nickname: <span th:text="${player.nickname}"></span></p>
     <p>Age: <span th:text="${player.age}"></span></p>
     <p>Area: <span th:text="${player.area}"></span></p>
-    <p>Followers: <a th:href="@{'/user/' + ${player.followers}}"><span th:text="${player.followers}"></span></a></p>
+    <p>Followers: <span th:text="${player.followers}"></span></p>
   </div>
 </div>
 
