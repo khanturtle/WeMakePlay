@@ -33,5 +33,7 @@ out/
 /.nb-gradle/
 apikey.js
 
+.xcconfig
+
 ### VS Code ###
 .vscode/
