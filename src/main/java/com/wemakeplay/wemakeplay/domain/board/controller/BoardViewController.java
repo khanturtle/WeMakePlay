@@ -63,26 +63,37 @@ public class BoardViewController {
     public String getBoards(
             Model model,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(required = false) String area) {
+            @RequestParam(required = false) String area,
+            @RequestParam(required = false) String sport) {
         int pageSize = 10; // 한 페이지에 보여줄 게시글 수
         // Pageable 객체를 생성하여 페이지 번호와 페이지 크기를 설정
         PageRequest pageable = PageRequest.of(page, pageSize);
 
         List<String> boardAreaList = boardService.getBoardAreas();
+        List<String> boardSportList = boardService.getBoardSports();
         model.addAttribute("boardAreaList",boardAreaList);
-        if (area != null && !area.isEmpty()) {
-            // 선택한 지역에 해당하는 게시글만 가져오는 메서드 호출
-            Page<BoardViewResponseDto> boardPage = boardService.getBoardsByArea(area, pageable);
+        model.addAttribute("boardSportList",boardSportList);
+        Page<BoardViewResponseDto> boardPage;
+        if (area != null && !area.isEmpty() && sport != null && !sport.isEmpty()) {
+            // 지역과 운동이 모두 선택된 경우
+            boardPage = boardService.getBoardsByAreaAndSport(area, sport, pageable);
             model.addAttribute("boardList", boardPage.getContent());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("totalPages", boardPage.getTotalPages());
+        } else if (area != null && !area.isEmpty()) {
+            // 지역만 선택된 경우
+            boardPage = boardService.getBoardsByArea(area, pageable);
+            model.addAttribute("boardList", boardPage.getContent());
+        } else if (sport != null && !sport.isEmpty()) {
+            // 운동만 선택된 경우
+            boardPage = boardService.getBoardsBySport(sport, pageable);
+            model.addAttribute("boardList", boardPage.getContent());
         } else {
-            // 모든 게시글을 가져오는 메서드 호출
-            Page<BoardViewResponseDto> boardPage = boardService.getBoards(pageable);
+            // 아무 선택이 없는 경우 전체 게시글 조회
+            boardPage = boardService.getBoards(pageable);
             model.addAttribute("boardList", boardPage.getContent());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("totalPages", boardPage.getTotalPages());
         }
+        model.addAttribute("boardList", boardPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", boardPage.getTotalPages());
         return "PlaySpace/playSpace";
     }
 

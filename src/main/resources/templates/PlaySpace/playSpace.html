@@ -139,6 +139,12 @@
         <option th:each="area : ${boardAreaList}" th:value="${area}" th:text="${area}"></option>
     </select>
 
+    <label for="boardSport">운동별 : </label>
+    <select id="boardSport" name="boardSport" onchange="loadBoardsBySport()">
+        <option value="">선택 없음</option>
+        <option th:each="sport : ${boardSportList}" th:value="${sport}" th:text="${sport}"></option>
+    </select>
+
     <a href="#" class="btn btn-success btn-lg"
        th:href="@{/boardCreate}">글 작성</a>
 </section>
@@ -227,10 +233,21 @@
     }
     function loadBoardsByArea() {
         var selectedArea = document.getElementById("boardArea").value;
-        // 선택한 지역을 쿠키에 저장
-        Cookies.set('selectedArea', selectedArea);
+        var selectedSport = document.getElementById("boardSport").value;
 
-        window.location.href = "/playSpace?area=" + selectedArea;
+        Cookies.set('selectedArea', selectedArea);
+        Cookies.set('selectedSport', selectedSport);
+
+        window.location.href = "/playSpace?area=" + selectedArea + "&sport=" + selectedSport;
+    }
+    function loadBoardsBySport() {
+        var selectedArea = document.getElementById("boardArea").value;
+        var selectedSport = document.getElementById("boardSport").value;
+
+        Cookies.set('selectedArea', selectedArea);
+        Cookies.set('selectedSport', selectedSport);
+
+        window.location.href = "/playSpace?area=" + selectedArea + "&sport=" + selectedSport;
     }
 
     $(document).ready(function () {
@@ -249,6 +266,11 @@
         var selectedArea = Cookies.get('selectedArea');
         if (selectedArea !== undefined) {
             $("#boardArea").val(selectedArea);
+        }
+
+        var selectedSport = Cookies.get('selectedSport');
+        if (selectedSport !== undefined) {
+            $("#boardSport").val(selectedSport);
         }
     });
 </script>

@@ -256,13 +256,42 @@ public class BoardService {
     }
 
     public Page<BoardViewResponseDto> getBoardsByArea(String area, PageRequest pageable) {
-    // BoardRepository에서 지역별로 게시글을 가져오는 메서드 호출
+        // BoardRepository에서 지역별로 게시글을 가져오는 메서드 호출
         Page<Board> boardPage;
-        if(area.equals("선택 없음")){
+        if (area.equals("선택 없음")) {
             boardPage = boardRepository.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("modifiedAt"))));
-        }else{
+        } else {
             boardPage = boardRepository.findByBoardArea(area, pageable);
         }
         return boardPage.map(BoardViewResponseDto::new);
+    }
+
+    public Page<BoardViewResponseDto> getBoardsBySport(String sport, Pageable pageable) {
+        Page<Board> boardPage = boardRepository.findByBoardSport(sport, pageable);
+        return boardPage.map(BoardViewResponseDto::new);
+    }
+
+    public List<String> getBoardSports() {
+        List<Board> boardList = boardRepository.findAll();
+        HashSet<String> boardSportList = new HashSet<>();
+        for (Board board : boardList) {
+            boardSportList.add(board.getBoardSport());
+        }
+        return boardSportList.stream().toList();
+    }
+
+    public Page<BoardViewResponseDto> getBoardsByAreaAndSport(String area, String sport, PageRequest pageable) {
+        if ("선택없음".equals(area) && "선택없음".equals(sport)) {
+            return getBoards(pageable);
+        } else if ("선택없음".equals(area)) {
+            Page<Board> boardPage = boardRepository.findByBoardSport(sport, pageable);
+            return boardPage.map(BoardViewResponseDto::new);
+        } else if ("선택없음".equals(sport)) {
+            Page<Board> boardPage = boardRepository.findByBoardArea(area, pageable);
+            return boardPage.map(BoardViewResponseDto::new);
+        } else {
+            Page<Board> boardPage = boardRepository.findByBoardAreaAndBoardSport(area, sport, pageable);
+            return boardPage.map(BoardViewResponseDto::new);
+        }
     }
 }
