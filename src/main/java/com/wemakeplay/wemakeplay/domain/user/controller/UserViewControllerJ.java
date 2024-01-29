@@ -103,14 +103,17 @@ public class UserViewControllerJ {
 
             List<TeamViewResponseDto> teamList = teamService.get3Teams();
             model.addAttribute("teamList", teamList);
-            return "mainPage";
+            return "index";
         }
         List<BoardViewResponseDto> boardList = boardService.get3Boards();
         model.addAttribute("boardList",boardList);
 
+        List<TopPlayerResponseDto> responseDto = playerService.get3TopPlayers(userDetails.getUser());
+        model.addAttribute("topPlayers", responseDto);
+
         List<TeamViewResponseDto> teamList = teamService.get3Teams();
         model.addAttribute("teamList", teamList);
-        return "mainPage";
+        return "index";
     }
 
     @GetMapping("/user/{userId}")
