@@ -2,11 +2,12 @@ package com.wemakeplay.wemakeplay.domain.team.service;
 
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.ALREADY_ATTENDING_TEAM;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_TEAM;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_MEMBER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_OWNER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_FULL_PERSONNEL;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_OWNER;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_OWNER_CANNOT_WITHDRAW;
 
-import com.wemakeplay.wemakeplay.domain.attendboard.Participation;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeamRepository;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
@@ -18,6 +19,7 @@ import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,13 +117,19 @@ public class TeamService {
 
     public List<AttendTeam> checkTeamAttender(Long teamId, User user) {
         Team team = findTeam(teamId);
-        if (!user.getNickname().equals(team.getTeamOwner().getNickname())) {
+        if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
+            List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
+            List<AttendTeam> attendTeamWaitingList = new ArrayList<>();
+            for (AttendTeam attendTeam : attendTeamList) {
+                if (attendTeam.getParticipation().equals(
+                    com.wemakeplay.wemakeplay.domain.attendteam.Participation.wait)) {
+                    attendTeamWaitingList.add(attendTeam);
+                }
+            }
+            return attendTeamWaitingList;
+        } else {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
-        return attendTeamRepository.findByTeamId(teamId)
-            .stream()
-            .filter(attendTeam -> attendTeam.getParticipation().equals(Participation.wait))
-            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -157,11 +165,25 @@ public class TeamService {
     @Transactional
     public void quitTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
-        attendTeamRepository.findByTeamId(teamId)
-            .stream()
-            .filter(attendTeam -> attendTeam.getUser().getId().equals(user.getId())
-                && attendTeam.getParticipation().equals(Participation.attend))
-            .forEach(attendTeamRepository::delete);
+        List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
+
+        if (user.getId().equals(team.getTeamOwner().getId())) {
+            throw new ServiceException(TEAM_OWNER_CANNOT_WITHDRAW);
+        } else {
+            boolean isAttender = false;
+            for (AttendTeam attendTeam : attendTeamList) {
+                if (attendTeam.getUser().getId().equals(user.getId()) && attendTeam.getParticipation().equals(
+                    com.wemakeplay.wemakeplay.domain.attendteam.Participation.attend)) {
+                    attendTeamRepository.delete(attendTeam);
+                    team.quitTeam();
+                    isAttender = true;
+                    break;
+                }
+            }
+            if (!isAttender) {
+                throw new ServiceException(NOT_TEAM_MEMBER);
+            }
+        }
     }
 
     public Team findTeam(Long teamId) {
@@ -181,6 +203,7 @@ public class TeamService {
                 if (attendTeam.getUser().getId().equals(userToKick.getId())){
                     attendTeamRepository.delete(attendTeam);
                     team.kickUser();
+                    return;
                 }
             }
         }else{
