@@ -10,6 +10,7 @@ import com.wemakeplay.wemakeplay.domain.comment.entity.Comment;
 import com.wemakeplay.wemakeplay.domain.comment.repository.CommentRepository;
 import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -36,8 +37,10 @@ public class BoardViewController {
     //보드 생성 페이지
     @GetMapping("/boardCreate")
     public String showCreateForm(
-            Model model) {
+            Model model,
+            @Value("${api.google.key}") String googleApiKey) {
         model.addAttribute("boardRequestDto", new BoardRequestDto());
+        model.addAttribute("googleApiKey", googleApiKey);
         return "PlaySpace/boardForm";
     }
 
