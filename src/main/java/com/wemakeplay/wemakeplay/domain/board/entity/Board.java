@@ -36,11 +36,9 @@ public class Board extends BaseEntity {
     @ManyToOne
     private User boardOwner;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)//, fetch = FetchType.EAGER
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttendBoard> attendBoards = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -72,16 +70,6 @@ public class Board extends BaseEntity {
 
     public void attendUser() {
         this.boardAttendPersonnel++;
-    }
-
-    public void addUser(User user) {
-        this.users.add(user);
-        user.getBoards().add(this); // 연관된 양방향 매핑도 업데이트
-    }
-
-    public void removeUser(User user) {
-        this.getUsers().remove(user);
-        user.getBoards().remove(this); // 연관된 양방향 매핑도 업데이트
     }
     public void quitBoard() {
         this.boardAttendPersonnel --;
