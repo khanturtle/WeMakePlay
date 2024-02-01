@@ -37,10 +37,8 @@ public class BoardViewController {
     //보드 생성 페이지
     @GetMapping("/boardCreate")
     public String showCreateForm(
-            Model model,
-            @Value("${api.google.key}") String googleApiKey) {
+            Model model) {
         model.addAttribute("boardRequestDto", new BoardRequestDto());
-        model.addAttribute("googleApiKey", googleApiKey);
         return "PlaySpace/boardForm";
     }
 
@@ -55,7 +53,9 @@ public class BoardViewController {
 
     //보드 단건 조회
     @GetMapping("/board/{boardId}")
-    public String getBoard(@PathVariable Long boardId, Model model) {
+    public String getBoard(
+            @PathVariable Long boardId,
+            Model model) {
         BoardResponseDto boardResponseDto = boardService.getBoard(boardId);
         model.addAttribute("boardResponseDto", boardResponseDto);
         return "PlaySpace/board";
