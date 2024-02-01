@@ -26,3 +26,7 @@ server:
 logging:
   level:
     org.springframework.security: debug
+
+api:
+  google:
+    key: ${secrets.GOOGLE_API_KEY}

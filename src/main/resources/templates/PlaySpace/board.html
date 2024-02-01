@@ -16,13 +16,15 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <style>
-        a{
+        a {
             text-decoration-line: none;
             color: black;
         }
-        a:hover{
+
+        a:hover {
             text-decoration-line: underline;
         }
+
         body {
             font-family: 'Verdana', sans-serif; /* 변경된 폰트 */
             background-color: #f4f4f4;
@@ -124,10 +126,12 @@
             position: relative; /* Added position relative */
             font-family: 'Impact', sans-serif; /* 변경된 폰트 */
         }
+
         nav {
             background-color: #444;
             overflow: hidden;
         }
+
         .main-links {
             display: inline-block;
             color: white;
@@ -136,23 +140,26 @@
             font-family: 'Comic Sans MS', cursive; /* 변경된 폰트 */
 
         }
+
         .main-links:hover {
             background-color: #ddd;
             color: black;
         }
-        .attendance{
+
+        .attendance {
             background-color: skyblue;
             width: 100px;
             text-align: center;
             border-radius: 10px;
-            cursor:pointer;
+            cursor: pointer;
         }
 
-        .attendanceCheck{
+        .attendanceCheck {
             visibility: hidden;
             position: absolute;
             opacity: 0;
         }
+
         .attendanceCheck.show {
             visibility: visible;
             position: static;
@@ -160,6 +167,11 @@
             transition: visibility 0s, opacity 0.5s ease;
         }
 
+        #map {
+            height: 300px;
+            width: 400px;
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 <body>
@@ -167,8 +179,8 @@
     <h1>We Make Play</h1>
     <h3>sports community</h3>
     <div class="auth-links">
-        <a th:href = "@{/myPage}"> MyPage </a>
-        <a href = "javascript:confirmLogout()"> Logout </a>
+        <a th:href="@{/myPage}"> MyPage </a>
+        <a href="javascript:confirmLogout()"> Logout </a>
 
     </div>
 </header>
@@ -182,20 +194,22 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <h2 class="custom-card-title" th:text="${boardResponseDto.boardTitle} + '['+ ${boardResponseDto.commentNum} +']'"></h2>
+            <h2 class="custom-card-title"
+                th:text="${boardResponseDto.boardTitle} + '['+ ${boardResponseDto.commentNum} +']'"></h2>
             <input type="hidden" th:value="${boardResponseDto.id}" id="boardId">
             <div style="text-align: right;">
-            <!-- 수정 버튼 -->
-                <a href="#"  onclick="editBoard()">수정</a>
-            <!-- 삭제 버튼 -->
+                <!-- 수정 버튼 -->
+                <a href="#" onclick="editBoard()">수정</a>
+                <!-- 삭제 버튼 -->
                 |
                 <span class="text-danger" onclick="confirmDelete()"
-                  th:style="'cursor: pointer;'">
+                      th:style="'cursor: pointer;'">
                     삭제
                 </span>
             </div>
             <!-- 글쓴이 정보를 클릭하면 해당 유저의 프로필 페이지로 이동하는 링크 -->
-            <a class="participants-info" th:href="@{'/user/' + ${boardResponseDto.boardOwnerId}}" onclick="goToUserPage()" th:text="'글쓴이: ' + ${boardResponseDto.boardOwner}">
+            <a class="participants-info" th:href="@{'/user/' + ${boardResponseDto.boardOwnerId}}"
+               onclick="goToUserPage()" th:text="'글쓴이: ' + ${boardResponseDto.boardOwner}">
             </a>
 
 
@@ -208,13 +222,14 @@
             </div>
 
             <hr>
-            <div class = "infoBox">
+            <div class="infoBox">
                 <p class="participants-info"
                    th:text="${boardResponseDto.boardArea}+' / ' + ${boardResponseDto.boardSport}"></p>
                 <p class="participants-info"
                    th:text="'일시 : ' + ${boardResponseDto.playDate}"></p>
-                <p class="participants-info"
+                <p class="participants-info" id="boardStadium"
                    th:text="'경기장 : ' + ${boardResponseDto.boardStadium}"></p>
+                <div id="map"></div>
             </div>
             <hr>
             <div class="contentBox">
@@ -225,19 +240,20 @@
                th:text="'참여자 : ' + ${boardResponseDto.boardAttendPersonnel} +' / ' + ${boardResponseDto.boardPersonnel}"></p>
 
             <p class="attendance" onclick="toggleAttendance()">참여자 확인</p>
-                <div class="attendanceCheck" id="attendanceCheck">
-                    <ul class="list-group">
-                        <li class="list-group-item" th:text ="${boardResponseDto.boardOwner}" ></li>
-                        <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}">
-                            <span th:text="${userNickname}"></span>
-                            <button class="btn btn-sm btn-secondary" onclick="kickParticipant()">강퇴</button>
-                        </li>
-                    </ul>
-                </div>
+            <div class="attendanceCheck" id="attendanceCheck">
+                <ul class="list-group">
+                    <li class="list-group-item" th:text="${boardResponseDto.boardOwner}"></li>
+                    <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}">
+                        <span th:text="${userNickname}"></span>
+                        <button class="btn btn-sm btn-secondary" onclick="kickParticipant()">강퇴</button>
+                    </li>
+                </ul>
+            </div>
             <hr>
             <h3>댓글</h3>
 
-            <form th:action="@{'/board/'+${boardResponseDto.id}}" method="post" class="comment-form" style="display: flex; flex-direction: row; align-items: center;">
+            <form th:action="@{'/board/'+${boardResponseDto.id}}" method="post" class="comment-form"
+                  style="display: flex; flex-direction: row; align-items: center;">
                 <label for="content"></label>
                 <textarea id="content" name="content" style="width: calc(100% - 60px); flex-grow: 1;"></textarea>
                 <button type="submit" style="height: 100%; margin-left: 10px; white-space: nowrap;">입력</button>
@@ -305,33 +321,35 @@
             // 사용자가 취소를 선택한 경우 아무 동작 없음
         }
     }
+
     function editBoard() {
         const boardId = $('#boardId').val();
         const result = confirm("게시글을 수정 하시겠습니까?");
-        if(result){
-        const auth = getToken();
+        if (result) {
+            const auth = getToken();
 
-        if (auth !== undefined && auth !== '') {
-            // AJAX를 이용하여 현재 사용자가 게시글 작성자인지 확인
-            $.ajax({
-                type: 'GET',
-                headers: {
-                    Authorization: auth
-                },
-                url: '/api/boards/checkOwner/' + boardId,
-                success: function (data) {
-                    // 성공 시, 게시글 작성자인 경우 수정 폼으로 이동
-                    window.location.href = '/board/' + boardId + '/edit';
-                },
-                error: function (error) {
-                    // 실패 시, 게시글 작성자가 아닌 경우 알림창 띄우기
-                    console.error('Error:', error);
-                    alert('게시글 작성자만 수정할 수 있습니다.');
-                }
-            });
-        } else {
-            window.location.href = host + '/';
-        }}
+            if (auth !== undefined && auth !== '') {
+                // AJAX를 이용하여 현재 사용자가 게시글 작성자인지 확인
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        Authorization: auth
+                    },
+                    url: '/api/boards/checkOwner/' + boardId,
+                    success: function (data) {
+                        // 성공 시, 게시글 작성자인 경우 수정 폼으로 이동
+                        window.location.href = '/board/' + boardId + '/edit';
+                    },
+                    error: function (error) {
+                        // 실패 시, 게시글 작성자가 아닌 경우 알림창 띄우기
+                        console.error('Error:', error);
+                        alert('게시글 작성자만 수정할 수 있습니다.');
+                    }
+                });
+            } else {
+                window.location.href = host + '/';
+            }
+        }
     }
 
     function attendBoard() {
@@ -357,7 +375,8 @@
             window.location.href = host + '/';
         }
     }
-    function quitBoard(){
+
+    function quitBoard() {
         const auth = getToken();
         const result = confirm("게시글에서 탈퇴 하시겠습니까?");
         if (result) {
@@ -419,6 +438,7 @@
 
 
     let isAttendanceCheckVisible = false;
+
     function toggleAttendance() {
         const attendanceCheckElement = document.getElementById("attendanceCheck");
 
@@ -431,11 +451,12 @@
             attendanceCheckElement.classList.remove("show");
         }
     }
+
     function editComment() {
         const boardId = $('#boardId').val();
         const commentId = $('#commentId').val();
         const result = confirm("댓글을 수정 하시겠습니까?");
-        if(result){
+        if (result) {
             const auth = getToken();
 
             if (auth !== undefined && auth !== '') {
@@ -448,7 +469,7 @@
                     url: '/api/comments/checkOwner/' + commentId,
                     success: function (data) {
                         // 성공 시, 게시글 작성자인 경우 수정 폼으로 이동
-                        window.location.href = '/board/' + boardId +'/comment/'+commentId + '/edit';
+                        window.location.href = '/board/' + boardId + '/comment/' + commentId + '/edit';
                     },
                     error: function (error) {
                         // 실패 시, 게시글 작성자가 아닌 경우 알림창 띄우기
@@ -458,7 +479,8 @@
                 });
             } else {
                 window.location.href = host + '/';
-            }}
+            }
+        }
     }
 
     function deleteComment() {
@@ -475,7 +497,7 @@
                     url: '/api/comments/' + $('#commentId').val(),
                     success: function (data) {
                         alert('댓글이 삭제되었습니다.');
-                        window.location.href = '/board/'+boardId;
+                        window.location.href = '/board/' + boardId;
                     },
                     error: function (error) {
                         alert('작성자만 삭제할 수 있습니다.');
@@ -488,6 +510,7 @@
             // 사용자가 취소를 선택한 경우 아무 동작 없음
         }
     }
+
     function kickParticipant() {
         // 확인 창을 띄우기
         const result = confirm("사용자를 강퇴 하시겠습니까?");
@@ -500,10 +523,10 @@
                     headers: {
                         Authorization: auth
                     },
-                    url: '/api/boards/' + $('#boardId').val()+'/kick/'+$('#userId').val(),
+                    url: '/api/boards/' + $('#boardId').val() + '/kick/' + $('#userId').val(),
                     success: function (data) {
                         alert('사용자가 강퇴 되었습니다.');
-                        window.location.href = '/board/'+$('#boardId').val();
+                        window.location.href = '/board/' + $('#boardId').val();
                     },
                     error: function (error) {
                         alert('방장만 강퇴할 수 있습니다.');
@@ -514,6 +537,7 @@
             }
         }
     }
+
     function goToUserPage() {
         var userId = $('#userId').val();
         window.location.href = '/user/' + userId;
@@ -529,6 +553,7 @@
             logout();
         }
     }
+
     function logout() {
         // 쿠키 삭제
         document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -536,6 +561,7 @@
         // 인덱스 페이지로 이동
         window.location.href = "/";
     }
+
     function getToken() {
 
         let auth = Cookies.get('Authorization');
@@ -545,6 +571,40 @@
         }
 
         return auth;
+    }
+
+    var script = document.createElement('script');
+    var scriptsrc = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCYRSwxLsYfLw57cdlfE9ubhE2N6H3A84g&callback=initMap';
+    script.src = scriptsrc;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    function initMap() {
+        var mapElement = document.getElementById('map');
+        var locationString = document.getElementById('boardStadium');
+        locationString = locationString.innerText;
+        console.log("경기장명" + locationString);
+        var map = new google.maps.Map(mapElement, {
+            zoom: 17,
+        });
+
+        // Use the Geocoding API to convert the location string to coordinates
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode({'address': locationString}, function (results, status) {
+            if (status === 'OK') {
+                var location = results[0].geometry.location;
+
+                map.setCenter(location);
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: location,
+                    title: locationString,
+                });
+            } else {
+                console.error('Geocode was not successful for the following reason: ' + status);
+            }
+        });
     }
 </script>
 </body>

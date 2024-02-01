@@ -47,7 +47,14 @@
         button:hover {
             background-color: #45a049;
         }
+
+        #map {
+            height: 200px; /* 적절한 높이로 조절하세요 */
+            margin-bottom: 16px; /* 원하는 간격으로 조절하세요 */
+        }
+
     </style>
+
 </head>
 <body>
 <h2>Create Board</h2>
@@ -71,6 +78,7 @@
     <input type="text" id="boardArea" name="boardArea" required>
 
     <label for="boardStadium">운동할 경기장:</label>
+    <div id="map"></div>
     <input type="text" id="boardStadium" name="boardStadium" required>
 
     <label for="playDate">운동할 날짜:</label>
@@ -81,5 +89,71 @@
 
     <button type="submit">Create Board</button>
 </form>
+
+<script>
+
+    var script = document.createElement('script');
+    var scriptsrc = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCYRSwxLsYfLw57cdlfE9ubhE2N6H3A84g&libraries=places&callback=initMap';
+    script.src = scriptsrc;
+    script.defer = true;
+    document.head.appendChild(script);
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 37.55, lng: 126.98 },
+            zoom: 13,
+        });
+
+        var input = document.getElementById('boardStadium');
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            var place = places[0];
+            var location = place.geometry.location;
+
+            // 검색된 장소의 위치로 지도의 중심을 이동
+            map.setCenter(location);
+            map.setZoom(15);
+
+            document.getElementById('boardStadium').value = place.name + ', ' + place.formatted_address;
+        });
+
+        // 클릭 이벤트를 추가하여 클릭한 위치의 주소를 얻고 boardStadium에 입력
+        map.addListener('click', function (event) {
+            geocodeLatLng(map, event.latLng);
+        });
+    }
+
+    // 좌표를 주소로 변환하는 함수
+    function geocodeLatLng(map, latLng) {
+        var geocoder = new google.maps.Geocoder();
+
+        geocoder.geocode({ 'location': latLng }, function (results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    var place = results[0];
+
+                    // 클릭한 위치의 주소를 boardStadium에 입력
+                    document.getElementById('boardStadium').value = place.formatted_address;
+                }
+            } else {
+                console.error('Geocoder failed due to: ' + status);
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
