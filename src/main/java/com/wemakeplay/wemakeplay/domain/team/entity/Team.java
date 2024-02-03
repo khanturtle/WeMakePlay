@@ -40,11 +40,12 @@ public class Team {
     private String memberNames;
 
     // 생성자
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User teamOwner;
     @JsonIgnore
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendTeam> attendTeams = new ArrayList<>();
+
 
     public Team(TeamRequestDto teamRequestDto, User user){
         this.teamName = teamRequestDto.getTeamName();
