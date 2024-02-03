@@ -4,14 +4,7 @@ import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.comment.dto.request.CommentRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.global.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,12 +25,12 @@ public class Comment extends BaseEntity {
     @Column
     private String content;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Board board;
