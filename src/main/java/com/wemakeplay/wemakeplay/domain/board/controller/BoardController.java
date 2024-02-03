@@ -139,15 +139,15 @@ public class BoardController {
                 .build());
     }
 
-    @DeleteMapping("/{boardId}/kick/{userId}")
+    @DeleteMapping("/{boardId}/kick/{userNickname}")
     public ResponseEntity<?> kickUserFromBoard(
         @PathVariable Long boardId,
-        @PathVariable Long userId,
+        @PathVariable String userNickname,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        boardService.kickUserFromBoard(boardId, userId,userDetails.getUser());
+        boardService.kickUserFromBoard(boardId, userNickname,userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
-            .message(userId + "유저가 강퇴되었습니다.")
+            .message(userNickname + "유저가 강퇴되었습니다.")
             .build());
     }
 }

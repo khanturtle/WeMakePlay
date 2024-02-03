@@ -18,8 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -115,6 +113,8 @@ public class BoardService {
                     throw new ServiceException(ErrorCode.ALREADY_ATTENDED_BOARD);
                 } else if (myAttendBoard.getParticipation() == Participation.attend) {  //가입자 예외 처리
                     throw new ServiceException(ErrorCode.ALREADY_APPLIED_BOARD);
+                }else if(myAttendBoard.getParticipation()==Participation.reject){
+                    throw new ServiceException(ErrorCode.REJECTED_USER);
                 }
             }
         }
@@ -213,16 +213,16 @@ public class BoardService {
     }
 
     @Transactional
-    public void kickUserFromBoard(Long boardId, Long userId, User user) {
+    public void kickUserFromBoard(Long boardId, String userNickname, User user) {
         Board board = findBoard(boardId);
-        User userToKick = userRepository.findById(userId)
+        User userToKick = userRepository.findByNickname(userNickname)
                 .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
         List<AttendBoard> attendBoardList = attendBoardRepository.findByBoardId(boardId);
 
         if (board.getBoardOwner().getId().equals(user.getId())) {
             for (AttendBoard attendBoard : attendBoardList) {
                 if (attendBoard.getUser().getId().equals(userToKick.getId())) {
-                    attendBoardRepository.delete(attendBoard);
+                    attendBoard.setParticipation(Participation.reject);
                     board.kickUser();
                 }
             }

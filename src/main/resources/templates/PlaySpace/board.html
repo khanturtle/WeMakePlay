@@ -243,10 +243,16 @@
             <div class="attendanceCheck" id="attendanceCheck">
                 <ul class="list-group">
                     <li class="list-group-item" th:text="${boardResponseDto.boardOwner}"></li>
-                    <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}">
-                        <span th:text="${userNickname}"></span>
-                        <button class="btn btn-sm btn-secondary" onclick="kickParticipant()">강퇴</button>
+                    <!-- 수정된 Thymeleaf 코드 -->
+                    <li class="list-group-item" th:each="userNickname, userIndex : ${boardResponseDto.userNickNameList}">
+                        <span th:text="${userNickname}" class="userNickname"></span>
+                        <button class="btn btn-sm btn-secondary" onclick="kickParticipant(this)">강퇴</button>
                     </li>
+
+<!--                    <li class="list-group-item" th:each="userNickname : ${boardResponseDto.userNickNameList}">-->
+<!--                        <span th:text="${userNickname}" id="userNickname"></span>-->
+<!--                        <button class="btn btn-sm btn-secondary" onclick="kickParticipant()">강퇴</button>-->
+<!--                    </li>-->
                 </ul>
             </div>
             <hr>
@@ -510,20 +516,21 @@
             // 사용자가 취소를 선택한 경우 아무 동작 없음
         }
     }
-
-    function kickParticipant() {
+    // 수정된 JavaScript 코드
+    function kickParticipant(button) {
         // 확인 창을 띄우기
         const result = confirm("사용자를 강퇴 하시겠습니까?");
         if (result) {
             // 사용자가 확인을 선택한 경우
             const auth = getToken();
             if (auth !== undefined && auth !== '') {
+                const userNickname = $(button).siblings('.userNickname').text();
                 $.ajax({
                     type: 'DELETE',
                     headers: {
                         Authorization: auth
                     },
-                    url: '/api/boards/' + $('#boardId').val() + '/kick/' + $('#userId').val(),
+                    url: '/api/boards/' + $('#boardId').val() + '/kick/' + userNickname,
                     success: function (data) {
                         alert('사용자가 강퇴 되었습니다.');
                         window.location.href = '/board/' + $('#boardId').val();
@@ -537,6 +544,33 @@
             }
         }
     }
+
+    // function kickParticipant() {
+    //     // 확인 창을 띄우기
+    //     const result = confirm("사용자를 강퇴 하시겠습니까?");
+    //     if (result) {
+    //         // 사용자가 확인을 선택한 경우
+    //         const auth = getToken();
+    //         if (auth !== undefined && auth !== '') {
+    //             $.ajax({
+    //                 type: 'DELETE',
+    //                 headers: {
+    //                     Authorization: auth
+    //                 },
+    //                 url: '/api/boards/' + $('#boardId').val() + '/kick/' + $('#userNickname').val(),
+    //                 success: function (data) {
+    //                     alert('사용자가 강퇴 되었습니다.');
+    //                     window.location.href = '/board/' + $('#boardId').val();
+    //                 },
+    //                 error: function (error) {
+    //                     alert('방장만 강퇴할 수 있습니다.');
+    //                 }
+    //             });
+    //         } else {
+    //             window.location.href = host + '/';
+    //         }
+    //     }
+    // }
 
     function goToUserPage() {
         var userId = $('#userId').val();

@@ -13,6 +13,7 @@ import static com.wemakeplay.wemakeplay.domain.attendboard.Participation.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class AttendBoard {
     @Id

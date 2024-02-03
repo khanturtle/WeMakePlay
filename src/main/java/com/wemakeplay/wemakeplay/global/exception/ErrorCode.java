@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_FOUND_BOARD(HttpStatus.NOT_FOUND,"2007","게시글을 찾을 수 없습니다."),
     BOARD_OWNER_CANNOT_QUIT(HttpStatus.FORBIDDEN, "2008", "게시글 작성자는 탙퇴할 수 없습니다."),
     NOT_BOARD_ATTENDER(HttpStatus.NOT_FOUND, "2009", "게시글 참여자가 아닙니다."),
+    REJECTED_USER(HttpStatus.BAD_REQUEST, "2010","거절당한 사용자 입니다."),
     // team (3000)
     NOT_TEAM_OWNER(HttpStatus.NOT_ACCEPTABLE, "3000", "팀 생성자가 아닙니다."),
     NOT_EXIST_TEAM(HttpStatus.NOT_FOUND, "3001", "팀이 존재하지 않습니다."),
