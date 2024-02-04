@@ -143,15 +143,15 @@ public class TeamController {
             .build());
     }
 
-    @DeleteMapping("/{teamId}/kick/{userId}")
+    @DeleteMapping("/{teamId}/kick/{userNickname}")
     public ResponseEntity<?> kickUserFromTeam(
         @PathVariable Long teamId,
-        @PathVariable Long userId,
+        @PathVariable String userNickname,
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        teamService.kickUserFromTeam(teamId, userId, userDetails.getUser());
+        teamService.kickUserFromTeam(teamId, userNickname, userDetails.getUser());
         return ResponseEntity.ok(RootResponseDto.builder()
             .code("200")
-            .message(userId + "번 유저가 강퇴되었습니다.")
+            .message(userNickname + "유저가 강퇴되었습니다.")
             .build());
     }
 

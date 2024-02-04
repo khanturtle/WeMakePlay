@@ -2,6 +2,7 @@ package com.wemakeplay.wemakeplay.domain.team.service;
 
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.ALREADY_ATTENDING_TEAM;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_TEAM;
+import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_FOUND_USER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_MEMBER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_TEAM_OWNER;
 import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_FULL_PERSONNEL;
@@ -10,6 +11,7 @@ import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.TEAM_OWNER_CA
 
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeam;
 import com.wemakeplay.wemakeplay.domain.attendteam.AttendTeamRepository;
+import com.wemakeplay.wemakeplay.domain.attendteam.Participation;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamRequestDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamResponseDto;
 import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
@@ -17,7 +19,6 @@ import com.wemakeplay.wemakeplay.domain.team.entity.Team;
 import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
 import com.wemakeplay.wemakeplay.domain.user.repository.UserRepository;
-import com.wemakeplay.wemakeplay.global.exception.ErrorCode;
 import com.wemakeplay.wemakeplay.global.exception.ServiceException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -190,23 +191,21 @@ public class TeamService {
         return teamRepository.findById(teamId)
             .orElseThrow(() -> new ServiceException(NOT_EXIST_TEAM));
     }
-
     @Transactional
-    public void kickUserFromTeam(Long teamId, Long userId, User user) {
+    public void kickUserFromTeam(Long teamId, String userNickname, User user) {
         Team team = findTeam(teamId);
-        User userToKick = userRepository.findById(userId)
-            .orElseThrow(() -> new ServiceException(ErrorCode.NOT_FOUND_USER));
+        User userToKick = userRepository.findByNickname(userNickname)
+            .orElseThrow(() -> new ServiceException(NOT_FOUND_USER));
         List<AttendTeam> attendTeamList = attendTeamRepository.findByTeamId(teamId);
 
         if (team.getTeamOwner().getId().equals(user.getId())) {
             for (AttendTeam attendTeam : attendTeamList) {
-                if (attendTeam.getUser().getId().equals(userToKick.getId())){
-                    attendTeamRepository.delete(attendTeam);
+                if (attendTeam.getUser().getId().equals(userToKick.getId())) {
+                    attendTeam.setParticipation(Participation.reject);
                     team.kickUser();
-                    return;
                 }
             }
-        }else{
+        } else {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
