@@ -10,6 +10,7 @@ public class TeamViewResponseDto {
     private Long id;
     private String teamName;
     private String teamIntro;
+    private String teamOwner;
     private int teamAttendPersonnel;
     private int teamPersonnel;
 
@@ -17,6 +18,7 @@ public class TeamViewResponseDto {
         this.id = team.getId();
         this.teamName = team.getTeamName();
         this.teamIntro = team.getTeamIntro();
+        this.teamOwner = team.getTeamOwner().getNickname();
         this.teamPersonnel = team.getTeamPersonnel();
         this.teamAttendPersonnel = team.getTeamAttendPersonnel();
     }
