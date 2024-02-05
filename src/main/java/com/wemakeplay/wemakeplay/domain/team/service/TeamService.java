@@ -39,19 +39,19 @@ public class TeamService {
     private final AttendTeamRepository attendTeamRepository;
     private final UserRepository userRepository;
 
+    //생성
     public TeamResponseDto createTeam(TeamRequestDto teamRequestDto, User user) {
         Team team = new Team(teamRequestDto, user);
         teamRepository.save(team);
         return new TeamResponseDto(team);
     }
-
+    //전체 조회
     public List<TeamViewResponseDto> getAllTeams() {
         List<Team> teamList = teamRepository.findAll();
         return teamList.stream()
             .map(TeamViewResponseDto::new)
             .collect(Collectors.toList());
     }
-
     public List<TeamViewResponseDto> get3Teams() {
         List<Team> teamList = teamRepository.findAll();
         List<TeamViewResponseDto> teamViewResponseDtos = teamList.stream()
@@ -66,12 +66,12 @@ public class TeamService {
         Page<Team> teamPage = teamRepository.findAll(pageable);
         return teamPage.map(TeamViewResponseDto::new);
     }
-
+    //특정 팀 조회
     public TeamResponseDto getTeam(Long teamId) {
         Team team = findTeam(teamId);
         return new TeamResponseDto(team);
     }
-
+    //수정
     @Transactional
     public TeamResponseDto updateTeam(Long teamId, TeamRequestDto teamRequestDto, User user) {
         Team team = findTeam(teamId);
@@ -81,7 +81,7 @@ public class TeamService {
         team.updateTeam(teamRequestDto);
         return new TeamResponseDto(team);
     }
-
+    //삭제
     @Transactional
     public void deleteTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
@@ -91,7 +91,7 @@ public class TeamService {
         attendTeamRepository.deleteAll(attendTeamRepository.findByTeamId(teamId));
         teamRepository.delete(team);
     }
-
+    //가입 신청
     @Transactional
     public void attendTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
@@ -114,8 +114,7 @@ public class TeamService {
             .build();
         attendTeamRepository.save(attendTeam);
     }
-
-
+    //신청 목록 확인
     public List<AttendTeam> checkTeamAttender(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (user.getNickname().equals(team.getTeamOwner().getNickname())) {
@@ -132,7 +131,7 @@ public class TeamService {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
-
+    //신청 수락
     @Transactional
     public void allowTeamAttend(Long teamId, Long userId, User user) {
         Team team = findTeam(teamId);
@@ -149,7 +148,7 @@ public class TeamService {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
-
+    //신청 거절
     @Transactional
     public void rejectTeamAttend(Long teamId, Long userId, User user) {
         Team team = findTeam(teamId);
@@ -162,7 +161,7 @@ public class TeamService {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
-
+    //탈퇴
     @Transactional
     public void quitTeam(Long teamId, User user) {
         Team team = findTeam(teamId);
@@ -191,6 +190,7 @@ public class TeamService {
         return teamRepository.findById(teamId)
             .orElseThrow(() -> new ServiceException(NOT_EXIST_TEAM));
     }
+    //강퇴
     @Transactional
     public void kickUserFromTeam(Long teamId, String userNickname, User user) {
         Team team = findTeam(teamId);
@@ -209,7 +209,7 @@ public class TeamService {
             throw new ServiceException(NOT_TEAM_OWNER);
         }
     }
-
+    //팀 생성자 확인
     public void checkTeamOwner(Long teamId, User user) {
         Team team = findTeam(teamId);
         if (!team.getTeamOwner().getNickname().equals(user.getNickname())) {
