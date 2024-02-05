@@ -106,7 +106,7 @@
         jqXHR.setRequestHeader('Authorization', auth);
       });
     } else {
-      window.location.href = host + 'login';
+      window.location.href = host + '/login';
       return;
     }
 
@@ -148,7 +148,7 @@
     })
     .fail(function (jqXHR, textStatus) {
       alert("아이디/비밀번호가 일치하지 않습니다. 확인 후 다시 로그인을 해주세요.");
-      window.location.href = 'login'
+      window.location.href = '/login'
     });
   }
 
