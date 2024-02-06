@@ -99,16 +99,16 @@
 <script>
   $(document).ready(function () {
 
-    const auth = getToken();
-
-    if (auth !== undefined && auth !== '') {
-      $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-        jqXHR.setRequestHeader('Authorization', auth);
-      });
-    } else {
-      window.location.href = host + '/login';
-      return;
-    }
+    // const auth = getToken();
+    //
+    // if (auth !== undefined && auth !== '') {
+    //   $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+    //     jqXHR.setRequestHeader('Authorization', auth);
+    //   });
+    // } else {
+    //   window.location.href = host + '/login';
+    //   return;
+    // }
 
     // 토큰 삭제
     Cookies.remove('Authorization', {path: '/'});
