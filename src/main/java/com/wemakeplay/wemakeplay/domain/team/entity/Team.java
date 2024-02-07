@@ -26,7 +26,6 @@ import lombok.NoArgsConstructor;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
     @Column
     private String teamName;
@@ -45,6 +44,9 @@ public class Team {
     @JsonIgnore
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<AttendTeam> attendTeams = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private List<User> users = new ArrayList<>();
 
 
     public Team(TeamRequestDto teamRequestDto, User user){
