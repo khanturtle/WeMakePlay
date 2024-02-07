@@ -110,9 +110,9 @@
 </nav>
 
 <section>
-  <h1>Followers</h1>
+  <h1>Followings</h1>
 
-  <!-- Thymeleaf 반복문으로 followers 목록을 카드 형식으로 표시 -->
+  <!-- Thymeleaf 반복문으로 following 목록을 카드 형식으로 표시 -->
   <div th:each="following : ${userFollowings.getFollowingList()}" class="follower-card" th:attr="data-user-id=${following.getUserId()}"
        onclick="redirectToUserProfile(this)">
     <div class="follower-info">
