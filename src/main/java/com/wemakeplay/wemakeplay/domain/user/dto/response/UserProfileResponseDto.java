@@ -3,6 +3,7 @@ package com.wemakeplay.wemakeplay.domain.user.dto.response;
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,5 +25,6 @@ public class UserProfileResponseDto {
     private List<FollowerResponseDto> followersList;
     private List<FollowingResponseDto> followingList;
     private List<BoardViewResponseDto> boardList;
+    private List<TeamViewResponseDto> teamList;
 
 }
