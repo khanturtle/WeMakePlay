@@ -8,6 +8,8 @@ import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.repository.FollowRepository;
 import com.wemakeplay.wemakeplay.domain.like.repository.LikeRepository;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.ModifyProfileRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.request.SignupRequestDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
@@ -34,6 +36,7 @@ public class UserService {
     private final LikeRepository likeRepository;
     private final FollowRepository followRepository;
     private final BoardRepository boardRepository;
+    private final TeamRepository teamRepository;
 
     // 관리자 권한을 부여하는 데 사용되는 토큰
     private final String ADMIN_TOKEN = "KSD8hdTyIl4wWA71SsAop0";
@@ -147,6 +150,12 @@ public class UserService {
             .map(BoardViewResponseDto::new)
             .toList();
 
+        List<TeamViewResponseDto> teamList
+            = teamRepository.findByTeamOwnerId(user.getId())
+            .stream()
+            .map(TeamViewResponseDto::new)
+            .toList();
+
         return UserProfileResponseDto.builder()
             .id(user.getId())
             .username(user.getUsername())
@@ -161,6 +170,7 @@ public class UserService {
             .followings(followings)
             .followingList(followingList)
             .boardList(boardList)
+            .teamList(teamList)
             .build();
     }
 }

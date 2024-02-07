@@ -5,11 +5,13 @@ import static com.wemakeplay.wemakeplay.global.exception.ErrorCode.NOT_EXIST_USE
 import com.wemakeplay.wemakeplay.domain.board.dto.BoardViewResponseDto;
 import com.wemakeplay.wemakeplay.domain.board.entity.Board;
 import com.wemakeplay.wemakeplay.domain.board.repository.BoardRepository;
-import com.wemakeplay.wemakeplay.domain.board.service.BoardService;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowerResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.dto.FollowingResponseDto;
 import com.wemakeplay.wemakeplay.domain.follow.repository.FollowRepository;
 import com.wemakeplay.wemakeplay.domain.like.repository.LikeRepository;
+import com.wemakeplay.wemakeplay.domain.team.dto.TeamViewResponseDto;
+import com.wemakeplay.wemakeplay.domain.team.entity.Team;
+import com.wemakeplay.wemakeplay.domain.team.repository.TeamRepository;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.ProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.dto.response.UserProfileResponseDto;
 import com.wemakeplay.wemakeplay.domain.user.entity.User;
@@ -28,6 +30,7 @@ public class AdminService {
     private final FollowRepository followRepository;
     private final LikeRepository likeRepository;
     private final BoardRepository boardRepository;
+    private final TeamRepository teamRepository;
 
     public ProfileResponseDto getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
@@ -73,6 +76,11 @@ public class AdminService {
                 .stream()
                 .map(BoardViewResponseDto::new)
                 .toList();
+            List<TeamViewResponseDto> teamList
+                = teamRepository.findByTeamOwnerId(user.getId())
+                .stream()
+                .map(TeamViewResponseDto::new)
+                .toList();
 
             userProfileList.add(UserProfileResponseDto.builder()
                 .id(user.getId())
@@ -87,6 +95,7 @@ public class AdminService {
                 .followings(followings)
                 .followingList(followingList)
                 .boardList(boardList)
+                .teamList(teamList)
                 .build());
         }
 
@@ -99,5 +108,10 @@ public class AdminService {
             .orElseThrow(() -> new ServiceException(NOT_EXIST_USER));
 
         boardRepository.delete(board);
+    }
+    public void deleteTeam(Long teamId) {
+        Team team = teamRepository.findById(teamId)
+            .orElseThrow(() -> new ServiceException(NOT_EXIST_USER));
+        teamRepository.delete(team);
     }
 }
