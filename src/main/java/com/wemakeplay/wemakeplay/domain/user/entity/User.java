@@ -71,6 +71,17 @@ public class User {
     )
     private List<Board> boards = new ArrayList<>();
 
+    @ManyToOne
+    private Team team;
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_team",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "team_id")
+    )
+    private List<Team> teams = new ArrayList<>();
+
     @Builder
     public User(String username, String password, String nickname, String email,
         String area,  String age, String intro, UserRoleEnum role) {
@@ -116,5 +127,16 @@ public class User {
     public void removeBoard(Board board) {
         this.getBoards().remove(board);
         board.getUsers().remove(this); // 연관된 양방향 매핑도 업데이트
+    }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+    public void addTeam(Team team) {
+        this.teams.add(team);
+        team.getUsers().add(this);
+    }
+    public void removeTeam(Team team) {
+        this.getTeams().remove(team);
+        team.getUsers().remove(this);
     }
 }
