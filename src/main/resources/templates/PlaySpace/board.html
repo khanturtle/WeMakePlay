@@ -262,7 +262,10 @@
             <ul class="list-group">
                 <li class="list-group-item" th:each="comment : ${boardResponseDto.commentList}">
                     <input type="hidden" th:value="${comment.id}" id="commentId">
-                    <span th:text="${comment.getNickname()}"></span>
+                    <a th:href="@{'/user/' + ${comment.getCommentUserId()}}"
+                       onclick="goToUserPage()" th:text="${comment.getNickname()}">
+                    </a>
+
                     :
                     <span th:text="${comment.content}"></span>
                     <div class="btn-group">
